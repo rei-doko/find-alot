@@ -14,4 +14,7 @@ public class Block {
     private static int blockCounter = 0;
     private int blockNumber;
     private List<Property> properties;
+    
+    public Block getBlock {
+    }
 }

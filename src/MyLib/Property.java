@@ -27,4 +27,8 @@ public abstract class Property {
     private int generateId() {
         return ++idCounter;
     }
+    
+    public Block getBlock() {
+        return block;
+    }
 }
