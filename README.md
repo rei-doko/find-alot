@@ -13,7 +13,6 @@ FindALOT is a Java-based Real Estate Sales and Management System designed to ass
 
 # Usage
 
---- 
 Customer
 ---
 
@@ -23,7 +22,6 @@ Customer
 4. Contact the agent to book the property. *Optionally, you can book the property directly from the page*
 5. Choose your payment method. (Cash / Mortgage)
 
----
 Agent
 ---
 
