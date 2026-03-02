@@ -15,6 +15,15 @@ public class Block {
     private int blockNumber;
     private List<Property> properties;
     
-    public Block getBlock {
+    Block() {
+        this.blockNumber = blockCounter;
+    }
+    
+    public void addBlockCounter() {
+        blockCounter++;
+    }
+    
+    public void addProperty() {
+        
     }
 }
