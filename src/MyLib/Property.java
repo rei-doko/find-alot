@@ -38,9 +38,6 @@ public abstract class Property {
         if(action == "Book") {
             this.status = "Book";
         }
-        else if(action == "Reserve") {
-            this.status = "Reserved";
-        }
         else if(action == "Buy") {
             this.status = "Sold";
         }
