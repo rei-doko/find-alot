@@ -1,4 +1,14 @@
-public class Cash {
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package myLib;
+
+/**
+ *
+ * @author Admin
+ */
+public class Cash implements Payment{
     private double propertyPrice;
     private double capitalTax;
     private double documentaryStampTax;
@@ -27,8 +37,19 @@ public class Cash {
         finalPayment=propertyPrice+documentaryStampTax+transferTax+registrationFee+notarial;
         return finalPayment;
     }
+    
+    public void showReceipt(){
+        System.out.println("Capital Tax: "+capitalTax);
+        System.out.println("Documentary Stamp Tax: "+documentaryStampTax);
+        System.out.println("Transfer Tax: "+transferTax);
+        System.out.println("Registration Fee: "+registrationFee);
+        System.out.println("Notarial Fee: "+notarial);
+    }
 
     public void setAgentFee(double agentFee) {
         this.agentFee = agentFee;
     }
+    
+    
+    
 }
