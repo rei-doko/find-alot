@@ -9,7 +9,7 @@ package myLib;
  * @author Admin
  */
 public class Cash implements Payment{
-    private double propertyPrice;
+    private double contactPrice;
     private double capitalTax;
     private double documentaryStampTax;
     private double transferTax;
@@ -39,11 +39,13 @@ public class Cash implements Payment{
     }
     
     public void showReceipt(){
+        System.out.println("Contact Price:"+contactPrice);
         System.out.println("Capital Tax: "+capitalTax);
         System.out.println("Documentary Stamp Tax: "+documentaryStampTax);
         System.out.println("Transfer Tax: "+transferTax);
         System.out.println("Registration Fee: "+registrationFee);
         System.out.println("Notarial Fee: "+notarial);
+        System.out.println("Final Payment: "+finalPayment);
     }
 
     public void setAgentFee(double agentFee) {
