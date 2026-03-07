@@ -9,6 +9,8 @@ package myLib;
  * @author Admin
  */
 public class Cash implements Payment{
+    private Property property;
+
     private double contactPrice;
     private double capitalTax;
     private double documentaryStampTax;
@@ -16,26 +18,20 @@ public class Cash implements Payment{
     private double registrationFee;
     private double notarial;
     private double agentFee;
-    
     private double finalPayment;
 
-    public Cash(double finalPayment) {
-        this.finalPayment = finalPayment;
-    }
-    
-    public double findFinalPayment(){
+    public Cash(Property property) {
+        this.property = property;
+        this.contactPrice = property.getContactPrice();
+
+        capitalTax=contactPrice*0.06;
+        documentaryStampTax=contactPrice*0.015;
+        transferTax=contactPrice*0.05;
+        registrationFee=contactPrice*0.03;
+        notarial=contactPrice*0.01;
+        agentFee=contactPrice*0.03;
         
-        //general taxes
-        capitalTax=propertyPrice*0.06;
-        documentaryStampTax=propertyPrice*0.15;
-        transferTax=propertyPrice*0.05;
-        registrationFee=propertyPrice*0.03;
-        notarial=propertyPrice*0.01;
-        //////////////////////////////////////////////////////////////////////////////////////////
-        agentFee=propertyPrice*0.03;
-        
-        finalPayment=propertyPrice+documentaryStampTax+transferTax+registrationFee+notarial;
-        return finalPayment;
+        finalPayment=contactPrice+documentaryStampTax+transferTax+registrationFee+notarial;
     }
     
     public void showReceipt(){
@@ -45,6 +41,7 @@ public class Cash implements Payment{
         System.out.println("Transfer Tax: "+transferTax);
         System.out.println("Registration Fee: "+registrationFee);
         System.out.println("Notarial Fee: "+notarial);
+        System.out.println("------------------------------");
         System.out.println("Final Payment: "+finalPayment);
     }
 

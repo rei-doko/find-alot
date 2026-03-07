@@ -9,6 +9,6 @@ package myLib;
  * @author Admin
  */
 public interface Payment {
-    double findFinalPayment();
     void showReceipt();
+    void setAgentFee(double agentFee);
 }
