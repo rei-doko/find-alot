@@ -18,7 +18,7 @@ public class Cash implements Payment{
     private double registrationFee;
     private double notarial;
     private double agentFee;
-    
+
     private double finalPayment;
 
     public Cash(Property property) {
@@ -47,8 +47,6 @@ public class Cash implements Payment{
     }
 
     ////////////////////
-    private boolean agentFeeConfirmed=false;
-
     public double getAgentFee() {
         return agentFee;
     }

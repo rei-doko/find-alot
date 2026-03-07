@@ -40,8 +40,6 @@ public class Mortgage {
     }
 
     ////////////////////
-    private boolean agentFeeConfirmed=false;
-
     public double getAgentFee() {
         return agentFee;
     }
