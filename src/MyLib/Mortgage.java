@@ -50,12 +50,13 @@ public class Mortgage {
     /* CODE FOR ADMIN
     public void confirmAgentFee(Payment agentPay) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println(name + ", do you want to confirm the agent fee of " + agentPay.getAgentFee() + "? (yes/no)");
+        System.out.println(name+", do you want to confirm the agent fee of "+agentPay.getAgentFee()+"? (y/n)");
 
-        String response = scanner.nextLine().trim().toLowerCase();
-        if (response=="yes" || response=="y") {
+        String ans = scanner.nextLine();
+        if(ans=="y"){
             System.out.println("Agent fee has been confirmed.");
-        } else {
+        } 
+        else{
             System.out.println("Agent fee remains unconfirmed.");
         }
     } */
