@@ -10,5 +10,6 @@ package myLib;
  */
 public interface Payment {
     void showReceipt();
+    double agentFee();
     void setAgentFee(double agentFee);
 }

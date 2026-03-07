@@ -18,6 +18,7 @@ public class Cash implements Payment{
     private double registrationFee;
     private double notarial;
     private double agentFee;
+    
     private double finalPayment;
 
     public Cash(Property property) {
@@ -45,10 +46,26 @@ public class Cash implements Payment{
         System.out.println("Final Payment: "+finalPayment);
     }
 
+    ////////////////////
+    private boolean agentFeeConfirmed=false;
+
+    public double getAgentFee() {
+        return agentFee;
+    }
+
     public void setAgentFee(double agentFee) {
         this.agentFee = agentFee;
     }
-    
-    
-    
+    /* CODE FOR ADMIN
+    public void confirmAgentFee(Payment agentPay) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println(name + ", do you want to confirm the agent fee of " + agentPay.getAgentFee() + "? (yes/no)");
+
+        String response = scanner.nextLine().trim().toLowerCase();
+        if (response=="yes" || response=="y") {
+            System.out.println("Agent fee has been confirmed.");
+        } else {
+            System.out.println("Agent fee remains unconfirmed.");
+        }
+    } */
 }
