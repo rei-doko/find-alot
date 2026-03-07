@@ -43,10 +43,6 @@ public class Mortgage {
     public double getAgentFee() {
         return agentFee;
     }
-
-    public void setAgentFee(double agentFee) {
-        this.agentFee = agentFee;
-    }
     /* CODE FOR ADMIN
     public void confirmAgentFee(Payment agentPay) {
         Scanner scanner = new Scanner(System.in);
