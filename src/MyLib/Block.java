@@ -4,17 +4,35 @@
  */
 package MyLib;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
- * @author rei doko
+ * 
  */
 public class Block {
     private static int blockCounter = 0;
     private int blockNumber;
-    private List<Property> properties;
+    private ArrayList<Property> properties;
     
-    public Block getBlock {
+    Block() {
+        this.blockNumber = blockCounter;
+    }
+    
+//    Counter for automatically adding to new block when lot reaches 20 [Subject to Change]
+    public void addBlockCounter() {
+        blockCounter++;
+    }
+    
+//    Adds properties to the ArrayList properties
+    public void addProperty(Property property) {
+        if (property != null) {
+            this.properties.add(property);
+        }
+    }
+    
+//    Returns the ArrayList properties
+    public ArrayList<Property> getProperties() {
+        return properties;
     }
 }

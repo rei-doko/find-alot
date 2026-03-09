@@ -6,7 +6,7 @@ package MyLib;
 
 /**
  *
- * @author rei doko
+ * 
  */
 public abstract class Property {
     private Block block;
@@ -26,6 +26,7 @@ public abstract class Property {
         this.contactPrice = contactPrice;
     }
 
+//    Automatically generates ID when instatiated
     private int generateId() {
         return ++idCounter;
     }
@@ -33,8 +34,17 @@ public abstract class Property {
     public Block getBlock() {
         return block;
     }
-
-    public double getContactPrice() {
-        return contactPrice;
+    
+//    Incomplete
+    public void updateStatus(String action) {
+        if(action == "Book") {
+            this.status = "Book";
+        }
+        else if(action == "Buy") {
+            this.status = "Sold";
+        }
+        else {
+            this.status = "For Sale";
+        }
     }
 }
