@@ -47,4 +47,8 @@ public abstract class Property {
             this.status = "For Sale";
         }
     }
+
+    public double getContactPrice() {
+        return contactPrice;
+    }
 }
