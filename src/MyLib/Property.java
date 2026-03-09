@@ -16,12 +16,14 @@ public abstract class Property {
     private int floors = 2;
     private String status = "For Sale";
     private double propertySize;
+    private double contactPrice;
 
-    Property(Block block, String propertyType, double propertySize) {
+    Property(Block block, String propertyType, double propertySize, double contactPrice) {
         this.block = block;
         this.propertyId = generateId();
         this.propertyType = propertyType;
         this.propertySize = propertySize;
+        this.contactPrice = contactPrice;
     }
 
 //    Automatically generates ID when instatiated
