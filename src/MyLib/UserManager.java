@@ -21,6 +21,10 @@ public class UserManager {
         userList.add(user);
     }
     
+    public void removeUser(User user) {
+        userList.remove(user);
+    }
+    
     public boolean registerUser(int role, String username, String password) {
         for(User user : userList) {
             if(user.getUsername().equals(username)) {
@@ -33,9 +37,14 @@ public class UserManager {
         
         return true;
     }
-
-    public void removeUser(User user) {
-        userList.remove(user);
+    
+    public User verifyUser(String username, String password) {
+        for(User user: userList) {
+            if((user.getUsername().equals(username)) && (user.getPassword().equals(password))) {
+                return user;
+            }
+        }
+        return null;
     }
 
     public User findUser(int userId) { // Fix to search for username instead of userId?
