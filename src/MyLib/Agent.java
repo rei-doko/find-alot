@@ -8,6 +8,13 @@ package MyLib;
  *
  * @author rei doko
  */
-public class Agent {
+public class Agent extends User {
     
+    public Agent(String name, String pass) {
+        super(name, pass);
+    }
+    
+    public void confirmSale(Property property, Customer customer) {
+        
+    }
 }

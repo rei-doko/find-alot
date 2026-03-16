@@ -8,7 +8,7 @@ package MyLib;
  *
  * @author rei doko
  */
-public abstract class User {
+public class User {
     private int userId;
     private String name;
     private String pass;
@@ -18,24 +18,32 @@ public abstract class User {
         this.name = name;
         this.pass = pass;
     }
-    
-    private int generateId() {
-//        public static int idNum;
-//        
-//        idNum = rand();
-        
-        return idNum;
+
+    public int generateId() {
+        return (int) (Math.random() * 10000); // Temporarily generates a random ID
     }
 
-    public void login() {
+    public int getUserId() {
+        return userId;
+    }
 
+    public String getName() {
+        return name;
     }
-    
-    public void logout() {
-        
+
+    public void setName(String name) {
+        this.name = name;
     }
-    
-    public void generateReport() {
-        
+
+    public String getPass() {
+        return pass;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
+
+    public String getAccountInfo() {
+        return "User ID: " + userId + ", Name: " + name;
     }
 }
