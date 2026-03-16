@@ -9,30 +9,27 @@ package MyLib;
  * 
  */
 public abstract class Property {
-    private Block block;
-    private static int idCounter = 0;
     private int propertyId;
-    private String propertyType;
+    private int blockNum;
+    private int lotNum;
+    
+    private static int idCounter = 0;
+    
     private int floors = 2;
+    
     private String status = "For Sale";
     private double propertySize;
     private double contactPrice;
+    private Customer owner;
 
-    Property(Block block, String propertyType, double propertySize, double contactPrice) {
-        this.block = block;
+    public Property() {
         this.propertyId = generateId();
-        this.propertyType = propertyType;
-        this.propertySize = propertySize;
-        this.contactPrice = contactPrice;
+        this.blockNum
     }
 
 //    Automatically generates ID when instatiated
     private int generateId() {
         return ++idCounter;
-    }
-    
-    public Block getBlock() {
-        return block;
     }
     
 //    Incomplete
@@ -48,6 +45,10 @@ public abstract class Property {
         }
     }
 
+    public void showDetails() {
+        
+    }
+    
     public double getContactPrice() {
         return contactPrice;
     }
