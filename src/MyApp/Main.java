@@ -35,7 +35,15 @@ public class Main {
         System.out.print("Enter password: ");
         String password = scan.nextLine();
         
-        userManager.registerUser(role, username, password);
+        
+        boolean success = userManager.registerUser(role, username, password);
+        if(success) {
+            System.out.println("User registered.");
+        }
+        else {
+            System.out.println("User already exists.");
+        }
+        
         
         // // Placeholder for register system
         // User user1 = new User("Jane Doe", "RAT");

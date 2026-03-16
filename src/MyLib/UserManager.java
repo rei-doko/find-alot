@@ -12,7 +12,6 @@ import java.util.ArrayList;
  */
 public class UserManager {
     private ArrayList<User> userList;
-    private User user;
     
     public UserManager() {
         userList = new ArrayList<User>();
@@ -22,17 +21,24 @@ public class UserManager {
         userList.add(user);
     }
     
-    public void registerUser(int role, String username, String password) {
-        user = UserFactory.createUser(role, username, password);
+    public boolean registerUser(int role, String username, String password) {
+        for(User user : userList) {
+            if(user.getUsername().equals(username)) {
+                return false;
+            }
+        }
         
-        addUser(user);
+        User user = UserFactory.createUser(role, username, password);
+        addUser(user);   
+        
+        return true;
     }
 
     public void removeUser(User user) {
         userList.remove(user);
     }
 
-    public User findUser(int userId) {
+    public User findUser(int userId) { // Fix to search for username instead of userId?
         for (User user : userList) {
             if (user.getUserId() == userId) {
                 return user;
