@@ -8,15 +8,17 @@ package MyLib;
  *
  * @author rei doko
  */
-public class User {
+public abstract class User {
     private int userId;
-    private String name;
-    private String pass;
+    private String username;
+    private String password;
+    private String role;
     
-    public User(String name, String pass) {
-        this.userId = generateId();
-        this.name = name;
-        this.pass = pass;
+    public User(String role, String username, String password) {
+        this.userId = setUserId(generateId());
+        this.role = role;
+        this.username = username;
+        this.password = password;
     }
 
     public int generateId() {
@@ -27,23 +29,27 @@ public class User {
         return userId;
     }
 
-    public String getName() {
-        return name;
+    public int setUserId(int userId) {
+        return userId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getUsername() {
+        return username;
     }
 
-    public String getPass() {
-        return pass;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setPass(String pass) {
-        this.pass = pass;
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getAccountInfo() {
-        return "User ID: " + userId + ", Name: " + name;
+        return "User ID: " + userId + ", Username: " + username;
     }
 }

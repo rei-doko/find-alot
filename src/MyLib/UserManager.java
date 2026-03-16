@@ -12,6 +12,7 @@ import java.util.ArrayList;
  */
 public class UserManager {
     private ArrayList<User> userList;
+    private User user;
     
     public UserManager() {
         userList = new ArrayList<User>();
@@ -19,6 +20,12 @@ public class UserManager {
 
     public void addUser(User user) {
         userList.add(user);
+    }
+    
+    public void registerUser(int role, String username, String password) {
+        user = UserFactory.createUser(role, username, password);
+        
+        addUser(user);
     }
 
     public void removeUser(User user) {
