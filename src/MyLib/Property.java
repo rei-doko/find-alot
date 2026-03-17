@@ -1,33 +1,29 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package MyLib;
 
 /**
  * 
  */
-
-//Not yet done btw
 public abstract class Property {
-    private Block block;
-    private static int idCounter = 0; 
-    private int propertyId;
-    private int blockNum;
+    private int blockNum; 
     private int lotNum;
     
-    private static int idCounter = 0;
+    private static int idCounter = 0; 
+    private int propertyId;
     
     private int floors = 2;
-    
     private String status = "For Sale";
     private double propertySize;
     private double contactPrice;
     private Customer owner;
 
-    public Property() {
+    // Fixed the broken constructor and added parameters
+    public Property(int blockNum, int lotNum, int floors, double propertySize, double contactPrice) {
+        this.blockNum = blockNum;
+        this.lotNum = lotNum;
+        this.floors = floors;
+        this.propertySize = propertySize;
+        this.contactPrice = contactPrice;
         this.propertyId = generateId();
-        this.blockNum
     }
 
     // Automatically generates ID when instantiated
@@ -35,9 +31,7 @@ public abstract class Property {
         return ++idCounter;
     }
     
-//    Incomplete
     public void updateStatus(String action) {
-
         if(action.equalsIgnoreCase("Book")) {
             this.status = "Booked"; 
         }
@@ -49,11 +43,11 @@ public abstract class Property {
         }
     }
 
-    public void showDetails() {
-        
-    }
+    public abstract void showDetails();
     
-    public double getContactPrice() {
-        return contactPrice;
-    }
+    public double getContactPrice() { return contactPrice; }
+    public String getStatus() { return status; }
+    public int getPropertyId() { return propertyId; }
+    public int getBlockNum() { return blockNum; }
+    public int getLotNum() { return lotNum; }
 }

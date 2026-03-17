@@ -1,4 +1,4 @@
-package myLib;
+package MyLib;
 //Not final
 public class Detached extends Property {
     private int hasGarage;
@@ -9,7 +9,7 @@ public class Detached extends Property {
         super(blockNum, lotNum, floors, propertySize, contactPrice);
         this.hasGarage = hasGarage;
         this.yardSize = yardSize;
-        this.yard = yardSize > 0
+        this.yard = yardSize > 0;
     }
 
     @Override

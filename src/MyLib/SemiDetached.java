@@ -1,4 +1,4 @@
-package myLib;
+package MyLib;
 //Not final
 public class SemiDetached extends Property {
     private String sharedWallsSide;

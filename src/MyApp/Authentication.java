@@ -70,7 +70,6 @@ public class Authentication extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Authentication");
-        setPreferredSize(new java.awt.Dimension(1024, 768));
 
         Parent.setBackground(new java.awt.Color(153, 255, 255));
         Parent.setLayout(new java.awt.CardLayout());
@@ -114,7 +113,7 @@ public class Authentication extends javax.swing.JFrame {
                 .addGap(295, 295, 295))
         );
 
-        Parent.add(MainPanel, "card2");
+        Parent.add(MainPanel, "MainPanel");
 
         homeButton1.setText("Home");
         homeButton1.addActionListener(this::homeButton1ActionPerformed);
@@ -174,7 +173,7 @@ public class Authentication extends javax.swing.JFrame {
                 .addGap(156, 156, 156))
         );
 
-        Parent.add(LoginPanel, "card3");
+        Parent.add(LoginPanel, "LoginPanel");
 
         homeButton.setText("Home");
         homeButton.addActionListener(this::homeButtonActionPerformed);
@@ -259,7 +258,7 @@ public class Authentication extends javax.swing.JFrame {
                     .addContainerGap(452, Short.MAX_VALUE)))
         );
 
-        Parent.add(RegisterPanel, "card4");
+        Parent.add(RegisterPanel, "RegisterPanel");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -271,7 +270,7 @@ public class Authentication extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Parent, javax.swing.GroupLayout.DEFAULT_SIZE, 768, Short.MAX_VALUE)
+            .addComponent(Parent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -280,13 +279,13 @@ public class Authentication extends javax.swing.JFrame {
     private void registerPanelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerPanelButtonActionPerformed
         // TODO add your handling code here:
         CardLayout cl = (CardLayout)(Parent.getLayout());
-        cl.show(Parent, "card4");
+        cl.show(Parent, "RegisterPanel");
     }//GEN-LAST:event_registerPanelButtonActionPerformed
 
     private void loginPanelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginPanelButtonActionPerformed
         // TODO add your handling code here:
         CardLayout cl = (CardLayout)(Parent.getLayout());
-        cl.show(Parent, "card3");
+        cl.show(Parent, "LoginPanel");
     }//GEN-LAST:event_loginPanelButtonActionPerformed
 
     private void homeButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeButton1ActionPerformed
@@ -393,7 +392,7 @@ public class Authentication extends javax.swing.JFrame {
 
     private void goHome() {
         CardLayout cl = (CardLayout)(Parent.getLayout());
-        cl.show(Parent, "card2");
+        cl.show(Parent, "MainPanel");
     }
     
     /**

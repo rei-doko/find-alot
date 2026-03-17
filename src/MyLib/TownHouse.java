@@ -1,8 +1,6 @@
 package MyLib;
 
 //Not final
-public class TownHouse extends Property {
-    package myLib;
 
 public class TownHouse extends Property {
     private int sharedWalls;
@@ -16,6 +14,4 @@ public class TownHouse extends Property {
     public void showDetails() { 
         System.out.println("TownHouse with " + sharedWalls + " shared walls."); 
     }
-}
-
 }

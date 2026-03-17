@@ -4,9 +4,21 @@
  */
 package MyApp;
 
+import javax.swing.table.DefaultTableModel;
 import MyLib.Admin;
+import MyLib.Agent;
+import MyLib.Customer;
 import MyLib.Session;
+import MyLib.User;
 import MyLib.UserManager;
+import java.awt.CardLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 
 /**
  *
@@ -16,16 +28,21 @@ public class AdminDashboard extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminDashboard.class.getName());
     private UserManager userManager;
-    private Admin user;
+    private Admin admin;
+    private User selectedUser = null;
     
     /**
      * Creates new form AdminDashboard
      */
-    public AdminDashboard(UserManager userManager, Admin user) {
+    public AdminDashboard(UserManager userManager, Admin admin) {
         this.userManager = userManager;
-        this.user = user;
+        this.admin = admin;
         initComponents();
         setLocationRelativeTo(null);
+        
+        setupTable();
+        // Load users in account table
+        loadUsersToTable();
     }
 
     /**
@@ -38,8 +55,16 @@ public class AdminDashboard extends javax.swing.JFrame {
     private void initComponents() {
 
         NavigatorPanel = new javax.swing.JPanel();
+        propertiesPanelButton = new javax.swing.JButton();
         logoutButton = new javax.swing.JButton();
+        accountsPanelButton = new javax.swing.JButton();
         Parent = new javax.swing.JPanel();
+        AccountsPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        accountsTable = new javax.swing.JTable();
+        addAccountButton = new javax.swing.JButton();
+        removeAccountButton = new javax.swing.JButton();
         PropertiesPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
 
@@ -48,12 +73,81 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         NavigatorPanel.setLayout(null);
 
+        propertiesPanelButton.setText("Properties");
+        propertiesPanelButton.addActionListener(this::propertiesPanelButtonActionPerformed);
+        NavigatorPanel.add(propertiesPanelButton);
+        propertiesPanelButton.setBounds(30, 110, 170, 60);
+
         logoutButton.setText("Logout");
         logoutButton.addActionListener(this::logoutButtonActionPerformed);
         NavigatorPanel.add(logoutButton);
         logoutButton.setBounds(30, 680, 170, 60);
 
+        accountsPanelButton.setText("Accounts");
+        accountsPanelButton.addActionListener(this::accountsPanelButtonActionPerformed);
+        NavigatorPanel.add(accountsPanelButton);
+        accountsPanelButton.setBounds(30, 30, 170, 60);
+
         Parent.setLayout(new java.awt.CardLayout());
+
+        jLabel1.setText("Accounts");
+
+        accountsTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "Username", "Role"
+            }
+        ));
+        jScrollPane1.setViewportView(accountsTable);
+
+        addAccountButton.setText("Add Account");
+        addAccountButton.addActionListener(this::addAccountButtonActionPerformed);
+
+        removeAccountButton.setText("Remove Account");
+        removeAccountButton.addActionListener(this::removeAccountButtonActionPerformed);
+
+        javax.swing.GroupLayout AccountsPanelLayout = new javax.swing.GroupLayout(AccountsPanel);
+        AccountsPanel.setLayout(AccountsPanelLayout);
+        AccountsPanelLayout.setHorizontalGroup(
+            AccountsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(AccountsPanelLayout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addGroup(AccountsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(AccountsPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(AccountsPanelLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 609, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(31, 31, 31)
+                        .addGroup(AccountsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(addAccountButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(removeAccountButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(21, 21, 21))))
+        );
+        AccountsPanelLayout.setVerticalGroup(
+            AccountsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(AccountsPanelLayout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(AccountsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(AccountsPanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 651, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(AccountsPanelLayout.createSequentialGroup()
+                        .addGap(60, 60, 60)
+                        .addComponent(addAccountButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(removeAccountButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(17, Short.MAX_VALUE))
+        );
+
+        Parent.add(AccountsPanel, "AccountsPanel");
 
         jLabel2.setText("Properties");
 
@@ -63,18 +157,18 @@ public class AdminDashboard extends javax.swing.JFrame {
             PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PropertiesPanelLayout.createSequentialGroup()
                 .addGap(27, 27, 27)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(580, Short.MAX_VALUE))
+                .addComponent(jLabel2)
+                .addContainerGap(733, Short.MAX_VALUE))
         );
         PropertiesPanelLayout.setVerticalGroup(
             PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PropertiesPanelLayout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(690, Short.MAX_VALUE))
+                .addGap(29, 29, 29)
+                .addComponent(jLabel2)
+                .addContainerGap(717, Short.MAX_VALUE))
         );
 
-        Parent.add(PropertiesPanel, "card3");
+        Parent.add(PropertiesPanel, "PropertiesPanel");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -96,6 +190,12 @@ public class AdminDashboard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void propertiesPanelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_propertiesPanelButtonActionPerformed
+        // TODO add your handling code here:
+        CardLayout cl = (CardLayout)(Parent.getLayout());
+        cl.show(Parent, "PropertiesPanel");
+    }//GEN-LAST:event_propertiesPanelButtonActionPerformed
+
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
         // TODO add your handling code here:
         Session.logout();
@@ -105,6 +205,137 @@ public class AdminDashboard extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_logoutButtonActionPerformed
 
+    private void accountsPanelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accountsPanelButtonActionPerformed
+        // TODO add your handling code here:
+        CardLayout cl = (CardLayout)(Parent.getLayout());
+        cl.show(Parent, "AccountsPanel");
+        
+        loadUsersToTable();
+    }//GEN-LAST:event_accountsPanelButtonActionPerformed
+
+    private void removeAccountButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAccountButtonActionPerformed
+        // TODO add your handling code here:
+        if(selectedUser != null) {
+            admin.removeUser(selectedUser);
+            loadUsersToTable();
+            selectedUser = null;
+        }
+    }//GEN-LAST:event_removeAccountButtonActionPerformed
+
+    private void addAccountButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addAccountButtonActionPerformed
+        // TODO add your handling code here:
+        JPanel registerPanel = new JPanel();
+        registerPanel.setLayout(new java.awt.GridLayout(4, 2, 5, 5));
+        
+        JTextField usernameField = new JTextField();
+        JPasswordField passwordField = new JPasswordField();
+        JRadioButton rbCustomer = new JRadioButton("Customer");
+        JRadioButton rbAgent = new JRadioButton("Agent");
+        ButtonGroup roleGroup = new ButtonGroup();
+        roleGroup.add(rbCustomer);
+        roleGroup.add(rbAgent);
+        
+        // Add components to registerPanel
+        registerPanel.add(new JLabel("Username:"));
+        registerPanel.add(usernameField);
+        registerPanel.add(new JLabel("Password:"));
+        registerPanel.add(passwordField);
+        registerPanel.add(new JLabel("Role:"));
+        JPanel rolePanel = new JPanel();
+        rolePanel.add(rbCustomer);
+        rolePanel.add(rbAgent);
+        registerPanel.add(rolePanel);
+        
+        int result = JOptionPane.showConfirmDialog(this, registerPanel, 
+            "Add New Account", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if(result == JOptionPane.OK_OPTION) {
+            String username = usernameField.getText().trim();
+            String password = new String(passwordField.getPassword());
+            int role = -1;
+            if(rbCustomer.isSelected()) {
+                role = 1;
+            }
+            else if(rbAgent.isSelected()) {
+                role = 2;
+            }
+
+            if(username.isEmpty() || password.isEmpty() || role == -1) {
+                JOptionPane.showMessageDialog(this, 
+                    "Please fill all fields and select a role.", 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            boolean success = userManager.registerUser(role, username, password);
+            if(success) {
+                JOptionPane.showMessageDialog(this, 
+                    "Account added successfully!", 
+                    "Success", JOptionPane.INFORMATION_MESSAGE);
+                loadUsersToTable();
+            } else {
+                JOptionPane.showMessageDialog(this, 
+                    "Failed to add account. Username may already exist.", 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_addAccountButtonActionPerformed
+
+    private void loadUsersToTable() {
+        DefaultTableModel model = (DefaultTableModel) accountsTable.getModel();
+        
+        model.setRowCount(0); // Clear existing rows
+        
+        for(User userItem : admin.getAllUsers()) {
+            String role = "";
+            
+            if(userItem instanceof Customer) {
+                role = "Customer";
+            }
+            else if(userItem instanceof Agent) {
+                role = "Agent";
+            }
+            else if(userItem instanceof Admin) {
+                role = "Admin";
+            }
+            
+            model.addRow(new Object[] {
+               userItem.getUsername(),
+               role
+            });
+        }
+    }
+    
+    private void setupTable() {
+        DefaultTableModel model = new DefaultTableModel(
+            new Object[][] {},
+            new String[] { "Username", "Role" }
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        accountsTable.setModel(model);
+
+        accountsTable.setRowSelectionAllowed(true);
+        accountsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        
+        accountsTable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int row = accountsTable.getSelectedRow();
+
+                if (row >= 0) { // a row is selected
+                    String username = (String) accountsTable.getValueAt(row, 0); // first column = username
+                    selectedUser = admin.getUser(username);
+                } else {
+                    selectedUser = null;
+                }
+            }
+        });
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -129,10 +360,18 @@ public class AdminDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel AccountsPanel;
     private javax.swing.JPanel NavigatorPanel;
     private javax.swing.JPanel Parent;
     private javax.swing.JPanel PropertiesPanel;
+    private javax.swing.JButton accountsPanelButton;
+    private javax.swing.JTable accountsTable;
+    private javax.swing.JButton addAccountButton;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton logoutButton;
+    private javax.swing.JButton propertiesPanelButton;
+    private javax.swing.JButton removeAccountButton;
     // End of variables declaration//GEN-END:variables
 }
