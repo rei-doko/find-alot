@@ -4,7 +4,6 @@ package MyLib;
  * 
  */
 public abstract class Property {
-    private Block block;
     private int blockNum; 
     private int lotNum;
     
@@ -18,10 +17,10 @@ public abstract class Property {
     private Customer owner;
 
     // Fixed the broken constructor and added parameters
-    public Property(Block block, int lotNum, double propertySize, double contactPrice) {
-        this.block = block;
-        this.blockNum = block.getBlockNumber();
+    public Property(int blockNum, int lotNum, int floors, double propertySize, double contactPrice) {
+        this.blockNum = blockNum;
         this.lotNum = lotNum;
+        this.floors = floors;
         this.propertySize = propertySize;
         this.contactPrice = contactPrice;
         this.propertyId = generateId();
