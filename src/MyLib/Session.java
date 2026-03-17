@@ -6,13 +6,13 @@ package MyLib;
 
 /**
  *
- * @author rei doko
+ * 
  */
 public class Session {
     private static User currentUser;
     
-    public static boolean login(String username, String password, UserManager manager) {
-        User user = manager.verifyUser(username, password);
+    public static boolean login(String username, String password, UserManager userManager) {
+        User user = userManager.verifyUser(username, password);
         
         if(user != null) {
             currentUser = user;
