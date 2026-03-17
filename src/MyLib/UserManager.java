@@ -49,7 +49,7 @@ public class UserManager {
 
     public User getUser(String username) { // Fix to search for username instead of userId?
         for (User user : userList) {
-            if (user.getUsername() == username) {
+            if (user.getUsername().equals(username)) {
                 return user;
             }
         }
