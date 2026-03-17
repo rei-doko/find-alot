@@ -14,9 +14,9 @@ public class Main {
         UserManager userManager = new UserManager(); // Create userManager
         Scanner scan = new Scanner(System.in);
         
-//        // Admin account creation
-//        userManager.registerUser(3, "admin", "password");
-//        User adminAccount = userManager.getUser("admin");
+        // Admin account creation
+        userManager.registerUser(3, "admin", "password");
+        User adminAccount = userManager.getUser("admin");
         
         // Application GUI
         java.awt.EventQueue.invokeLater(() -> {

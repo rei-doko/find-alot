@@ -14,7 +14,7 @@ public class Admin extends User {
         super(name, pass);
     }
 
-    public void confirmAgentFee(Payment agentFee) {
-        
-    }
+//    public void confirmAgentFee(Payment agentFee) {
+//        
+//    }
 }

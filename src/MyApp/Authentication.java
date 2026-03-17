@@ -4,7 +4,11 @@
  */
 package MyApp;
 
+import MyLib.Admin;
+import MyLib.Agent;
+import MyLib.Customer;
 import MyLib.Session;
+import MyLib.User;
 import MyLib.UserManager;
 import java.awt.CardLayout;
 import javax.swing.ButtonGroup;
@@ -352,7 +356,6 @@ public class Authentication extends javax.swing.JFrame {
         }
         
         boolean success = Session.login(username, password, userManager);
-//        Session.getCurrentUser(); // Check for the class type
         
         if(success) {
             javax.swing.JOptionPane.showMessageDialog(this,
@@ -364,11 +367,22 @@ public class Authentication extends javax.swing.JFrame {
             usernameTextField1.setText("");
             passwordField1.setText("");
             
-            goHome(); // Redirect to specified dashboard.
+            User currentUser = Session.getCurrentUser(); // Check for the class type
+            if(currentUser instanceof Customer) {
+                new CustomerDashboard(userManager, (Customer) currentUser).setVisible(true);
+            }
+            else if(currentUser instanceof Agent) {
+                new AgentDashboard(userManager, (Agent) currentUser).setVisible(true);
+            }
+            else if(currentUser instanceof Admin) {
+                new AdminDashboard(userManager, (Admin) currentUser).setVisible(true);
+            }
+            
+            this.dispose(); // Closes Authentication JFrame
         } 
         else {
             javax.swing.JOptionPane.showMessageDialog(this,
-                    "Login failed. User doesn't exist.",
+                    "Login failed. User doesn't exist or wrong password.",
                     "Error",
                     javax.swing.JOptionPane.ERROR_MESSAGE);
             
