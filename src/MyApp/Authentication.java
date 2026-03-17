@@ -53,7 +53,6 @@ public class Authentication extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Authentication");
-        setFocusableWindowState(false);
         setPreferredSize(new java.awt.Dimension(1024, 768));
 
         Parent.setBackground(new java.awt.Color(153, 255, 255));
@@ -107,21 +106,17 @@ public class Authentication extends javax.swing.JFrame {
         LoginPanel.setLayout(LoginPanelLayout);
         LoginPanelLayout.setHorizontalGroup(
             LoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1018, Short.MAX_VALUE)
-            .addGroup(LoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(LoginPanelLayout.createSequentialGroup()
-                    .addGap(50, 50, 50)
-                    .addComponent(HomeButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(861, Short.MAX_VALUE)))
+            .addGroup(LoginPanelLayout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addComponent(HomeButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(861, Short.MAX_VALUE))
         );
         LoginPanelLayout.setVerticalGroup(
             LoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 768, Short.MAX_VALUE)
-            .addGroup(LoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(LoginPanelLayout.createSequentialGroup()
-                    .addGap(29, 29, 29)
-                    .addComponent(HomeButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(690, Short.MAX_VALUE)))
+            .addGroup(LoginPanelLayout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addComponent(HomeButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(690, Short.MAX_VALUE))
         );
 
         Parent.add(LoginPanel, "card3");
@@ -142,9 +137,9 @@ public class Authentication extends javax.swing.JFrame {
         jButton1.setText("Register");
         jButton1.addActionListener(this::jButton1ActionPerformed);
 
-        jTextField2.setText("jTextField1");
+        jTextField2.setOpaque(true);
 
-        jPasswordField1.setText("jPasswordField1");
+        jPasswordField1.setOpaque(true);
 
         javax.swing.GroupLayout RegisterPanelLayout = new javax.swing.GroupLayout(RegisterPanel);
         RegisterPanel.setLayout(RegisterPanelLayout);
@@ -168,8 +163,8 @@ public class Authentication extends javax.swing.JFrame {
                         .addGap(176, 176, 176)
                         .addComponent(PasswordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(32, 32, 32)
-                        .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 557, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(132, Short.MAX_VALUE))
+                        .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 552, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(137, Short.MAX_VALUE))
             .addGroup(RegisterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(RegisterPanelLayout.createSequentialGroup()
                     .addGap(178, 178, 178)
@@ -196,17 +191,17 @@ public class Authentication extends javax.swing.JFrame {
                     .addComponent(AgentRButton))
                 .addGap(53, 53, 53)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(104, Short.MAX_VALUE))
+                .addContainerGap(81, Short.MAX_VALUE))
             .addGroup(RegisterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(RegisterPanelLayout.createSequentialGroup()
                     .addGap(260, 260, 260)
                     .addComponent(UsernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(479, Short.MAX_VALUE)))
+                    .addContainerGap(456, Short.MAX_VALUE)))
             .addGroup(RegisterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(RegisterPanelLayout.createSequentialGroup()
                     .addGap(258, 258, 258)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(475, Short.MAX_VALUE)))
+                    .addContainerGap(452, Short.MAX_VALUE)))
         );
 
         Parent.add(RegisterPanel, "card4");
@@ -221,7 +216,7 @@ public class Authentication extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Parent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(Parent, javax.swing.GroupLayout.DEFAULT_SIZE, 768, Short.MAX_VALUE)
         );
 
         pack();
