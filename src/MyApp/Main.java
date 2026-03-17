@@ -9,6 +9,7 @@ import MyLib.Session;
 import MyLib.User;
 import java.util.Scanner;
 import MyLib.UserManager;
+import MyLib.PropertyManager;
 
 public class Main {
     public static void main(String[] args) {
@@ -23,5 +24,13 @@ public class Main {
         java.awt.EventQueue.invokeLater(() -> {
             new Authentication(userManager).setVisible(true);
         });
+
+
+        System.out.println("=== Initializing Real Estate Database ===");
+
+        PropertyManager manager = new PropertyManager();
+        manager.showAllProperties();
+
+        System.out.println("\n=== Initialization Complete: 100 Properties Generated ===");
     }
 }   
