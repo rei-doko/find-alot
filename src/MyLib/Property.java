@@ -5,10 +5,13 @@
 package MyLib;
 
 /**
- *
  * 
  */
+
+//Not yet done btw
 public abstract class Property {
+    private Block block;
+    private static int idCounter = 0; 
     private int propertyId;
     private int blockNum;
     private int lotNum;
@@ -27,17 +30,18 @@ public abstract class Property {
         this.blockNum
     }
 
-//    Automatically generates ID when instatiated
+    // Automatically generates ID when instantiated
     private int generateId() {
         return ++idCounter;
     }
     
 //    Incomplete
     public void updateStatus(String action) {
-        if(action == "Book") {
-            this.status = "Book";
+
+        if(action.equalsIgnoreCase("Book")) {
+            this.status = "Booked"; 
         }
-        else if(action == "Buy") {
+        else if(action.equalsIgnoreCase("Buy")) {
             this.status = "Sold";
         }
         else {
