@@ -9,11 +9,20 @@ package MyLib;
  * @author rei doko
  */
 public class Admin extends User {
+    private UserManager userManager;
 
-    public Admin(String name, String pass) {
+    public Admin(UserManager userManager, String name, String pass) {
         super(name, pass);
+        this.userManager = userManager;
     }
 
+    public void addUser(User user) {
+        userManager.addUser(user);
+    }
+    public void removeUser(User user) {
+        userManager.removeUser(user);
+    }
+    
 //    public void confirmAgentFee(Payment agentFee) {
 //        
 //    }
