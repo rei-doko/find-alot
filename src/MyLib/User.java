@@ -6,7 +6,7 @@ package MyLib;
 
 /**
  *
- * @author rei doko
+ * 
  */
 public abstract class User {
     private int userId;

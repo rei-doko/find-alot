@@ -13,50 +13,60 @@ public class Main {
     public static void main(String[] args) {
         UserManager userManager = new UserManager(); // Create userManager
         Scanner scan = new Scanner(System.in);
-
-        // REGISTER SYSTEM PROTOTYPE
-        System.out.println("REGISTER");
         
-        System.out.print("""
-                         Choose account type:
-                         [1] Customer
-                         [2] Agent
-                         [3] Admin
-                         
-                         Enter your choice: 
-                         """);
-        int role = scan.nextInt();
-        scan.nextLine();
-        
-        System.out.print("Enter username: ");
-        String username = scan.nextLine();
-        System.out.print("Enter password: ");
-        String password = scan.nextLine();
+        java.awt.EventQueue.invokeLater(() -> {
+            new Authentication(userManager).setVisible(true);
+        });
         
         
-        boolean success = userManager.registerUser(role, username, password);
-        if(success) {
-            User user = userManager.findUser(username);
-            System.out.println(user.getUsername() + " sucessfully registered.");
-        }
-        else {
-            System.out.println("User already exists.");
-        }
-
-        // LOGIN SYSTEM PROTOTYPE
-        System.out.println("LOGIN");
         
-        System.out.print("Enter username: ");
-        username = scan.nextLine();
-        System.out.print("Enter password: ");
-        password = scan.nextLine();
         
-        Session.login(username, password, userManager);
         
-        System.out.println(Session.getCurrentUser().getUsername() + " is current user.");
-        System.out.println(Session.isLoggedIn());
-        Session.logout();
-        System.out.println(Session.getCurrentUser().getUsername() + " is current user.");
-        System.out.println(Session.isLoggedIn());
+        
+        
+//        // REGISTER SYSTEM PROTOTYPE
+//        System.out.println("REGISTER");
+//        
+//        System.out.print("""
+//                         Choose account type:
+//                         [1] Customer
+//                         [2] Agent
+//                         [3] Admin
+//                         
+//                         Enter your choice: 
+//                         """);
+//        int role = scan.nextInt();
+//        scan.nextLine();
+//        
+//        System.out.print("Enter username: ");
+//        String username = scan.nextLine();
+//        System.out.print("Enter password: ");
+//        String password = scan.nextLine();
+//        
+//        
+//        boolean success = userManager.registerUser(role, username, password);
+//        if(success) {
+//            User user = userManager.findUser(username);
+//            System.out.println(user.getUsername() + " sucessfully registered.");
+//        }
+//        else {
+//            System.out.println("User already exists.");
+//        }
+//
+//        // LOGIN SYSTEM PROTOTYPE
+//        System.out.println("LOGIN");
+//        
+//        System.out.print("Enter username: ");
+//        username = scan.nextLine();
+//        System.out.print("Enter password: ");
+//        password = scan.nextLine();
+//        
+//        Session.login(username, password, userManager);
+//        
+//        System.out.println(Session.getCurrentUser().getUsername() + " is current user.");
+//        System.out.println(Session.isLoggedIn());
+//        Session.logout();
+//        System.out.println(Session.getCurrentUser().getUsername() + " is current user.");
+//        System.out.println(Session.isLoggedIn());
     }
-}
+}   
