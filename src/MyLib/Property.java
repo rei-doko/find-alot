@@ -5,12 +5,13 @@
 package MyLib;
 
 /**
- *
  * 
  */
+
+//Not yet done btw
 public abstract class Property {
     private Block block;
-    private static int idCounter = 0;
+    private static int idCounter = 0; 
     private int propertyId;
     private String propertyType;
     private int floors = 2;
@@ -18,7 +19,8 @@ public abstract class Property {
     private double propertySize;
     private double contactPrice;
 
-    Property(Block block, String propertyType, double propertySize, double contactPrice) {
+    // Added public so subclasses and factories can access it
+    public Property(Block block, String propertyType, double propertySize, double contactPrice) {
         this.block = block;
         this.propertyId = generateId();
         this.propertyType = propertyType;
@@ -26,25 +28,33 @@ public abstract class Property {
         this.contactPrice = contactPrice;
     }
 
-//    Automatically generates ID when instatiated
+    // Automatically generates ID when instantiated
     private int generateId() {
         return ++idCounter;
     }
     
-    public Block getBlock() {
-        return block;
-    }
-    
-//    Incomplete
+  //For the GUI
+    public Block getBlock() { return block; }
+    public int getPropertyId() { return propertyId; }
+    public String getPropertyType() { return propertyType; }
+    public int getFloors() { return floors; }
+    public String getStatus() { return status; }
+    public double getPropertySize() { return propertySize; }
+    public double getContactPrice() { return contactPrice; }
+
+    // added and fixed logic for updating status
     public void updateStatus(String action) {
-        if(action == "Book") {
-            this.status = "Book";
+
+        if(action.equalsIgnoreCase("Book")) {
+            this.status = "Booked"; 
         }
-        else if(action == "Buy") {
+        else if(action.equalsIgnoreCase("Buy")) {
             this.status = "Sold";
         }
         else {
             this.status = "For Sale";
         }
     }
+
+    public abstract void showDetails(); 
 }
