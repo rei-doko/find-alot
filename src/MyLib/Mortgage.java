@@ -79,41 +79,41 @@ public class Mortgage {
     /////// AMORTIZATION COMPUTATION /////////////
     public double computeAmortization(String loanType){
 
-    double interestRate = 0;
-    int years = 0;
+        double interestRate = 0;
+        int years = 0;
 
-    if(loanType.equalsIgnoreCase("PagIbig")){ // logic for each bank loan type. Update nalang with jframe (button group or combo box?)
-        interestRate = 6.25;                   
-        years = 30;
-    }
-    else if(loanType.equalsIgnoreCase("RCBC")){
-        interestRate = 6.60;
-        years = 30;
-    }
-    else if(loanType.equalsIgnoreCase("SBC")){
-        interestRate = 6.80;
-        years = 20;
-    }
-    else if(loanType.equalsIgnoreCase("BDO")){
-        interestRate = 6.88;
-        years = 20;
-    }
-    else if(loanType.equalsIgnoreCase("InHouse")){
-        interestRate = 10.50;
-        years = 25;
-    }
-    else{
-        System.out.println("Invalid loan option.");
-        return 0;
-    }
+        if(loanType.equalsIgnoreCase("PagIbig")){ // logic for each bank loan type. Update nalang with jframe (button group or combo box?)
+            interestRate = 6.25;                   
+            years = 30;
+        }
+        else if(loanType.equalsIgnoreCase("RCBC")){
+            interestRate = 6.60;
+            years = 30;
+        }
+        else if(loanType.equalsIgnoreCase("SBC")){
+            interestRate = 6.80;
+            years = 20;
+        }
+        else if(loanType.equalsIgnoreCase("BDO")){
+            interestRate = 6.88;
+            years = 20;
+        }
+        else if(loanType.equalsIgnoreCase("InHouse")){
+            interestRate = 10.50;
+            years = 25;
+        }
+        else{
+            System.out.println("Invalid loan option.");
+            return 0;
+        }
 
-    double r = (interestRate / 100) / 12;
-    int n = years * 12;
-        
-    //formula for monthly amortization or monthlyPayment based on the sheets
-    monthlyPayment = loanAmount * (r * Math.pow(1 + r, n)) /
-                    (Math.pow(1 + r, n) - 1);
+        double r = (interestRate / 100) / 12;
+        int n = years * 12;
+            
+        //formula for monthly amortization or monthlyPayment based on the sheets
+        monthlyPayment = loanAmount * (r * Math.pow(1 + r, n)) /
+                        (Math.pow(1 + r, n) - 1);
 
-    return monthlyPayment;
+        return monthlyPayment;
     }
 }

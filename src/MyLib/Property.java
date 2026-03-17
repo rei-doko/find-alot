@@ -13,19 +13,21 @@ public abstract class Property {
     private Block block;
     private static int idCounter = 0; 
     private int propertyId;
-    private String propertyType;
+    private int blockNum;
+    private int lotNum;
+    
+    private static int idCounter = 0;
+    
     private int floors = 2;
+    
     private String status = "For Sale";
     private double propertySize;
     private double contactPrice;
+    private Customer owner;
 
-    // Added public so subclasses and factories can access it
-    public Property(Block block, String propertyType, double propertySize, double contactPrice) {
-        this.block = block;
+    public Property() {
         this.propertyId = generateId();
-        this.propertyType = propertyType;
-        this.propertySize = propertySize;
-        this.contactPrice = contactPrice;
+        this.blockNum
     }
 
     // Automatically generates ID when instantiated
@@ -33,16 +35,7 @@ public abstract class Property {
         return ++idCounter;
     }
     
-  //For the GUI
-    public Block getBlock() { return block; }
-    public int getPropertyId() { return propertyId; }
-    public String getPropertyType() { return propertyType; }
-    public int getFloors() { return floors; }
-    public String getStatus() { return status; }
-    public double getPropertySize() { return propertySize; }
-    public double getContactPrice() { return contactPrice; }
-
-    // added and fixed logic for updating status
+//    Incomplete
     public void updateStatus(String action) {
 
         if(action.equalsIgnoreCase("Book")) {
@@ -56,5 +49,11 @@ public abstract class Property {
         }
     }
 
-    public abstract void showDetails(); 
+    public void showDetails() {
+        
+    }
+    
+    public double getContactPrice() {
+        return contactPrice;
+    }
 }
