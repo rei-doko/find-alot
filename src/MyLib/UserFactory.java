@@ -15,8 +15,6 @@ public class UserFactory {
                 return new Customer(username, password);
             case 2:
                 return new Agent(username, password);
-            case 3:
-                return new Admin(username, password);
             default:
                 return null;
         }
