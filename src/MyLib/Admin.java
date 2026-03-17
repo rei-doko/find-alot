@@ -4,6 +4,8 @@
  */
 package MyLib;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author rei doko
@@ -21,6 +23,10 @@ public class Admin extends User {
     }
     public void removeUser(User user) {
         userManager.removeUser(user);
+    }
+    
+    public ArrayList<User> getAllUsers() {
+        return userManager.getAllUsers();
     }
     
 //    public void confirmAgentFee(Payment agentFee) {

@@ -4,9 +4,14 @@
  */
 package MyApp;
 
+import javax.swing.table.DefaultTableModel;
 import MyLib.Admin;
+import MyLib.Agent;
+import MyLib.Customer;
 import MyLib.Session;
+import MyLib.User;
 import MyLib.UserManager;
+import java.awt.CardLayout;
 
 /**
  *
@@ -16,16 +21,19 @@ public class AdminDashboard extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminDashboard.class.getName());
     private UserManager userManager;
-    private Admin user;
+    private Admin admin;
     
     /**
      * Creates new form AdminDashboard
      */
-    public AdminDashboard(UserManager userManager, Admin user) {
+    public AdminDashboard(UserManager userManager, Admin admin) {
         this.userManager = userManager;
-        this.user = user;
+        this.admin = admin;
         initComponents();
         setLocationRelativeTo(null);
+        
+        // Load users in account table
+        loadUsersToTable();
     }
 
     /**
@@ -38,8 +46,14 @@ public class AdminDashboard extends javax.swing.JFrame {
     private void initComponents() {
 
         NavigatorPanel = new javax.swing.JPanel();
+        propertiesPanelButton = new javax.swing.JButton();
         logoutButton = new javax.swing.JButton();
+        accountsPanelButton = new javax.swing.JButton();
         Parent = new javax.swing.JPanel();
+        AccountsPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
         PropertiesPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
 
@@ -48,12 +62,62 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         NavigatorPanel.setLayout(null);
 
+        propertiesPanelButton.setText("Properties");
+        propertiesPanelButton.addActionListener(this::propertiesPanelButtonActionPerformed);
+        NavigatorPanel.add(propertiesPanelButton);
+        propertiesPanelButton.setBounds(30, 110, 170, 60);
+
         logoutButton.setText("Logout");
         logoutButton.addActionListener(this::logoutButtonActionPerformed);
         NavigatorPanel.add(logoutButton);
         logoutButton.setBounds(30, 680, 170, 60);
 
+        accountsPanelButton.setText("Accounts");
+        accountsPanelButton.addActionListener(this::accountsPanelButtonActionPerformed);
+        NavigatorPanel.add(accountsPanelButton);
+        accountsPanelButton.setBounds(30, 30, 170, 60);
+
         Parent.setLayout(new java.awt.CardLayout());
+
+        jLabel1.setText("Accounts");
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "Username", "Role"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        javax.swing.GroupLayout AccountsPanelLayout = new javax.swing.GroupLayout(AccountsPanel);
+        AccountsPanel.setLayout(AccountsPanelLayout);
+        AccountsPanelLayout.setHorizontalGroup(
+            AccountsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(AccountsPanelLayout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addGroup(AccountsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(AccountsPanelLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 609, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(146, Short.MAX_VALUE))
+        );
+        AccountsPanelLayout.setVerticalGroup(
+            AccountsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(AccountsPanelLayout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 651, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(17, Short.MAX_VALUE))
+        );
+
+        Parent.add(AccountsPanel, "AccountsPanel");
 
         jLabel2.setText("Properties");
 
@@ -63,18 +127,18 @@ public class AdminDashboard extends javax.swing.JFrame {
             PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PropertiesPanelLayout.createSequentialGroup()
                 .addGap(27, 27, 27)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(580, Short.MAX_VALUE))
+                .addComponent(jLabel2)
+                .addContainerGap(707, Short.MAX_VALUE))
         );
         PropertiesPanelLayout.setVerticalGroup(
             PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PropertiesPanelLayout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(690, Short.MAX_VALUE))
+                .addGap(29, 29, 29)
+                .addComponent(jLabel2)
+                .addContainerGap(717, Short.MAX_VALUE))
         );
 
-        Parent.add(PropertiesPanel, "card3");
+        Parent.add(PropertiesPanel, "PropertiesPanel");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -96,6 +160,12 @@ public class AdminDashboard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void propertiesPanelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_propertiesPanelButtonActionPerformed
+        // TODO add your handling code here:
+        CardLayout cl = (CardLayout)(Parent.getLayout());
+        cl.show(Parent, "PropertiesPanel");
+    }//GEN-LAST:event_propertiesPanelButtonActionPerformed
+
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
         // TODO add your handling code here:
         Session.logout();
@@ -105,6 +175,37 @@ public class AdminDashboard extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_logoutButtonActionPerformed
 
+    private void accountsPanelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accountsPanelButtonActionPerformed
+        // TODO add your handling code here:
+        CardLayout cl = (CardLayout)(Parent.getLayout());
+        cl.show(Parent, "AccountsPanel");
+    }//GEN-LAST:event_accountsPanelButtonActionPerformed
+
+    private void loadUsersToTable() {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        
+        model.setRowCount(0); // Clear existing rows
+        
+        for(User userItem : admin.getAllUsers()) {
+            String role = "";
+            
+            if(userItem instanceof Customer) {
+                role = "Customer";
+            }
+            else if(userItem instanceof Agent) {
+                role = "Agent";
+            }
+            else if(userItem instanceof Admin) {
+                role = "Admin";
+            }
+            
+            model.addRow(new Object[] {
+               userItem.getUsername(),
+               role
+            });
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -129,10 +230,16 @@ public class AdminDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel AccountsPanel;
     private javax.swing.JPanel NavigatorPanel;
     private javax.swing.JPanel Parent;
     private javax.swing.JPanel PropertiesPanel;
+    private javax.swing.JButton accountsPanelButton;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JButton logoutButton;
+    private javax.swing.JButton propertiesPanelButton;
     // End of variables declaration//GEN-END:variables
 }
