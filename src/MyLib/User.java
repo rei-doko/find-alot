@@ -6,17 +6,15 @@ package MyLib;
 
 /**
  *
- * @author rei doko
+ * 
  */
 public abstract class User {
     private int userId;
     private String username;
     private String password;
-    private String role;
     
-    public User(String role, String username, String password) {
+    public User(String username, String password) {
         this.userId = setUserId(generateId());
-        this.role = role;
         this.username = username;
         this.password = password;
     }

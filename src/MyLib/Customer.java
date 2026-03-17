@@ -10,15 +10,15 @@ package MyLib;
  */
 public class Customer extends User {
     
-    public Customer(String name, String pass) {
-        super(name, pass);
+    public Customer(String username, String password) {
+        super(username, password);
     }
     
-    public List<Property> searchProperty(int blockNum, double propertySize, double contactPrize) {
-        return
-    }
-    
-    public void contactAgent(Agent agent, String message) {
-        
-    }
+//    public List<Property> searchProperty(int blockNum, double propertySize, double contactPrize) {
+//        return
+//    }
+//    
+//    public void contactAgent(Agent agent, String message) {
+//        
+//    }
 }

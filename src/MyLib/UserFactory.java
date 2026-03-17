@@ -9,7 +9,7 @@ package MyLib;
  * @author rei doko
  */
 public class UserFactory {
-    protected User createUser(int role, String username, String password) {
+    protected static User createUser(int role, String username, String password) {
         switch(role){
             case 1:
                 return new Customer(username, password);
