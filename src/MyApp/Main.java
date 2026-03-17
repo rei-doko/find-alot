@@ -5,16 +5,12 @@
 package MyApp;
 
 import MyLib.Admin;
-import MyLib.Session;
-import MyLib.User;
-import java.util.Scanner;
 import MyLib.UserManager;
 import MyLib.PropertyManager;
 
 public class Main {
     public static void main(String[] args) {
         UserManager userManager = new UserManager(); // Create userManager
-        Scanner scan = new Scanner(System.in);
         
         // Admin account creation
         Admin adminAccount = new Admin(userManager, "admin", "password");

@@ -9,26 +9,12 @@ package MyLib;
  * 
  */
 public abstract class User {
-    private int userId;
     private String username;
     private String password;
     
     public User(String username, String password) {
-        this.userId = setUserId(generateId());
         this.username = username;
         this.password = password;
-    }
-
-    public int generateId() {
-        return (int) (Math.random() * 10000); // Temporarily generates a random ID
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public int setUserId(int userId) {
-        return userId;
     }
 
     public String getUsername() {
@@ -48,6 +34,6 @@ public abstract class User {
     }
 
     public String getAccountInfo() {
-        return "User ID: " + userId + ", Username: " + username;
+        return "Username: " + username;
     }
 }

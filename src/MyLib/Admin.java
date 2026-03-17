@@ -4,6 +4,8 @@
  */
 package MyLib;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author rei doko
@@ -11,8 +13,8 @@ package MyLib;
 public class Admin extends User {
     private UserManager userManager;
 
-    public Admin(UserManager userManager, String name, String pass) {
-        super(name, pass);
+    public Admin(UserManager userManager, String username, String password) {
+        super(username, password);
         this.userManager = userManager;
     }
 
@@ -21,6 +23,14 @@ public class Admin extends User {
     }
     public void removeUser(User user) {
         userManager.removeUser(user);
+    }
+    
+    public ArrayList<User> getAllUsers() {
+        return userManager.getAllUsers();
+    }
+    
+    public User getUser(String username) {
+        return userManager.getUser(username);
     }
     
 //    public void confirmAgentFee(Payment agentFee) {
