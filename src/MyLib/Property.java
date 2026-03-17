@@ -5,7 +5,7 @@ package MyLib;
  */
 public abstract class Property {
     private int blockNum; 
-    private int lotNum;
+    private int propertyNum;
     
     private static int idCounter = 0; 
     private int propertyId;
@@ -17,9 +17,9 @@ public abstract class Property {
     private Customer owner;
 
     // Fixed the broken constructor and added parameters
-    public Property(int blockNum, int lotNum, int floors, double propertySize, double contactPrice) {
+    public Property(int blockNum, int propertyNum, int floors, double propertySize, double contactPrice) {
         this.blockNum = blockNum;
-        this.lotNum = lotNum;
+        this.propertyNum = propertyNum;
         this.floors = floors;
         this.propertySize = propertySize;
         this.contactPrice = contactPrice;
@@ -42,12 +42,42 @@ public abstract class Property {
             this.status = "For Sale";
         }
     }
-
-    public abstract void showDetails();
     
-    public double getContactPrice() { return contactPrice; }
-    public String getStatus() { return status; }
-    public int getPropertyId() { return propertyId; }
-    public int getBlockNum() { return blockNum; }
-    public int getLotNum() { return lotNum; }
+    public void setOwner(Customer buyer) {
+        owner = buyer;
+    }
+
+    public abstract void showDetails(); // Not needed
+    
+    public double getContactPrice() { 
+        return contactPrice; 
+    }
+    
+    public String getStatus() { 
+        return status; 
+    }
+    
+    public int getPropertyId() { 
+        return propertyId; 
+    }
+    
+    public int getBlockNum() { 
+        return blockNum; 
+    }
+    
+    public int getPropertyNum() { 
+        return propertyNum; 
+    }
+    
+    public Customer getOwner() {
+        return owner;
+    }
+    
+    public double getPropertySize() {
+        return propertySize;
+    }
+    
+    public int getFloors() {
+        return floors;
+    }
 }

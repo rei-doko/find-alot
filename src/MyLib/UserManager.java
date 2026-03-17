@@ -25,14 +25,14 @@ public class UserManager {
         userList.remove(user);
     }
     
-    public boolean registerUser(int role, String username, String password) {
+    public boolean registerUser(PropertyManager propertyManager, int role, String username, String password) {
         for(User user : userList) {
             if(user.getUsername().equals(username)) {
                 return false;
             }
         }
         
-        User user = UserFactory.createUser(role, username, password);
+        User user = UserFactory.createUser(propertyManager, role, username, password);
         addUser(user);   
         
         return true;

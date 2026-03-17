@@ -8,6 +8,7 @@ import javax.swing.table.DefaultTableModel;
 import MyLib.Admin;
 import MyLib.Agent;
 import MyLib.Customer;
+import MyLib.PropertyManager;
 import MyLib.Session;
 import MyLib.User;
 import MyLib.UserManager;
@@ -28,14 +29,16 @@ public class AdminDashboard extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminDashboard.class.getName());
     private UserManager userManager;
+    private PropertyManager propertyManager;
     private Admin admin;
     private User selectedUser = null;
     
     /**
      * Creates new form AdminDashboard
      */
-    public AdminDashboard(UserManager userManager, Admin admin) {
+    public AdminDashboard(UserManager userManager, PropertyManager propertyManager, Admin admin) {
         this.userManager = userManager;
+        this.propertyManager = propertyManager;
         this.admin = admin;
         initComponents();
         setLocationRelativeTo(null);
@@ -102,7 +105,15 @@ public class AdminDashboard extends javax.swing.JFrame {
             new String [] {
                 "Username", "Role"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(accountsTable);
 
         addAccountButton.setText("Add Account");
@@ -200,7 +211,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         // TODO add your handling code here:
         Session.logout();
         
-        new Authentication(userManager).setVisible(true);
+        new Authentication(userManager, propertyManager).setVisible(true);
         
         this.dispose();
     }//GEN-LAST:event_logoutButtonActionPerformed
@@ -267,7 +278,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                 return;
             }
 
-            boolean success = userManager.registerUser(role, username, password);
+            boolean success = userManager.registerUser(propertyManager, role, username, password);
             if(success) {
                 JOptionPane.showMessageDialog(this, 
                     "Account added successfully!", 
@@ -307,18 +318,6 @@ public class AdminDashboard extends javax.swing.JFrame {
     }
     
     private void setupTable() {
-        DefaultTableModel model = new DefaultTableModel(
-            new Object[][] {},
-            new String[] { "Username", "Role" }
-        ) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-
-        accountsTable.setModel(model);
-
         accountsTable.setRowSelectionAllowed(true);
         accountsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         

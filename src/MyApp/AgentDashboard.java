@@ -5,6 +5,7 @@
 package MyApp;
 
 import MyLib.Agent;
+import MyLib.PropertyManager;
 import MyLib.Session;
 import MyLib.UserManager;
 
@@ -16,13 +17,15 @@ public class AgentDashboard extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AgentDashboard.class.getName());
     private UserManager userManager;
+    private PropertyManager propertyManager;
     private Agent user;
     
     /**
      * Creates new form AdminDashboard
      */
-    public AgentDashboard(UserManager userManager, Agent user) {
+    public AgentDashboard(UserManager userManager, PropertyManager propertyManager, Agent user) {
         this.userManager = userManager;
+        this.propertyManager = propertyManager;
         this.user = user;
         initComponents();
         setLocationRelativeTo(null);
@@ -99,7 +102,7 @@ public class AgentDashboard extends javax.swing.JFrame {
         // TODO add your handling code here:
         Session.logout();
         
-        new Authentication(userManager).setVisible(true);
+        new Authentication(userManager, propertyManager).setVisible(true);
         
         this.dispose();
     }//GEN-LAST:event_logoutButtonActionPerformed

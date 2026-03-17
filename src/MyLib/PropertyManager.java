@@ -8,12 +8,13 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Admin
+ * o
  */
 
 public class PropertyManager {
     // A List of Lists: each inner list is one "Block" of 20 properties
-    private ArrayList<ArrayList<Property>> blocks;
+    private Block block;
+    private ArrayList<Block> blocks;
 
     public PropertyManager() {
         blocks = new ArrayList<>();
@@ -22,24 +23,51 @@ public class PropertyManager {
 
     private void generateProperties(int totalBlocks, int propsPerBlock) {
         for (int b = 1; b <= totalBlocks; b++) {
-            ArrayList<Property> currentBlock = new ArrayList<>();
+            block = new Block(b); // Creates individual blocks
             
-            for (int l = 1; l <= propsPerBlock; l++) {
+            for (int l = 1; l <= propsPerBlock; l++) { // Creates individual properties
                 // Factory creates the property and handles the ID/Type logic
                 Property newProp = PropertyFactory.createProperty(b, l);
-                currentBlock.add(newProp);
+                block.addProperty(newProp);
             }
-            
-            blocks.add(currentBlock);
+            blocks.add(block); // Adds individual blocks to ArrayList<Block> blocks
         }
     }
+    
+    public Block getBlock(int blockNumber) {
+        for(Block block : blocks) {
+            if(block.getBlockNumber() == blockNumber) {
+                return block;
+            }
+        }
+        return null;
+    }
+    
+    public ArrayList<Block> getAllBlocks() {
+        return blocks;
+    }
+    
+    public ArrayList<Property> getProperties() {
+        return block.getProperties();
+    }
 
-    public void showAllProperties() {
-        for (int i = 0; i < blocks.size(); i++) {
-            System.out.println("\n--- DISPLAYING BLOCK " + (i + 1) + " ---");
-            for (Property p : blocks.get(i)) {
-                System.out.print("ID: " + p.getPropertyId() + " | ");
-                p.showDetails();
+    public void buyProperty(int propertyId, Customer buyer) {
+        for(Block block : blocks) {
+            for(Property property : block.getProperties()) {
+                if(property.getPropertyId() == propertyId) {
+                    property.updateStatus("Buy");
+                    property.setOwner(buyer);
+                }
+            }
+        }
+    }
+    
+    public void bookProperty(int propertyId, Customer buyer) {
+        for(Block block: blocks) {
+            for(Property property : block.getProperties()) {
+                if(property.getPropertyId() == propertyId) {
+                    property.updateStatus("Book");
+                }
             }
         }
     }

@@ -4,9 +4,17 @@
  */
 package MyApp;
 
+import MyLib.Block;
 import MyLib.Customer;
+import MyLib.Detached;
+import MyLib.Property;
+import MyLib.PropertyManager;
+import MyLib.SemiDetached;
 import MyLib.Session;
+import MyLib.TownHouse;
 import MyLib.UserManager;
+import java.awt.CardLayout;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -16,16 +24,21 @@ public class CustomerDashboard extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CustomerDashboard.class.getName());
     private UserManager userManager;
-    private Customer user;
+    private PropertyManager propertyManager;
+    private Customer customer;
+    private Property selectedProperty = null;
     
     /**
      * Creates new form AdminDashboard
      */
-    public CustomerDashboard(UserManager userManager, Customer user) {
+    public CustomerDashboard(UserManager userManager, PropertyManager propertyManager, Customer customer) {
         this.userManager = userManager;
-        this.user = user;
+        this.propertyManager = propertyManager;
+        this.customer = customer;
         initComponents();
         setLocationRelativeTo(null);
+        setupTable();
+        loadPropertiesToTable();
     }
 
     /**
@@ -39,9 +52,15 @@ public class CustomerDashboard extends javax.swing.JFrame {
 
         NavigatorPanel = new javax.swing.JPanel();
         logoutButton = new javax.swing.JButton();
+        ownedPropertiesPanelButton = new javax.swing.JButton();
+        propertiesPanelButton = new javax.swing.JButton();
         Parent = new javax.swing.JPanel();
         PropertiesPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        propertyTable = new javax.swing.JTable();
+        bookButton = new javax.swing.JButton();
+        OwnedPropertiesPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -52,9 +71,43 @@ public class CustomerDashboard extends javax.swing.JFrame {
         NavigatorPanel.add(logoutButton);
         logoutButton.setBounds(30, 680, 170, 60);
 
+        ownedPropertiesPanelButton.setText("Owned Properties");
+        ownedPropertiesPanelButton.addActionListener(this::ownedPropertiesPanelButtonActionPerformed);
+        NavigatorPanel.add(ownedPropertiesPanelButton);
+        ownedPropertiesPanelButton.setBounds(40, 110, 150, 50);
+
+        propertiesPanelButton.setText("Properties");
+        propertiesPanelButton.addActionListener(this::propertiesPanelButtonActionPerformed);
+        NavigatorPanel.add(propertiesPanelButton);
+        propertiesPanelButton.setBounds(40, 30, 150, 50);
+
         Parent.setLayout(new java.awt.CardLayout());
 
         jLabel2.setText("Properties");
+
+        propertyTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Property ID", "Block Number", "Property Number", "Status", "Owner", "Property Price", "Property Size", "Property Floors", "Property Type"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, true, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(propertyTable);
+
+        bookButton.setText("Book Property");
+        bookButton.addActionListener(this::bookButtonActionPerformed);
 
         javax.swing.GroupLayout PropertiesPanelLayout = new javax.swing.GroupLayout(PropertiesPanel);
         PropertiesPanel.setLayout(PropertiesPanelLayout);
@@ -62,18 +115,43 @@ public class CustomerDashboard extends javax.swing.JFrame {
             PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PropertiesPanelLayout.createSequentialGroup()
                 .addGap(27, 27, 27)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(580, Short.MAX_VALUE))
+                .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(PropertiesPanelLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 645, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(bookButton))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         PropertiesPanelLayout.setVerticalGroup(
             PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PropertiesPanelLayout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(690, Short.MAX_VALUE))
+                .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(PropertiesPanelLayout.createSequentialGroup()
+                        .addGap(77, 77, 77)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 592, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(PropertiesPanelLayout.createSequentialGroup()
+                        .addGap(100, 100, 100)
+                        .addComponent(bookButton)))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
-        Parent.add(PropertiesPanel, "card3");
+        Parent.add(PropertiesPanel, "PropertiesPanel");
+
+        javax.swing.GroupLayout OwnedPropertiesPanelLayout = new javax.swing.GroupLayout(OwnedPropertiesPanel);
+        OwnedPropertiesPanel.setLayout(OwnedPropertiesPanelLayout);
+        OwnedPropertiesPanelLayout.setHorizontalGroup(
+            OwnedPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 802, Short.MAX_VALUE)
+        );
+        OwnedPropertiesPanelLayout.setVerticalGroup(
+            OwnedPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 762, Short.MAX_VALUE)
+        );
+
+        Parent.add(OwnedPropertiesPanel, "OwnedPropertiesPanel");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -99,11 +177,79 @@ public class CustomerDashboard extends javax.swing.JFrame {
         // TODO add your handling code here:
         Session.logout();
         
-        new Authentication(userManager).setVisible(true);
+        new Authentication(userManager, propertyManager).setVisible(true);
         
         this.dispose();
     }//GEN-LAST:event_logoutButtonActionPerformed
 
+    private void ownedPropertiesPanelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ownedPropertiesPanelButtonActionPerformed
+        // TODO add your handling code here:
+        CardLayout cl = (CardLayout)(Parent.getLayout());
+        cl.show(Parent, "OwnedPropertiesPanel");
+    }//GEN-LAST:event_ownedPropertiesPanelButtonActionPerformed
+
+    private void propertiesPanelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_propertiesPanelButtonActionPerformed
+        // TODO add your handling code here:
+        CardLayout cl = (CardLayout)(Parent.getLayout());
+        cl.show(Parent, "PropertiesPanel");
+    }//GEN-LAST:event_propertiesPanelButtonActionPerformed
+
+    private void bookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bookButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bookButtonActionPerformed
+
+    private void loadPropertiesToTable() {
+        DefaultTableModel model = (DefaultTableModel) propertyTable.getModel();
+        
+        model.setRowCount(0); // Clear existing rows
+        
+        for(Block block : customer.getAllBlocks()) {
+            for(Property property : customer.getProperties()) {
+                String type = "";
+            
+                if(property instanceof TownHouse) {
+                    type = "Town House";
+                }
+                else if(property instanceof SemiDetached) {
+                    type = "Semi-Detached";
+                }
+                else if(property instanceof Detached) {
+                    type = "Detached";
+                }
+                
+                model.addRow(new Object[] {
+                    property.getPropertyId(),
+                    block.getBlockNumber(),
+                    property.getPropertyNum(),
+                    property.getStatus(),
+                    property.getOwner(),
+                    property.getContactPrice(),
+                    property.getPropertySize(),
+                    property.getFloors(),
+                    type
+                });
+            }
+        }
+    }
+    
+    private void setupTable() {
+        propertyTable.setRowSelectionAllowed(true);
+        propertyTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        
+        propertyTable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int row = propertyTable.getSelectedRow();
+
+                if (row >= 0) { // a row is selected
+                    int propertyId = (int) propertyTable.getValueAt(row, 0); // first column = propertyId
+                    selectedProperty = customer.getProperty(propertyId);
+                } else {
+                    selectedProperty = null;
+                }
+            }
+        });
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -129,9 +275,15 @@ public class CustomerDashboard extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel NavigatorPanel;
+    private javax.swing.JPanel OwnedPropertiesPanel;
     private javax.swing.JPanel Parent;
     private javax.swing.JPanel PropertiesPanel;
+    private javax.swing.JButton bookButton;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton logoutButton;
+    private javax.swing.JButton ownedPropertiesPanelButton;
+    private javax.swing.JButton propertiesPanelButton;
+    private javax.swing.JTable propertyTable;
     // End of variables declaration//GEN-END:variables
 }

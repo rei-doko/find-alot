@@ -9,12 +9,12 @@ package MyLib;
  * @author rei doko
  */
 public class UserFactory {
-    protected static User createUser(int role, String username, String password) {
+    protected static User createUser(PropertyManager propertyManager, int role, String username, String password) {
         switch(role){
             case 1:
-                return new Customer(username, password);
+                return new Customer(propertyManager, username, password);
             case 2:
-                return new Agent(username, password);
+                return new Agent(propertyManager, username, password);
             default:
                 return null;
         }

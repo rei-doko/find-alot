@@ -4,14 +4,41 @@
  */
 package MyLib;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author rei doko
  */
 public class Customer extends User {
+    private PropertyManager propertyManager;
     
-    public Customer(String username, String password) {
+    public Customer(PropertyManager propertyManager, String username, String password) {
         super(username, password);
+        this.propertyManager = propertyManager;
+    }
+    
+    public ArrayList<Block> getAllBlocks() {
+        return propertyManager.getAllBlocks();
+    }
+    
+    public Block getBlock(int blockNumber) {
+        return propertyManager.getBlock(blockNumber);
+    }
+    
+    public ArrayList<Property> getProperties() {
+        return propertyManager.getProperties();
+    }
+    
+    public Property getProperty(int propertyId) {
+        for(Block block : propertyManager.getAllBlocks()) {
+            for(Property property : block.getProperties()) {
+                if(property.getPropertyId() == propertyId) {
+                    return property;
+                }
+            }
+        }
+        return null;
     }
     
 //    public List<Property> searchProperty(int blockNum, double propertySize, double contactPrize) {

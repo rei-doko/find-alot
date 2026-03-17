@@ -7,6 +7,7 @@ package MyApp;
 import MyLib.Admin;
 import MyLib.Agent;
 import MyLib.Customer;
+import MyLib.PropertyManager;
 import MyLib.Session;
 import MyLib.User;
 import MyLib.UserManager;
@@ -21,13 +22,15 @@ public class Authentication extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Authentication.class.getName());
     private UserManager userManager;
+    private PropertyManager propertyManager;
     private ButtonGroup roleGroup;
     
     /**
      * Creates new form Authentication
      */
-    public Authentication(UserManager userManager) {
+    public Authentication(UserManager userManager, PropertyManager propertyManager) {
         this.userManager = userManager;
+        this.propertyManager = propertyManager;
         initComponents();
         setLocationRelativeTo(null);
         
@@ -319,7 +322,7 @@ public class Authentication extends javax.swing.JFrame {
             return;
         }
         
-        boolean success = userManager.registerUser(role, username, password);
+        boolean success = userManager.registerUser(propertyManager, role, username, password);
         if(success) {
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Registration successful!",
@@ -368,13 +371,13 @@ public class Authentication extends javax.swing.JFrame {
             
             User currentUser = Session.getCurrentUser(); // Check for the class type
             if(currentUser instanceof Customer) {
-                new CustomerDashboard(userManager, (Customer) currentUser).setVisible(true);
+                new CustomerDashboard(userManager, propertyManager, (Customer) currentUser).setVisible(true);
             }
             else if(currentUser instanceof Agent) {
-                new AgentDashboard(userManager, (Agent) currentUser).setVisible(true);
+                new AgentDashboard(userManager, propertyManager, (Agent) currentUser).setVisible(true);
             }
             else if(currentUser instanceof Admin) {
-                new AdminDashboard(userManager, (Admin) currentUser).setVisible(true);
+                new AdminDashboard(userManager, propertyManager, (Admin) currentUser).setVisible(true);
             }
             
             this.dispose(); // Closes Authentication JFrame

@@ -11,6 +11,7 @@ import MyLib.PropertyManager;
 public class Main {
     public static void main(String[] args) {
         UserManager userManager = new UserManager(); // Create userManager
+        PropertyManager propertyManager = new PropertyManager(); // Create propertyManager
         
         // Admin account creation
         Admin adminAccount = new Admin(userManager, "admin", "password");
@@ -18,15 +19,7 @@ public class Main {
         
         // Application GUI
         java.awt.EventQueue.invokeLater(() -> {
-            new Authentication(userManager).setVisible(true);
+            new Authentication(userManager, propertyManager).setVisible(true);
         });
-
-
-        System.out.println("=== Initializing Real Estate Database ===");
-
-        PropertyManager manager = new PropertyManager();
-        manager.showAllProperties();
-
-        System.out.println("\n=== Initialization Complete: 100 Properties Generated ===");
     }
 }   

@@ -9,9 +9,11 @@ package MyLib;
  * @author rei doko
  */
 public class Agent extends User {
+    private PropertyManager propertyManager;
     
-    public Agent(String name, String pass) {
+    public Agent(PropertyManager propertyManager, String name, String pass) {
         super(name, pass);
+        this.propertyManager = propertyManager;
     }
     
     public void confirmSale(Property property, Customer customer) {
