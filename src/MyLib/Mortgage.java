@@ -1,3 +1,5 @@
+package MyLib;
+
 public class Mortgage {
     private Property property;
 
