@@ -47,7 +47,7 @@ public class UserManager {
         return null;
     }
 
-    public User findUser(String username) { // Fix to search for username instead of userId?
+    public User getUser(String username) { // Fix to search for username instead of userId?
         for (User user : userList) {
             if (user.getUsername() == username) {
                 return user;

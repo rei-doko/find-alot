@@ -14,6 +14,11 @@ public class Main {
         UserManager userManager = new UserManager(); // Create userManager
         Scanner scan = new Scanner(System.in);
         
+//        // Admin account creation
+//        userManager.registerUser(3, "admin", "password");
+//        User adminAccount = userManager.getUser("admin");
+        
+        // Application GUI
         java.awt.EventQueue.invokeLater(() -> {
             new Authentication(userManager).setVisible(true);
         });
@@ -61,7 +66,7 @@ public class Main {
 //        System.out.print("Enter password: ");
 //        password = scan.nextLine();
 //        
-//        Session.login(username, password, userManager);
+//        Session.login(username, password, Manager);
 //        
 //        System.out.println(Session.getCurrentUser().getUsername() + " is current user.");
 //        System.out.println(Session.isLoggedIn());
