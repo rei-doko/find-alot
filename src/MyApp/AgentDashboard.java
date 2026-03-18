@@ -2,6 +2,7 @@ package MyApp;
 
 import MyLib.Agent;
 import MyLib.Block;
+import MyLib.Booking;
 import MyLib.Property;
 import MyLib.PropertyManager;
 import MyLib.Session;
@@ -11,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
 public class AgentDashboard extends javax.swing.JFrame {
@@ -108,7 +110,7 @@ public class AgentDashboard extends javax.swing.JFrame {
 
         // Apply Table Styles
         ThemeEngine.styleTable(propertyTable, jScrollPane1);
-        ThemeEngine.styleTable(requestTable1, jScrollPane2);
+        ThemeEngine.styleTable(requestTable, jScrollPane2);
 
         javax.swing.JTextField[] filterFields = {minPriceField, maxPriceField, minSizeField, maxSizeField};
         for (javax.swing.JTextField field : filterFields) {
@@ -501,7 +503,7 @@ public class AgentDashboard extends javax.swing.JFrame {
     }
 
     private void loadRequestsToTable() {
-        DefaultTableModel model = (DefaultTableModel) requestTable1.getModel();
+        DefaultTableModel model = (DefaultTableModel) requestTable.getModel();
         model.setRowCount(0);
 
         for (Block block : agent.getAllBlocks()) {
@@ -531,13 +533,13 @@ public class AgentDashboard extends javax.swing.JFrame {
     }
 
     private void handleRequest(boolean isApprove) {
-        int selectedRow = requestTable1.getSelectedRow();
+        int selectedRow = requestTable.getSelectedRow();
         if (selectedRow == -1) {
             javax.swing.JOptionPane.showMessageDialog(this, "Please select a request from the table first.");
             return;
         }
 
-        int propertyId = (int) requestTable1.getValueAt(selectedRow, 0);
+        int propertyId = (int) requestTable.getValueAt(selectedRow, 0);
         Property selectedReq = agent.getProperty(propertyId);
 
         if (selectedReq != null && selectedReq.getStatus().equalsIgnoreCase("Booked")) {
@@ -610,17 +612,17 @@ public class AgentDashboard extends javax.swing.JFrame {
 
     // --- NEW: Wires the Request Table to update the Details Pane ---
     private void setupRequestTable() {
-        requestTable1.setRowSelectionAllowed(true);
-        requestTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        requestTable.setRowSelectionAllowed(true);
+        requestTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         
-        requestTable1.getSelectionModel().addListSelectionListener(e -> {
+        requestTable.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                int row = requestTable1.getSelectedRow();
+                int row = requestTable.getSelectedRow();
                 if (row >= 0) {
-                    String block = requestTable1.getValueAt(row, 1).toString();
-                    String lot = requestTable1.getValueAt(row, 2).toString();
-                    String status = requestTable1.getValueAt(row, 3).toString();
-                    String buyer = requestTable1.getValueAt(row, 4).toString();
+                    String block = requestTable.getValueAt(row, 1).toString();
+                    String lot = requestTable.getValueAt(row, 2).toString();
+                    String status = requestTable.getValueAt(row, 3).toString();
+                    String buyer = requestTable.getValueAt(row, 4).toString();
 
                     detailBuyerLabel.setText("Buyer: " + buyer);
                     detailPropertyLabel.setText("Property: Block " + block + " | Lot " + lot);
@@ -665,4 +667,16 @@ public class AgentDashboard extends javax.swing.JFrame {
     private javax.swing.JTable requestTable;
     private javax.swing.JButton requestsButton;
     // End of variables declaration//GEN-END:variables
+
+    private void removeReservationButtonActionPerformed(ActionEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private void confirmBookingButtonActionPerformed(ActionEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private void removeBookingButtonActionPerformed(ActionEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
