@@ -5,9 +5,16 @@
 package MyApp;
 
 import MyLib.Agent;
+import MyLib.Block;
+import MyLib.Detached;
+import MyLib.Property;
 import MyLib.PropertyManager;
+import MyLib.SemiDetached;
 import MyLib.Session;
+import MyLib.TownHouse;
 import MyLib.UserManager;
+import java.awt.CardLayout;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -18,17 +25,20 @@ public class AgentDashboard extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AgentDashboard.class.getName());
     private UserManager userManager;
     private PropertyManager propertyManager;
-    private Agent user;
+    private Agent agent;
+    private Property selectedProperty = null;
     
     /**
      * Creates new form AdminDashboard
      */
-    public AgentDashboard(UserManager userManager, PropertyManager propertyManager, Agent user) {
+    public AgentDashboard(UserManager userManager, PropertyManager propertyManager, Agent agent) {
         this.userManager = userManager;
         this.propertyManager = propertyManager;
-        this.user = user;
+        this.agent = agent;
         initComponents();
         setLocationRelativeTo(null);
+        setupTable();
+        loadPropertiesToTable();
     }
 
     /**
@@ -41,23 +51,62 @@ public class AgentDashboard extends javax.swing.JFrame {
     private void initComponents() {
 
         NavigatorPanel = new javax.swing.JPanel();
+        requestsButton = new javax.swing.JButton();
         logoutButton = new javax.swing.JButton();
+        propertiesButton = new javax.swing.JButton();
         Parent = new javax.swing.JPanel();
         PropertiesPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        propertyTable = new javax.swing.JTable();
+        RequestPanel = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        requestTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         NavigatorPanel.setLayout(null);
+
+        requestsButton.setText("Requests");
+        requestsButton.addActionListener(this::requestsButtonActionPerformed);
+        NavigatorPanel.add(requestsButton);
+        requestsButton.setBounds(30, 120, 170, 60);
 
         logoutButton.setText("Logout");
         logoutButton.addActionListener(this::logoutButtonActionPerformed);
         NavigatorPanel.add(logoutButton);
         logoutButton.setBounds(30, 680, 170, 60);
 
+        propertiesButton.setText("Properties");
+        propertiesButton.addActionListener(this::propertiesButtonActionPerformed);
+        NavigatorPanel.add(propertiesButton);
+        propertiesButton.setBounds(30, 40, 170, 60);
+
         Parent.setLayout(new java.awt.CardLayout());
 
         jLabel2.setText("Properties");
+
+        propertyTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Property ID", "Block Number", "Property Number", "Status", "Owner", "Property Price", "Property Size", "Property Floors", "Property Type"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(propertyTable);
 
         javax.swing.GroupLayout PropertiesPanelLayout = new javax.swing.GroupLayout(PropertiesPanel);
         PropertiesPanel.setLayout(PropertiesPanelLayout);
@@ -65,18 +114,68 @@ public class AgentDashboard extends javax.swing.JFrame {
             PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PropertiesPanelLayout.createSequentialGroup()
                 .addGap(27, 27, 27)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(580, Short.MAX_VALUE))
+                .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 645, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(115, Short.MAX_VALUE))
         );
         PropertiesPanelLayout.setVerticalGroup(
             PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PropertiesPanelLayout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(690, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 592, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24))
         );
 
-        Parent.add(PropertiesPanel, "card3");
+        Parent.add(PropertiesPanel, "PropertiesPanel");
+
+        jLabel3.setText("Requests");
+
+        requestTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Property ID", "Block Number", "Property Number", "Status", "Owner", "Property Price", "Property Size", "Property Floors", "Property Type"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(requestTable1);
+
+        javax.swing.GroupLayout RequestPanelLayout = new javax.swing.GroupLayout(RequestPanel);
+        RequestPanel.setLayout(RequestPanelLayout);
+        RequestPanelLayout.setHorizontalGroup(
+            RequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(RequestPanelLayout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addGroup(RequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 645, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(115, Short.MAX_VALUE))
+        );
+        RequestPanelLayout.setVerticalGroup(
+            RequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(RequestPanelLayout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 592, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24))
+        );
+
+        Parent.add(RequestPanel, "RequestPanel");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -98,6 +197,12 @@ public class AgentDashboard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void requestsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestsButtonActionPerformed
+        // TODO add your handling code here:
+       CardLayout cl = (CardLayout)(Parent.getLayout());
+       cl.show(Parent, "RequestPanel");
+    }//GEN-LAST:event_requestsButtonActionPerformed
+
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
         // TODO add your handling code here:
         Session.logout();
@@ -107,6 +212,64 @@ public class AgentDashboard extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_logoutButtonActionPerformed
 
+    private void propertiesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_propertiesButtonActionPerformed
+        // TODO add your handling code here:
+       CardLayout cl = (CardLayout)(Parent.getLayout());
+       cl.show(Parent, "PropertiesPanel");
+    }//GEN-LAST:event_propertiesButtonActionPerformed
+
+    private void loadPropertiesToTable() {
+        DefaultTableModel model = (DefaultTableModel) propertyTable.getModel();
+        
+        model.setRowCount(0); // Clear existing rows
+        
+        for(Block block : agent.getAllBlocks()) { // Gets all block(s) in ArrayList<Block> blocks
+            for(Property property : block.getProperties()) { // Gets all properties in ArrayList<Property> properties for each block
+                String type = "";
+            
+                if(property instanceof TownHouse) {
+                    type = "Town House";
+                }
+                else if(property instanceof SemiDetached) {
+                    type = "Semi-Detached";
+                }
+                else if(property instanceof Detached) {
+                    type = "Detached";
+                }
+                
+                model.addRow(new Object[] {
+                    property.getPropertyId(),
+                    block.getBlockNumber(),
+                    property.getPropertyNum(),
+                    property.getStatus(),
+                    property.getOwner(),
+                    property.getContactPrice(),
+                    property.getPropertySize(),
+                    property.getFloors(),
+                    type
+                });
+            }
+        }
+    }
+    
+    private void setupTable() {
+        propertyTable.setRowSelectionAllowed(true);
+        propertyTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        
+        propertyTable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int row = propertyTable.getSelectedRow();
+
+                if (row >= 0) { // a row is selected
+                    int propertyId = (int) propertyTable.getValueAt(row, 0); // first column = propertyId
+                    selectedProperty = agent.getProperty(propertyId);
+                } else {
+                    selectedProperty = null;
+                }
+            }
+        });
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -134,7 +297,15 @@ public class AgentDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel NavigatorPanel;
     private javax.swing.JPanel Parent;
     private javax.swing.JPanel PropertiesPanel;
+    private javax.swing.JPanel RequestPanel;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton logoutButton;
+    private javax.swing.JButton propertiesButton;
+    private javax.swing.JTable propertyTable;
+    private javax.swing.JTable requestTable1;
+    private javax.swing.JButton requestsButton;
     // End of variables declaration//GEN-END:variables
 }

@@ -4,9 +4,11 @@
  */
 package MyLib;
 
+import java.util.ArrayList;
+
 /**
  *
- * @author rei doko
+ * 
  */
 public class Agent extends User {
     private PropertyManager propertyManager;
@@ -18,5 +20,28 @@ public class Agent extends User {
     
     public void confirmSale(Property property, Customer customer) {
         
+    }
+    
+    public ArrayList<Block> getAllBlocks() {
+        return propertyManager.getAllBlocks();
+    }
+    
+    public Block getBlock(int blockNumber) {
+        return propertyManager.getBlock(blockNumber);
+    }
+    
+    public ArrayList<Property> getProperties(int blockNumber) {
+        return propertyManager.getProperties(blockNumber);
+    }
+    
+    public Property getProperty(int propertyId) {
+        for(Block block : propertyManager.getAllBlocks()) {
+            for(Property property : block.getProperties()) {
+                if(property.getPropertyId() == propertyId) {
+                    return property;
+                }
+            }
+        }
+        return null;
     }
 }
