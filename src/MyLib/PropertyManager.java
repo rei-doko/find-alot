@@ -95,7 +95,8 @@ public class PropertyManager {
                     continue;
 
                 result.add(property);
+            }
         }
-    }
     return result;
+    }
 }
