@@ -595,7 +595,6 @@ private void injectFilters() {
         PropertiesPanel.add(topArea, java.awt.BorderLayout.NORTH);
         PropertiesPanel.add(propertyScrollPane, java.awt.BorderLayout.CENTER);
 
-        // --- NEW BOTTOM AREA: Puts Filter safely at the bottom right ---
         javax.swing.JPanel bottomArea = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 15, 10));
         bottomArea.setBackground(ThemeEngine.BG_MAIN);
         

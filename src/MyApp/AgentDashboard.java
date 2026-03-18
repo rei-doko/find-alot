@@ -454,7 +454,6 @@ public class AgentDashboard extends javax.swing.JFrame {
             }
         });
 
-        // 1. The Inputs (Left side)
         javax.swing.JPanel filterBar = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
         filterBar.setBackground(ThemeEngine.BG_MAIN);
 
@@ -476,12 +475,10 @@ public class AgentDashboard extends javax.swing.JFrame {
         filterBar.add(new javax.swing.JLabel("Max Size:"));
         filterBar.add(maxSizeField);
 
-        // 2. The Button (Right side)
         javax.swing.JButton filterBtn = new javax.swing.JButton("Filter");
         ThemeEngine.stylePrimaryButton(filterBtn); 
         filterBtn.addActionListener(e -> loadPropertiesToTable());
 
-        // 3. THE FIX: Pin the button to the EAST wall so it can never be pushed down
         javax.swing.JPanel wrapper = new javax.swing.JPanel(new java.awt.BorderLayout(10, 0));
         wrapper.setBackground(ThemeEngine.BG_MAIN);
         wrapper.add(filterBar, java.awt.BorderLayout.CENTER); // Inputs fill the center

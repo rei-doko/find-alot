@@ -688,12 +688,13 @@ int row = ownedPropertiesTable.getSelectedRow();
         });
     }
 
-    private void injectFilters() {
+        private void injectFilters() {
         PropertiesPanel.removeAll();
         PropertiesPanel.setLayout(new java.awt.BorderLayout(10, 10));
         PropertiesPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 25, 20, 25));
 
         javax.swing.JPanel topArea = new javax.swing.JPanel(new java.awt.BorderLayout(0, 10));
+        topArea.setBackground(ThemeEngine.BG_MAIN);
         
         javax.swing.JLabel title = new javax.swing.JLabel("Available Properties");
         title.setFont(ThemeEngine.FONT_HEADER);
@@ -702,18 +703,12 @@ int row = ownedPropertiesTable.getSelectedRow();
 
         javax.swing.JPanel filterBar = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
         filterBar.setBackground(ThemeEngine.BG_MAIN);
-        topArea.setBackground(ThemeEngine.BG_MAIN);
 
         minPriceField.setColumns(7);
         maxPriceField.setColumns(7);
         minSizeField.setColumns(7);
         maxSizeField.setColumns(7);
 
-        // Style both buttons
-        ThemeEngine.stylePrimaryButton(filterButton);
-        ThemeEngine.stylePrimaryButton(bookButton);
-        
-        // Add only the inputs to the top bar
         filterBar.add(new javax.swing.JLabel("Block:"));
         filterBar.add(blockSelector);
         filterBar.add(javax.swing.Box.createHorizontalStrut(10));
@@ -726,19 +721,23 @@ int row = ownedPropertiesTable.getSelectedRow();
         filterBar.add(minSizeField);
         filterBar.add(new javax.swing.JLabel("Max Size:"));
         filterBar.add(maxSizeField);
-        // NOTE: Filter button removed from here so it stops hiding!
 
-        topArea.add(filterBar, java.awt.BorderLayout.SOUTH);
+        ThemeEngine.stylePrimaryButton(filterButton);
+        ThemeEngine.stylePrimaryButton(bookButton);
+
+        javax.swing.JPanel wrapper = new javax.swing.JPanel(new java.awt.BorderLayout(10, 0));
+        wrapper.setBackground(ThemeEngine.BG_MAIN);
+        wrapper.add(filterBar, java.awt.BorderLayout.CENTER); // Inputs fill the left/center
+        wrapper.add(filterButton, java.awt.BorderLayout.EAST); // Filter button is locked to the right
+
+        topArea.add(wrapper, java.awt.BorderLayout.SOUTH);
 
         PropertiesPanel.add(topArea, java.awt.BorderLayout.NORTH);
         PropertiesPanel.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
-        // NEW BOTTOM AREA: Puts both buttons safely at the bottom right
-        javax.swing.JPanel bottomArea = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 15, 10));
+        javax.swing.JPanel bottomArea = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 0, 10));
         bottomArea.setBackground(ThemeEngine.BG_MAIN);
-        
-        bottomArea.add(filterButton); // Filter is now down here!
-        bottomArea.add(bookButton);
+        bottomArea.add(bookButton); // Book button stays neatly at the bottom
         
         PropertiesPanel.add(bottomArea, java.awt.BorderLayout.SOUTH);
 
@@ -758,7 +757,6 @@ int row = ownedPropertiesTable.getSelectedRow();
 
         OwnedPropertiesPanel.add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
-        // A horizontal bar to keep the Confirm button neatly at the bottom right
         javax.swing.JPanel buttonBar = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 0, 10));
         buttonBar.setBackground(ThemeEngine.BG_MAIN);
 
