@@ -335,6 +335,29 @@ public class AdminDashboard extends javax.swing.JFrame {
         });
     }
     
+    // update admin
+    private void loadPropertiesToTable() {
+    DefaultTableModel model = (DefaultTableModel) propertiesTable.getModel();
+    model.setRowCount(0);
+
+    for(Block block : propertyManager.getAllBlocks()) {
+        for(Property property : block.getProperties()) {
+            model.addRow(new Object[] {
+                property.getPropertyId(),
+                property.getBlockNumber(),
+                property.getPropertyNumber(),
+                property.getStatus(),
+                (property.getOwner() != null ? property.getOwner().getUsername() : "None"),
+                property.getContactPrice(),
+                property.getPropertySize(),
+                property.getFloors(),
+                property.getClass().getSimpleName()
+            });
+        }
+    }
+}
+    
+    //
     /**
      * @param args the command line arguments
      */

@@ -4,7 +4,9 @@
  */
 package MyApp;
 
+import MyLib.Agent;
 import MyLib.Block;
+import MyLib.Booking;
 import MyLib.Customer;
 import MyLib.Detached;
 import MyLib.Property;
@@ -12,9 +14,14 @@ import MyLib.PropertyManager;
 import MyLib.SemiDetached;
 import MyLib.Session;
 import MyLib.TownHouse;
+import MyLib.User;
 import MyLib.UserManager;
 import java.awt.CardLayout;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.util.List;
 
 /**
  *
@@ -28,6 +35,8 @@ public class CustomerDashboard extends javax.swing.JFrame {
     private Customer customer;
     private Property selectedProperty = null;
     private int selectedBlock = 0;
+    private Booking bookingManager;
+
     
     /**
      * Creates new form AdminDashboard
@@ -308,7 +317,35 @@ public class CustomerDashboard extends javax.swing.JFrame {
     private void bookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bookButtonActionPerformed
         // TODO add your handling code here:
         // When book is clicked, it should open a prompt to select which agent to contact.
-        
+        if(selectedProperty == null) {
+        JOptionPane.showMessageDialog(this, "Please select a property first!");
+        return;
+    }
+
+    JPanel registerPanel = new JPanel();
+    registerPanel.setLayout(new java.awt.GridLayout(2, 2, 5, 5));
+
+    // Label + ComboBox for selecting Agent
+    registerPanel.add(new JLabel("Select Agent:"));
+    JComboBox<Agent> agentComboBox = new JComboBox<>();
+    for(User user : userManager.getAllUsers()) {
+        if(user instanceof Agent) {
+            agentComboBox.addItem((Agent) user);
+        }
+    }
+    registerPanel.add(agentComboBox);
+
+    int result = JOptionPane.showConfirmDialog(this, registerPanel, 
+            "Book Property", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+    if(result == JOptionPane.OK_OPTION) {
+        Agent selectedAgent = (Agent) agentComboBox.getSelectedItem();
+        if(selectedAgent != null) {
+            bookingManager.requestBooking(thisCustomer, selectedProperty, selectedAgent);
+            JOptionPane.showMessageDialog(this, "Request sent to agent!");
+        }
+    }
+}
     }//GEN-LAST:event_bookButtonActionPerformed
 
     private void filterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterButtonActionPerformed

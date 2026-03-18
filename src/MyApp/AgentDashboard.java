@@ -6,6 +6,7 @@ package MyApp;
 
 import MyLib.Agent;
 import MyLib.Block;
+import MyLib.Booking;
 import MyLib.Detached;
 import MyLib.Property;
 import MyLib.PropertyManager;
@@ -15,6 +16,10 @@ import MyLib.TownHouse;
 import MyLib.UserManager;
 import java.awt.CardLayout;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.util.ArrayList;
 
 /**
  *
@@ -26,6 +31,7 @@ public class AgentDashboard extends javax.swing.JFrame {
     private PropertyManager propertyManager;
     private Agent agent;
     private Property selectedProperty = null;
+    private Booking bookingManager;
 
 //This is the missing textfield
     private javax.swing.JTextField minPriceField = new javax.swing.JTextField(7);
@@ -330,6 +336,49 @@ public class AgentDashboard extends javax.swing.JFrame {
         });
     }
     
+    /// booking
+    private void loadRequestsToTable() {
+    DefaultTableModel model = (DefaultTableModel) requestTable1.getModel();
+    model.setRowCount(0);
+
+    ArrayList<Booking.BookingRequest> requests = bookingManager.getRequestsForAgent(agent);
+
+    for(Booking.BookingRequest request : requests) {
+        Property property = request.getProperty();
+        model.addRow(new Object[] {
+            property.getPropertyId(),
+            property.getBlockNumber(),
+            property.getPropertyNumber(),
+            property.getStatus(),
+            (property.getOwner() != null ? property.getOwner().getUsername() : "None"),
+            property.getContactPrice(),
+            property.getPropertySize(),
+            property.getFloors(),
+            property.getClass().getSimpleName()
+        });
+    }
+}
+
+// Confirm selected booking request
+private void confirmRequestButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    int selectedRow = requestTable1.getSelectedRow();
+    if(selectedRow >= 0) {
+        int propertyId = (int) requestTable1.getValueAt(selectedRow, 0);
+        Booking.BookingRequest targetRequest = null;
+        for(Booking.BookingRequest req : bookingManager.getRequestsForAgent(agent)) {
+            if(req.getProperty().getPropertyId() == propertyId) {
+                targetRequest = req;
+                break;
+            }
+        }
+        if(targetRequest != null) {
+            bookingManager.confirmBooking(targetRequest);
+            JOptionPane.showMessageDialog(this, "Booking confirmed!");
+            loadRequestsToTable();
+            loadPropertiesToTable(); // Update agent property view
+        }
+    }
+}
     /**
      * @param args the command line arguments
      */

@@ -59,4 +59,8 @@ public class UserManager {
     public ArrayList<User> getAllUsers() {
         return userList;
     }
+
+    public Object getAllAgents() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
