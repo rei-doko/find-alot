@@ -1,5 +1,4 @@
 package MyLib;
-//Not final
 public class Detached extends Property {
     private int hasGarage;
     private double yardSize;
