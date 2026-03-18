@@ -54,12 +54,4 @@ public class Customer extends User {
         }
         return null;
     }
-    
-//    public List<Property> searchProperty(int blockNum, double propertySize, double contactPrize) {
-//        return
-//    }
-//    
-//    public void contactAgent(Agent agent, String message) {
-//        
-//    }
 }
