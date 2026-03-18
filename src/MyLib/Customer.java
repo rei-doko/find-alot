@@ -41,10 +41,6 @@ public class Customer extends User {
         return null;
     }
     
-    public void addBooking(Booking booking) {
-        propertyManager.addBooking(booking);
-    }
-    
     @Override
     public String toString() {
         return getUsername();
