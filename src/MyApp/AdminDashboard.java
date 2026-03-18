@@ -4,10 +4,10 @@
  */
 package MyApp;
 
-import javax.swing.table.DefaultTableModel;
 import MyLib.Admin;
 import MyLib.Agent;
 import MyLib.Customer;
+import MyLib.Property;
 import MyLib.PropertyManager;
 import MyLib.Session;
 import MyLib.User;
@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -32,6 +33,20 @@ public class AdminDashboard extends javax.swing.JFrame {
     private PropertyManager propertyManager;
     private Admin admin;
     private User selectedUser = null;
+
+    // Property view state (for the "Properties" panel)
+    private Property selectedProperty = null;
+    private int selectedBlock = 0;
+
+    // UI components for filtering properties
+    private javax.swing.JComboBox<String> blockSelector;
+    private javax.swing.JTextField minPriceField;
+    private javax.swing.JTextField maxPriceField;
+    private javax.swing.JTextField minSizeField;
+    private javax.swing.JTextField maxSizeField;
+    private javax.swing.JButton filterButton;
+    private javax.swing.JTable propertyTable;
+    private javax.swing.JScrollPane propertyScrollPane;
     
     /**
      * Creates new form AdminDashboard
@@ -43,9 +58,15 @@ public class AdminDashboard extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         
+        // Keep the UI structure consistent with the other dashboards
+        setupPropertyTable();
+        injectFilters();
+
         setupTable();
         // Load users in account table
         loadUsersToTable();
+        // Load properties in the Properties panel
+        loadPropertiesToTable();
     }
 
     /**
@@ -202,9 +223,9 @@ public class AdminDashboard extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void propertiesPanelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_propertiesPanelButtonActionPerformed
-        // TODO add your handling code here:
         CardLayout cl = (CardLayout)(Parent.getLayout());
         cl.show(Parent, "PropertiesPanel");
+        loadPropertiesToTable();
     }//GEN-LAST:event_propertiesPanelButtonActionPerformed
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
@@ -334,7 +355,143 @@ public class AdminDashboard extends javax.swing.JFrame {
             }
         });
     }
-    
+
+    private Double parseDoubleOrNull(String text) {
+        if (text == null || text.isEmpty()) return null;
+        if (!text.matches("\\d+(\\.\\d+)?")) return null;
+        return Double.parseDouble(text);
+    }
+
+    private void loadPropertiesToTable() {
+        if (propertyTable == null) return;
+
+        DefaultTableModel model = (DefaultTableModel) propertyTable.getModel();
+        model.setRowCount(0);
+
+        Integer blockFilter = (selectedBlock == 0) ? null : selectedBlock;
+        Double minPrice = parseDoubleOrNull(minPriceField.getText());
+        Double maxPrice = parseDoubleOrNull(maxPriceField.getText());
+        Double minSize = parseDoubleOrNull(minSizeField.getText());
+        Double maxSize = parseDoubleOrNull(maxSizeField.getText());
+
+        java.util.ArrayList<MyLib.Property> filteredProperties = propertyManager.filterProperties(blockFilter, minPrice, maxPrice);
+        if (filteredProperties != null) {
+            for (MyLib.Property property : filteredProperties) {
+                if (minSize != null && property.getPropertySize() < minSize) continue;
+                if (maxSize != null && property.getPropertySize() > maxSize) continue;
+
+                String type = property.getClass().getSimpleName();
+                String ownerName = (property.getOwner() != null) ? property.getOwner().getUsername() : "None";
+
+                model.addRow(new Object[] {
+                    property.getPropertyId(),
+                    property.getBlockNumber(),
+                    property.getPropertyNumber(),
+                    property.getStatus(),
+                    ownerName,
+                    property.getContactPrice(),
+                    property.getPropertySize(),
+                    property.getFloors(),
+                    type
+                });
+            }
+        }
+    }
+
+    private void setupPropertyTable() {
+        propertyTable = new javax.swing.JTable();
+        propertyTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {},
+            new String [] {
+                "Property ID", "Block Number", "Property Number", "Status", "Owner", "Property Price", "Property Size", "Property Floors", "Property Type"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+
+        propertyTable.setRowSelectionAllowed(true);
+        propertyTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        propertyTable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int row = propertyTable.getSelectedRow();
+                if (row >= 0) {
+                    int propertyId = (int) propertyTable.getValueAt(row, 0);
+                    // Find property by id across all blocks
+                    for (MyLib.Block block : propertyManager.getAllBlocks()) {
+                        for (MyLib.Property p : block.getProperties()) {
+                            if (p.getPropertyId() == propertyId) {
+                                selectedProperty = p;
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    selectedProperty = null;
+                }
+            }
+        });
+
+        propertyScrollPane = new javax.swing.JScrollPane();
+        propertyScrollPane.setViewportView(propertyTable);
+    }
+
+    private void injectFilters() {
+        PropertiesPanel.removeAll();
+        PropertiesPanel.setLayout(new java.awt.BorderLayout(10, 10));
+        PropertiesPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        javax.swing.JPanel topArea = new javax.swing.JPanel(new java.awt.BorderLayout());
+        javax.swing.JLabel title = new javax.swing.JLabel("Properties");
+        title.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 24));
+        topArea.add(title, java.awt.BorderLayout.NORTH);
+
+        javax.swing.JPanel filterBar = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 10));
+
+        blockSelector = new javax.swing.JComboBox<>(new String[] { "All", "1", "2", "3", "4", "5" });
+        blockSelector.addActionListener(e -> {
+            String selected = (String) blockSelector.getSelectedItem();
+            if (selected == null || selected.equals("All")) {
+                selectedBlock = 0;
+            } else {
+                selectedBlock = Integer.parseInt(selected);
+            }
+        });
+
+        minPriceField = new javax.swing.JTextField(7);
+        maxPriceField = new javax.swing.JTextField(7);
+        minSizeField = new javax.swing.JTextField(7);
+        maxSizeField = new javax.swing.JTextField(7);
+
+        filterButton = new javax.swing.JButton("Filter");
+        filterButton.addActionListener(e -> loadPropertiesToTable());
+
+        filterBar.add(new javax.swing.JLabel("Block:"));
+        filterBar.add(blockSelector);
+        filterBar.add(new javax.swing.JLabel("Min Price:"));
+        filterBar.add(minPriceField);
+        filterBar.add(new javax.swing.JLabel("Max Price:"));
+        filterBar.add(maxPriceField);
+        filterBar.add(new javax.swing.JLabel("Min Size:"));
+        filterBar.add(minSizeField);
+        filterBar.add(new javax.swing.JLabel("Max Size:"));
+        filterBar.add(maxSizeField);
+        filterBar.add(filterButton);
+
+        topArea.add(filterBar, java.awt.BorderLayout.SOUTH);
+
+        PropertiesPanel.add(topArea, java.awt.BorderLayout.NORTH);
+        PropertiesPanel.add(propertyScrollPane, java.awt.BorderLayout.CENTER);
+
+        PropertiesPanel.revalidate();
+        PropertiesPanel.repaint();
+    }
+
     /**
      * @param args the command line arguments
      */
