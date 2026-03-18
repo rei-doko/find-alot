@@ -87,15 +87,20 @@ public class PropertyManager {
             for (Property property : block.getProperties()) {
                 Double price = property.getContactPrice();
                 
-                if (price == null)
+                if (price == null) {
                     continue;
-                if (minPrice != null && price < minPrice)
+                }
+                    
+                if (minPrice != null && price < minPrice) {
                     continue;
-                if (maxPrice != null && price > maxPrice)
+                }
+                    
+                if (maxPrice != null && price > maxPrice) {
                     continue;
-
+                }
                 result.add(property);
+            }
         }
+        return result;
     }
-    return result;
 }
