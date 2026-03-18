@@ -26,8 +26,8 @@ public class Customer extends User {
         return propertyManager.getBlock(blockNumber);
     }
     
-    public ArrayList<Property> getProperties() {
-        return propertyManager.getProperties();
+    public ArrayList<Property> getProperties(int blockNumber) {
+        return propertyManager.getProperties(blockNumber);
     }
     
     public Property getProperty(int propertyId) {

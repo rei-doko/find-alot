@@ -47,8 +47,12 @@ public class PropertyManager {
         return blocks;
     }
     
-    public ArrayList<Property> getProperties() {
-        return block.getProperties();
+    public ArrayList<Property> getProperties(int blockNumber) {
+        Block currentBlock = getBlock(blockNumber);
+        if(currentBlock == null) {
+            return null;
+        }
+        return currentBlock.getProperties();
     }
 
     public void buyProperty(int propertyId, Customer buyer) {

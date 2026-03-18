@@ -97,7 +97,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, true, true
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -203,8 +203,8 @@ public class CustomerDashboard extends javax.swing.JFrame {
         
         model.setRowCount(0); // Clear existing rows
         
-        for(Block block : customer.getAllBlocks()) {
-            for(Property property : customer.getProperties()) {
+        for(Block block : customer.getAllBlocks()) { // Gets all block(s) in ArrayList<Block> blocks
+            for(Property property : block.getProperties()) { // Gets all properties in ArrayList<Property> properties for each block
                 String type = "";
             
                 if(property instanceof TownHouse) {
