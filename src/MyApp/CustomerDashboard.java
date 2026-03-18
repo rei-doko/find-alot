@@ -1,6 +1,8 @@
 package MyApp;
 
+import MyLib.Agent;
 import MyLib.Block;
+import MyLib.Booking;
 import MyLib.Customer;
 import MyLib.Property;
 import MyLib.PropertyManager;
@@ -8,6 +10,11 @@ import MyLib.Session;
 import MyLib.UserManager;
 import java.awt.CardLayout;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.util.List;
 
 public class CustomerDashboard extends javax.swing.JFrame {
     
@@ -267,6 +274,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
         jScrollPane2.setViewportView(ownedPropertiesTable);
 
         jButton1.setText("Confirm Purchase");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
 
         javax.swing.GroupLayout OwnedPropertiesPanelLayout = new javax.swing.GroupLayout(OwnedPropertiesPanel);
         OwnedPropertiesPanel.setLayout(OwnedPropertiesPanelLayout);
@@ -389,6 +397,152 @@ public class CustomerDashboard extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_blockSelectorActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+    // TODO add your handling code here:                                      
+    int row = ownedPropertiesTable.getSelectedRow();
+
+    if(row < 0){
+        JOptionPane.showMessageDialog(this, "Please select a property.");
+        return;
+    }
+
+    int propertyId = (int) ownedPropertiesTable.getValueAt(row, 0);
+    Property property = customer.getProperty(propertyId);
+
+    if(property == null){
+        JOptionPane.showMessageDialog(this, "Invalid property.");
+        return;
+    }
+
+    double contactPrice = property.getContactPrice();
+    double downpayment = contactPrice * 0.05;
+    double reservationFee = 20000;
+    double capitalTax = contactPrice * 0.06;
+    double docStamp = contactPrice * 0.015;
+    double transferTax = contactPrice * 0.005;
+    double notarial = contactPrice * 0.02;
+
+    double otherFees = capitalTax + docStamp + transferTax + notarial;
+    double totalCashOut = downpayment + reservationFee + otherFees;
+    double loanAmount = contactPrice - downpayment;
+
+    // PANEL UI
+    JPanel panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+    JLabel infoLabel = new JLabel("Receipt Summary:");
+    JLabel receiptLabel = new JLabel();
+
+    // PAYMENT TYPE
+    JRadioButton cashOption = new JRadioButton("Cash", true);
+    JRadioButton installmentOption = new JRadioButton("Installment");
+
+    ButtonGroup group = new ButtonGroup();
+    group.add(cashOption);
+    group.add(installmentOption);
+
+    // INSTALLMENT OPTIONS
+    JComboBox<String> bankBox = new JComboBox<>(new String[]{
+        "Pag-IBIG (6.25%)",
+        "RCBC (6.60%)",
+        "SBC (6.80%)",
+        "BDO (6.88%)",
+        "CTS (10.50%)"
+    });
+
+    JComboBox<Integer> yearsBox = new JComboBox<>();
+    for(int i = 1; i <= 30; i++){
+        yearsBox.addItem(i);
+    }
+
+    bankBox.setEnabled(false);
+    yearsBox.setEnabled(false);
+
+    // LISTENERS
+    ActionListener updateReceipt = e -> {
+        double monthly = 0;
+        double gmi = 0;
+
+        if(installmentOption.isSelected()){
+            bankBox.setEnabled(true);
+            yearsBox.setEnabled(true);
+
+            double rate = 0;
+
+            String bank = (String) bankBox.getSelectedItem();
+            int years = (int) yearsBox.getSelectedItem();
+
+            if(bank.contains("6.25")) rate = 0.0625;
+            else if(bank.contains("6.60")) rate = 0.066;
+            else if(bank.contains("6.80")) rate = 0.068;
+            else if(bank.contains("6.88")) rate = 0.0688;
+            else if(bank.contains("10.50")) rate = 0.105;
+
+            monthly = computeMonthlyAmortization(loanAmount, rate, years);
+            gmi = monthly / 0.35;
+
+        } else {
+            bankBox.setEnabled(false);
+            yearsBox.setEnabled(false);
+        }
+
+        receiptLabel.setText(
+            "<html>" +
+            "Contact Price: " + contactPrice + "<br>" +
+            "Downpayment (5%): " + downpayment + "<br>" +
+            "Reservation Fee: " + reservationFee + "<br>" +
+            "Other Fees: " + otherFees + "<br>" +
+            "Total Cash Out: " + totalCashOut + "<br>" +
+            "Loan Amount: " + loanAmount + "<br>" +
+            (installmentOption.isSelected() ? 
+                "Monthly Amortization: " + String.format("%.2f", monthly) + "<br>" +
+                "Minimum GMI: " + String.format("%.2f", gmi) + "<br>" : 
+                "Mode: CASH<br>"
+            ) +
+            "</html>"
+        );
+    };
+
+    cashOption.addActionListener(updateReceipt);
+    installmentOption.addActionListener(updateReceipt);
+    bankBox.addActionListener(updateReceipt);
+    yearsBox.addActionListener(updateReceipt);
+
+    // INITIAL COMPUTE
+    updateReceipt.actionPerformed(null);
+
+    // ADD COMPONENTS
+    panel.add(infoLabel);
+    panel.add(cashOption);
+    panel.add(installmentOption);
+    panel.add(new JLabel("Bank:"));
+    panel.add(bankBox);
+    panel.add(new JLabel("Years:"));
+    panel.add(yearsBox);
+    panel.add(receiptLabel);
+    
+    JButton confirmBtn = new JButton("Confirm Purchase");
+    panel.add(confirmBtn);
+
+    int result = JOptionPane.showConfirmDialog(
+        this,
+        panel,
+        "Confirm Purchase",
+        JOptionPane.OK_CANCEL_OPTION,
+        JOptionPane.PLAIN_MESSAGE
+    );
+
+    if(result == JOptionPane.OK_OPTION){
+        property.setReservedBy(null);
+        property.updateStatus("Buy");
+        property.setOwner(customer);
+        JOptionPane.showMessageDialog(this, "Purchase Confirmed!");
+        loadPropertiesToTable();
+        loadOwnedPropertiesToTable();
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     private void loadPropertiesToTable() {
         DefaultTableModel model = (DefaultTableModel) propertyTable.getModel();
         model.setRowCount(0); 
@@ -460,12 +614,21 @@ public class CustomerDashboard extends javax.swing.JFrame {
                 
                 if(property.getOwner() != null && property.getOwner().equals(this.customer)) { 
                     String type = property.getClass().getSimpleName();
+                    String status;
                     
+                    if (owner != null && owner.equals(this.customer)) {
+                        status = "Owned";
+                    } else if (reserved != null && reserved.equals(this.customer)) {
+                        status = "Reserved";
+                    } else {
+                        status = property.getStatus();
+                    }
+
                     ownedModel.addRow(new Object[] {
                         property.getPropertyId(),
                         property.getBlockNumber(), 
                         property.getPropertyNumber(), 
-                        property.getStatus(),
+                        status,
                         property.getContactPrice(),
                         property.getPropertySize(),
                         property.getFloors(),

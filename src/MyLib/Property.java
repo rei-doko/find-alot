@@ -15,6 +15,7 @@ public abstract class Property {
     private double propertySize;
     private double contactPrice;
     private Customer owner;
+    private Customer reservedBy;
 
     // Fixed the broken constructor and added parameters
     public Property(int blockNum, int propertyNum, int floors, double propertySize, double contactPrice) {
@@ -32,8 +33,8 @@ public abstract class Property {
     }
     
     public void updateStatus(String action) {
-        if(action.equalsIgnoreCase("Book")) {
-            this.status = "Booked"; 
+        if(action.equalsIgnoreCase("Reserved")) {
+            this.status = "Reserved"; 
         }
         else if(action.equalsIgnoreCase("Buy")) {
             this.status = "Sold";
@@ -45,6 +46,10 @@ public abstract class Property {
     
     public void setOwner(Customer buyer) {
         owner = buyer;
+    }
+    
+    public void setReservedBy(Customer booker) {
+        reservedBy = booker;
     }
 
     public abstract void showDetails(); // Not needed
@@ -79,5 +84,9 @@ public abstract class Property {
     
     public int getFloors() {
         return floors;
+    }
+    
+    public Customer getReservedBy() {
+        return reservedBy;
     }
 }

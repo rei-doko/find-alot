@@ -2,6 +2,7 @@ package MyApp;
 
 import MyLib.Admin;
 import MyLib.Agent;
+import MyLib.Block;
 import MyLib.Customer;
 import MyLib.Property;
 import MyLib.PropertyManager;
@@ -137,6 +138,8 @@ public class AdminDashboard extends javax.swing.JFrame {
         removeAccountButton = new javax.swing.JButton();
         PropertiesPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        propertyTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1024, 768));
@@ -558,8 +561,10 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton logoutButton;
     private javax.swing.JButton propertiesPanelButton;
+    private javax.swing.JTable propertyTable;
     private javax.swing.JButton removeAccountButton;
     // End of variables declaration//GEN-END:variables
 }
