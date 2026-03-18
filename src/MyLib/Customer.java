@@ -12,6 +12,7 @@ import java.util.ArrayList;
  */
 public class Customer extends User {
     private PropertyManager propertyManager;
+    private ArrayList<Property> ownedProperties;
     
     public Customer(PropertyManager propertyManager, String username, String password) {
         super(username, password);
@@ -36,6 +37,19 @@ public class Customer extends User {
                 if(property.getPropertyId() == propertyId) {
                     return property;
                 }
+            }
+        }
+        return null;
+    }
+    
+    public ArrayList<Property> getOwnedProperties() {
+        return ownedProperties;
+    }
+    
+    public Property getOwnedProperty(int propertyId) {
+        for(Property property : ownedProperties) {
+            if(property.getPropertyId() == propertyId) {
+                return property;
             }
         }
         return null;

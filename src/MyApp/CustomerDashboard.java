@@ -61,6 +61,10 @@ public class CustomerDashboard extends javax.swing.JFrame {
         propertyTable = new javax.swing.JTable();
         bookButton = new javax.swing.JButton();
         OwnedPropertiesPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        ownedPropertiesTable = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -140,15 +144,58 @@ public class CustomerDashboard extends javax.swing.JFrame {
 
         Parent.add(PropertiesPanel, "PropertiesPanel");
 
+        jLabel1.setText("Owned Properties");
+
+        ownedPropertiesTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Property ID", "Block Number", "Property Number", "Status", "Property Price", "Property Size", "Property Floors", "Type"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(ownedPropertiesTable);
+
+        jButton1.setText("Confirm Purchase");
+
         javax.swing.GroupLayout OwnedPropertiesPanelLayout = new javax.swing.GroupLayout(OwnedPropertiesPanel);
         OwnedPropertiesPanel.setLayout(OwnedPropertiesPanelLayout);
         OwnedPropertiesPanelLayout.setHorizontalGroup(
             OwnedPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 802, Short.MAX_VALUE)
+            .addGroup(OwnedPropertiesPanelLayout.createSequentialGroup()
+                .addGap(37, 37, 37)
+                .addGroup(OwnedPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addGroup(OwnedPropertiesPanelLayout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 637, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
         OwnedPropertiesPanelLayout.setVerticalGroup(
             OwnedPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 762, Short.MAX_VALUE)
+            .addGroup(OwnedPropertiesPanelLayout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addComponent(jLabel1)
+                .addGroup(OwnedPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(OwnedPropertiesPanelLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 682, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(OwnedPropertiesPanelLayout.createSequentialGroup()
+                        .addGap(60, 60, 60)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         Parent.add(OwnedPropertiesPanel, "OwnedPropertiesPanel");
@@ -232,6 +279,38 @@ public class CustomerDashboard extends javax.swing.JFrame {
         }
     }
     
+    private void loadOwnedPropertiesToTable() { // not loaded/used yet
+        DefaultTableModel ownedModel = (DefaultTableModel) ownedPropertiesTable.getModel();
+        
+        ownedModel.setRowCount(0); // Clear existing rows
+        
+        for(Property property : customer.getOwnedProperties()) { // Gets all block(s) in ArrayList<Block> blocks
+           
+            String type = "";
+
+            if(property instanceof TownHouse) {
+                type = "Town House";
+            }
+            else if(property instanceof SemiDetached) {
+                type = "Semi-Detached";
+            }
+            else if(property instanceof Detached) {
+                type = "Detached";
+            }
+
+            ownedModel.addRow(new Object[] {
+                property.getPropertyId(),
+                property.getBlockNumber(),
+                property.getPropertyNum(),
+                property.getStatus(),
+                property.getContactPrice(),
+                property.getPropertySize(),
+                property.getFloors(),
+                type
+            });
+        }
+    }
+    
     private void setupTable() {
         propertyTable.setRowSelectionAllowed(true);
         propertyTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -279,10 +358,14 @@ public class CustomerDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel Parent;
     private javax.swing.JPanel PropertiesPanel;
     private javax.swing.JButton bookButton;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton logoutButton;
     private javax.swing.JButton ownedPropertiesPanelButton;
+    private javax.swing.JTable ownedPropertiesTable;
     private javax.swing.JButton propertiesPanelButton;
     private javax.swing.JTable propertyTable;
     // End of variables declaration//GEN-END:variables
