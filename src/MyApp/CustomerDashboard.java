@@ -68,7 +68,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
         jTextField4 = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
+        filterButton = new javax.swing.JButton();
         OwnedPropertiesPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -138,8 +138,8 @@ public class CustomerDashboard extends javax.swing.JFrame {
 
         jTextField4.setText("jTextField4");
 
-        jButton2.setText("Filter");
-        jButton2.addActionListener(this::jButton2ActionPerformed);
+        filterButton.setText("Filter");
+        filterButton.addActionListener(this::filterButtonActionPerformed);
 
         javax.swing.GroupLayout PropertiesPanelLayout = new javax.swing.GroupLayout(PropertiesPanel);
         PropertiesPanel.setLayout(PropertiesPanelLayout);
@@ -175,7 +175,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
                                         .addGap(32, 32, 32)
                                         .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(37, 37, 37)
-                                .addComponent(jButton2)))))
+                                .addComponent(filterButton)))))
                 .addContainerGap(7, Short.MAX_VALUE))
         );
         PropertiesPanelLayout.setVerticalGroup(
@@ -198,7 +198,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
                                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PropertiesPanelLayout.createSequentialGroup()
-                                .addComponent(jButton2)
+                                .addComponent(filterButton)
                                 .addGap(2, 2, 2)))
                         .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
@@ -315,9 +315,10 @@ public class CustomerDashboard extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_bookButtonActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void filterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+        filterProperties();
+    }//GEN-LAST:event_filterButtonActionPerformed
 
     private void loadPropertiesToTable() {
         DefaultTableModel model = (DefaultTableModel) propertyTable.getModel();
@@ -353,6 +354,60 @@ public class CustomerDashboard extends javax.swing.JFrame {
         }
     }
     
+    private void updatePropertyTable(java.util.List<Property> properties){
+        DefaultTableModel model = (DefaultTableModel) propertyTable.getModel();
+        model.setRowCount(0);
+
+        for (Property property : properties){
+            Block block = customer.getBlock(property.getBlockNumber());
+            String type = property instanceof TownHouse ? "Town House" :
+                          property instanceof SemiDetached ? "Semi-Detached" :
+                          property instanceof Detached ? "Detached" : "";
+
+            model.addRow(new Object[]{
+                property.getPropertyId(),
+                block.getBlockNumber(),
+                property.getPropertyNum(),
+                property.getStatus(),
+                property.getOwner(),
+                property.getContactPrice(),
+                property.getPropertySize(),
+                property.getFloors(),
+                type
+            });
+        }
+    }
+    
+    private Double parseDoubleOrNull(String text){
+    if (text == null || text.isEmpty())
+        return null;
+    if (!text.matches("\\d+(\\.\\d+)?"))
+        return null;
+    return Double.parseDouble(text);
+    }
+    
+    private void filterProperties(){
+    Integer selectedBlock = null;
+    String blockText = (String) jComboBox1.getSelectedItem();
+    if (blockText != null && !blockText.isEmpty()){
+        if (blockText.matches("\\d+")){
+            selectedBlock = Integer.parseInt(blockText);
+        }
+    }
+
+    Double minPrice = parseDoubleOrNull(jTextField3.getText());
+    Double maxPrice = parseDoubleOrNull(jTextField4.getText());
+
+    if ((jTextField3.getText() != null && !jTextField3.getText().isEmpty() && minPrice == null)
+        || (jTextField4.getText() != null && !jTextField4.getText().isEmpty() && maxPrice == null)) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Enter valid numeric values for price.");
+        return;
+    }
+
+    java.util.List<Property> filteredProps = propertyManager.filterProperties(selectedBlock, minPrice, maxPrice);
+    updatePropertyTable(filteredProps);
+}
+        
     private void loadOwnedPropertiesToTable() { // not loaded/used yet
         DefaultTableModel ownedModel = (DefaultTableModel) ownedPropertiesTable.getModel();
         
@@ -432,8 +487,8 @@ public class CustomerDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel Parent;
     private javax.swing.JPanel PropertiesPanel;
     private javax.swing.JButton bookButton;
+    private javax.swing.JButton filterButton;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
