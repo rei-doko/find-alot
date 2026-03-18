@@ -24,13 +24,12 @@ public class CustomerDashboard extends javax.swing.JFrame {
         this.customer = customer;
         initComponents();
         
-        // Custom additions after NetBeans init
+        injectFilters();
+        
         setLocationRelativeTo(null);
         setupTable();
         
-        // Manually wiring the Confirm Purchase button since it missed the GUI builder
         jButton1.addActionListener(this::confirmPurchaseActionPerformed);
-        
         loadPropertiesToTable();
         loadOwnedPropertiesToTable();
     }
@@ -464,6 +463,57 @@ public class CustomerDashboard extends javax.swing.JFrame {
                 }
             }
         });
+    }
+
+    private void injectFilters() {
+        PropertiesPanel.removeAll();
+        PropertiesPanel.setLayout(new java.awt.BorderLayout(0, 15));
+        PropertiesPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 25, 20, 25));
+
+        javax.swing.JPanel topArea = new javax.swing.JPanel(new java.awt.BorderLayout(0, 10));
+        
+        javax.swing.JLabel title = new javax.swing.JLabel("Properties");
+        title.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 22)); 
+        topArea.add(title, java.awt.BorderLayout.NORTH);
+
+        javax.swing.JPanel filterBar = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        
+        filterBar.add(new javax.swing.JLabel("Block:"));
+        filterBar.add(blockSelector);
+        filterBar.add(javax.swing.Box.createHorizontalStrut(10)); 
+        
+        filterBar.add(new javax.swing.JLabel("Min Price:"));
+        minPriceField.setColumns(7);
+        filterBar.add(minPriceField);
+        
+        filterBar.add(new javax.swing.JLabel("Max Price:"));
+        maxPriceField.setColumns(7);
+        filterBar.add(maxPriceField);
+        
+        filterBar.add(javax.swing.Box.createHorizontalStrut(10));
+        
+        filterBar.add(new javax.swing.JLabel("Min Size:"));
+        minSizeField.setColumns(7);
+        filterBar.add(minSizeField);
+        
+        filterBar.add(new javax.swing.JLabel("Max Size:"));
+        maxSizeField.setColumns(7);
+        filterBar.add(maxSizeField);
+        
+        filterBar.add(javax.swing.Box.createHorizontalStrut(10));
+        filterBar.add(filterButton);
+
+        topArea.add(filterBar, java.awt.BorderLayout.SOUTH);
+
+        PropertiesPanel.add(topArea, java.awt.BorderLayout.NORTH);
+        PropertiesPanel.add(jScrollPane1, java.awt.BorderLayout.CENTER); 
+        
+        javax.swing.JPanel bottomArea = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+        bottomArea.add(bookButton);
+        PropertiesPanel.add(bottomArea, java.awt.BorderLayout.SOUTH);
+        
+        PropertiesPanel.revalidate();
+        PropertiesPanel.repaint();
     }
     
     public static void main(String args[]) {
