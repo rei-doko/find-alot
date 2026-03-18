@@ -13,31 +13,33 @@ FindALOT is a Java-based Real Estate Sales and Management System designed to ass
 
 # Usage
 
+1. Register an account on the authentication page, setting the account type. (Customer / Agent)
+2. Log in to your account.
+
 Customer
 ---
 
-1. Login or register your account as a customer.
-2. Search for your desired properties based on individual specifications.
-3. View the property details and check if it's as desired.
-4. Contact the agent to book the property. *Optionally, you can book the property directly from the page*
-5. Choose your payment method. (Cash / Mortgage)
+1. Search and filter for desired properties.
+2. Select the property.
+3. Book the property to request a reservation.
+4. Open the "Owned Properties" panel.
+5. Once reserved, select the property and click on confirm payment method. (Cash / Mortgage)
+6. Once approved by the agent, the property will be owned by the user.
 
 Agent
 ---
 
-1. Login or register your account as an agent.
-2. Search for your desired properties based on individual specifications.
-3. View the property details and update its status. (For Sale / Reserved / Sold)
-
-## Installation
-
-1. 
+1. Search and filter for properties in the "Properties" panel.
+2. Open the "Requests" panel to view incoming booking requests.
+3. Select a property with the customer in mind.
+4. Click the reserve button.
+5. Once the customer chooses the payment method, confirm the purchase.
 
 # Features
 
-- Filtered search
-- Direct page booking
-- Easy payment method
+- Property table with filter
+- Property booking
+- Booking request page
 - Direct agent commission fee
 
 # Documentation
