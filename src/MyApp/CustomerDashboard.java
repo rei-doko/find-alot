@@ -423,6 +423,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
 
         ThemeEngine.stylePrimaryButton(filterButton);
         ThemeEngine.stylePrimaryButton(bookButton);
+        filterButton.setText("Filter");
         filterButton.addActionListener(e -> loadPropertiesToTable());
 
         javax.swing.JPanel wrapper = new javax.swing.JPanel(new java.awt.BorderLayout(10, 0));
