@@ -264,24 +264,18 @@ public class CustomerDashboard extends javax.swing.JFrame {
         loadOwnedPropertiesToTable();
     }                                          
 
-    // --- CASHIER / PAYMENT LOGIC ---
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
         int row = ownedPropertiesTable.getSelectedRow();
         if (row < 0) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Please select a booked property from the table to confirm.");
+            javax.swing.JOptionPane.showMessageDialog(this, "Please select a property from the table.");
             return;
         }
 
         int propertyId = (int) ownedPropertiesTable.getValueAt(row, 0);
-        final Property property = findPropertyById(propertyId);
+        final Property property = findPropertyById(propertyId); 
 
         if (property == null) {
             javax.swing.JOptionPane.showMessageDialog(this, "Error: Property data not found.");
-            return;
-        }
-        
-        if (property.getStatus().equalsIgnoreCase("Sold") || property.getStatus().equalsIgnoreCase("Buy")) {
-            javax.swing.JOptionPane.showMessageDialog(this, "You already own this property!");
             return;
         }
 
@@ -294,7 +288,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
 
         javax.swing.JPanel mainPanel = new javax.swing.JPanel(new java.awt.BorderLayout(10, 10));
         mainPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        mainPanel.setPreferredSize(new java.awt.Dimension(450, 300));
+        mainPanel.setPreferredSize(new java.awt.Dimension(450, 320)); 
 
         javax.swing.JPanel optionsPanel = new javax.swing.JPanel();
         optionsPanel.setLayout(new javax.swing.BoxLayout(optionsPanel, javax.swing.BoxLayout.Y_AXIS));
@@ -308,9 +302,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
 
         final javax.swing.JComboBox<String> bankBox = new javax.swing.JComboBox<>(new String[]{"Pag-IBIG (6.25%)", "RCBC (6.60%)", "SBC (6.80%)", "BDO (6.88%)", "CTS (10.50%)"});
         final javax.swing.JComboBox<Integer> yearsBox = new javax.swing.JComboBox<>();
-        for (int i = 5; i <= 30; i += 5) {
-            yearsBox.addItem(i);
-        }
+        for (int i = 5; i <= 30; i += 5) yearsBox.addItem(i);
 
         bankBox.setEnabled(false);
         yearsBox.setEnabled(false);
@@ -340,15 +332,12 @@ public class CustomerDashboard extends javax.swing.JFrame {
                 else if (bank.contains("6.88")) rate = 0.0688;
                 else if (bank.contains("10.50")) rate = 0.105;
 
-                double monthly = 0;
-                if (isInstallment && yearsBox.getSelectedItem() != null) {
-                    int years = (Integer) yearsBox.getSelectedItem();
-                    monthly = computeMonthlyAmortization(loanAmount, rate, years);
-                }
+                double monthly = (isInstallment && yearsBox.getSelectedItem() != null) ? 
+                                 computeMonthlyAmortization(loanAmount, rate, (Integer)yearsBox.getSelectedItem()) : 0;
                 double gmi = monthly / 0.35;
 
                 String html = "<html><div style='width:250px; font-family:sans-serif;'>" +
-                    "<h2 style='color:#2E7D32;'>Receipt Summary</h2>" +
+                    "<h2 style='color:#2E7D32; margin-bottom:5px;'>Receipt Summary</h2>" +
                     "<table style='width:100%;'>" +
                     "<tr><td>Contact Price:</td><td align='right'><b>" + String.format("%,.2f", contactPrice) + "</b></td></tr>" +
                     "<tr><td>Downpayment (5%):</td><td align='right'>" + String.format("%,.2f", downpayment) + "</td></tr>" +
@@ -361,7 +350,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
                         "<div style='margin-top:10px; padding:5px; background-color:#F5F5F5;'>" +
                         "<b>Monthly: ₱" + String.format("%,.2f", monthly) + "</b><br>" +
                         "<small>Req. Income: ₱" + String.format("%,.2f", gmi) + "</small></div>" : 
-                        "<p style='margin-top:10px; text-align:center;'><b>MODE: FULL CASH</b></p>") +
+                        "<p style='margin-top:10px; text-align:center; color:#2E7D32;'><b>MODE: FULL CASH</b></p>") +
                     "</div></html>";
                 receiptLabel.setText(html);
             }
@@ -379,11 +368,15 @@ public class CustomerDashboard extends javax.swing.JFrame {
         int result = javax.swing.JOptionPane.showConfirmDialog(this, mainPanel, "Confirm Purchase", javax.swing.JOptionPane.OK_CANCEL_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE);
 
         if (result == javax.swing.JOptionPane.OK_OPTION) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Payment details sent to Agent. Please wait for them to confirm the sale.");
+            property.setReservedBy(null);
+            property.updateStatus("Sold");
+            property.setOwner(customer);
+            
+            javax.swing.JOptionPane.showMessageDialog(this, "Purchase Confirmed!");
             loadPropertiesToTable();
             loadOwnedPropertiesToTable();
         }
-    }                                        
+    }                                    
 
     private void injectFilters() {
         PropertiesPanel.removeAll();
