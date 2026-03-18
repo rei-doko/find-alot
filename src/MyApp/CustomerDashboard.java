@@ -24,14 +24,79 @@ public class CustomerDashboard extends javax.swing.JFrame {
         this.customer = customer;
         initComponents();
         
+        // 1. Restructure the layout to match the modern Sidebar look
+        restructureLayout();
         injectFilters();
+        injectOwnedPropertiesPanel();
         
         setLocationRelativeTo(null);
         setupTable();
         
         jButton1.addActionListener(this::confirmPurchaseActionPerformed);
+        
+        // 2. Load the data
         loadPropertiesToTable();
         loadOwnedPropertiesToTable();
+        
+        // 3. Apply the ThemeEngine
+        applyTheme();
+    }
+
+    // --- NEW: Forces the JFrame into a strict Sidebar Layout ---
+    private void restructureLayout() {
+        this.getContentPane().removeAll();
+        this.getContentPane().setLayout(new java.awt.BorderLayout());
+        
+        // Setup the Sidebar (West)
+        NavigatorPanel.setPreferredSize(new java.awt.Dimension(220, 0));
+        NavigatorPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 20));
+        
+        // Re-add components to JFrame
+        this.getContentPane().add(NavigatorPanel, java.awt.BorderLayout.WEST);
+        this.getContentPane().add(Parent, java.awt.BorderLayout.CENTER);
+        
+        // Add a stylized Logo Label to the top of the Sidebar
+        javax.swing.JLabel logoLabel = new javax.swing.JLabel("FIND A LOT");
+        logoLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 28));
+        logoLabel.setForeground(ThemeEngine.BG_PANEL); // White text
+        NavigatorPanel.add(logoLabel, 0);
+        
+        // Re-add buttons nicely
+        propertiesPanelButton.setPreferredSize(new java.awt.Dimension(180, 45));
+        ownedPropertiesPanelButton.setPreferredSize(new java.awt.Dimension(180, 45));
+        logoutButton.setPreferredSize(new java.awt.Dimension(180, 45));
+        
+        this.revalidate();
+        this.repaint();
+    }
+
+    // --- NEW: Applies the ThemeEngine to all static components ---
+    private void applyTheme() {
+        this.getContentPane().setBackground(ThemeEngine.BG_MAIN);
+        Parent.setBackground(ThemeEngine.BG_MAIN);
+        PropertiesPanel.setBackground(ThemeEngine.BG_MAIN);
+        OwnedPropertiesPanel.setBackground(ThemeEngine.BG_MAIN);
+        
+        // Sidebar color
+        NavigatorPanel.setBackground(ThemeEngine.TEXT_PRIMARY); 
+
+        // Apply Button Styles
+        ThemeEngine.stylePrimaryButton(propertiesPanelButton);
+        ThemeEngine.stylePrimaryButton(ownedPropertiesPanelButton);
+        ThemeEngine.styleSecondaryButton(logoutButton);
+        
+        // Custom override for Logout to match dark sidebar
+        logoutButton.setBackground(ThemeEngine.TEXT_PRIMARY);
+        logoutButton.setForeground(ThemeEngine.ACCENT_COLOR);
+
+        // Apply Table Styles
+        ThemeEngine.styleTable(propertyTable, jScrollPane1);
+        ThemeEngine.styleTable(ownedPropertiesTable, jScrollPane2);
+
+        javax.swing.JTextField[] filterFields = {minPriceField, maxPriceField, minSizeField, maxSizeField};
+        for (javax.swing.JTextField field : filterFields) {
+            ThemeEngine.styleTextField(field);
+        }
     }
 
     // Helper method: Safely find a property across all blocks
@@ -77,34 +142,53 @@ public class CustomerDashboard extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        NavigatorPanel.setLayout(null);
+        NavigatorPanel.setBackground(new java.awt.Color(30, 42, 54));
+        NavigatorPanel.setLayout(new javax.swing.BoxLayout(NavigatorPanel, javax.swing.BoxLayout.Y_AXIS));
+        NavigatorPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        NavigatorPanel.setPreferredSize(new java.awt.Dimension(220, 0));
 
-        logoutButton.setText("Logout");
-        logoutButton.addActionListener(this::logoutButtonActionPerformed);
-        NavigatorPanel.add(logoutButton);
-        logoutButton.setBounds(30, 680, 170, 60);
-
-        ownedPropertiesPanelButton.setText("Owned Properties");
-        ownedPropertiesPanelButton.addActionListener(this::ownedPropertiesPanelButtonActionPerformed);
-        NavigatorPanel.add(ownedPropertiesPanelButton);
-        ownedPropertiesPanelButton.setBounds(40, 110, 150, 50);
+        javax.swing.JLabel navTitle = new javax.swing.JLabel("CUSTOMER");
+        navTitle.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 22));
+        navTitle.setForeground(java.awt.Color.WHITE);
+        navTitle.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        NavigatorPanel.add(navTitle);
+        NavigatorPanel.add(javax.swing.Box.createVerticalStrut(24));
 
         propertiesPanelButton.setText("Properties");
         propertiesPanelButton.addActionListener(this::propertiesPanelButtonActionPerformed);
+        propertiesPanelButton.setMaximumSize(new java.awt.Dimension(200, 50));
+        propertiesPanelButton.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        propertiesPanelButton.setBackground(new java.awt.Color(46, 125, 50));
+        propertiesPanelButton.setForeground(java.awt.Color.WHITE);
+        propertiesPanelButton.setFocusPainted(false);
         NavigatorPanel.add(propertiesPanelButton);
-        propertiesPanelButton.setBounds(40, 30, 150, 50);
+        NavigatorPanel.add(javax.swing.Box.createVerticalStrut(12));
+
+        ownedPropertiesPanelButton.setText("Owned Properties");
+        ownedPropertiesPanelButton.addActionListener(this::ownedPropertiesPanelButtonActionPerformed);
+        ownedPropertiesPanelButton.setMaximumSize(new java.awt.Dimension(200, 50));
+        ownedPropertiesPanelButton.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        ownedPropertiesPanelButton.setBackground(new java.awt.Color(46, 125, 50));
+        ownedPropertiesPanelButton.setForeground(java.awt.Color.WHITE);
+        ownedPropertiesPanelButton.setFocusPainted(false);
+        NavigatorPanel.add(ownedPropertiesPanelButton);
+        NavigatorPanel.add(javax.swing.Box.createVerticalStrut(24));
+
+        logoutButton.setText("Logout");
+        logoutButton.addActionListener(this::logoutButtonActionPerformed);
+        logoutButton.setMaximumSize(new java.awt.Dimension(200, 50));
+        logoutButton.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        logoutButton.setBackground(new java.awt.Color(211, 47, 47));
+        logoutButton.setForeground(java.awt.Color.WHITE);
+        logoutButton.setFocusPainted(false);
+        NavigatorPanel.add(logoutButton);
 
         Parent.setLayout(new java.awt.CardLayout());
 
         jLabel2.setText("Properties");
 
         propertyTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
-            },
+            new Object [][] {},
             new String [] {
                 "Property ID", "Block Number", "Property Number", "Status", "Owner", "Property Price", "Property Size", "Property Floors", "Property Type"
             }
@@ -142,33 +226,10 @@ public class CustomerDashboard extends javax.swing.JFrame {
                 .addGap(27, 27, 27)
                 .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(PropertiesPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 645, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 645, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bookButton, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE))
-                    .addGroup(PropertiesPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(PropertiesPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(18, 18, 18)
-                                .addComponent(blockSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(PropertiesPanelLayout.createSequentialGroup()
-                                .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(PropertiesPanelLayout.createSequentialGroup()
-                                        .addComponent(jLabel5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(minPriceField, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(maxPriceField, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(PropertiesPanelLayout.createSequentialGroup()
-                                        .addComponent(jLabel4)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(minSizeField, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(32, 32, 32)
-                                        .addComponent(maxSizeField, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(37, 37, 37)
-                                .addComponent(filterButton)))))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         PropertiesPanelLayout.setVerticalGroup(
@@ -176,33 +237,13 @@ public class CustomerDashboard extends javax.swing.JFrame {
             .addGroup(PropertiesPanelLayout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(blockSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
                 .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 592, Short.MAX_VALUE)
                     .addGroup(PropertiesPanelLayout.createSequentialGroup()
-                        .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(minSizeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(maxSizeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PropertiesPanelLayout.createSequentialGroup()
-                        .addComponent(filterButton)
-                        .addGap(2, 2, 2)))
-                .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(minPriceField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(maxPriceField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(PropertiesPanelLayout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 592, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(PropertiesPanelLayout.createSequentialGroup()
-                        .addGap(60, 60, 60)
-                        .addComponent(bookButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(9, Short.MAX_VALUE))
+                        .addComponent(bookButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         Parent.add(PropertiesPanel, "PropertiesPanel");
@@ -210,12 +251,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
         jLabel1.setText("Owned Properties");
 
         ownedPropertiesTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
-            },
+            new Object [][] {},
             new String [] {
                 "Property ID", "Block Number", "Property Number", "Status", "Property Price", "Property Size", "Property Floors", "Type"
             }
@@ -241,10 +277,10 @@ public class CustomerDashboard extends javax.swing.JFrame {
                 .addGroup(OwnedPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addGroup(OwnedPropertiesPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 637, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 637, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(19, Short.MAX_VALUE))
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         OwnedPropertiesPanelLayout.setVerticalGroup(
             OwnedPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -254,11 +290,11 @@ public class CustomerDashboard extends javax.swing.JFrame {
                 .addGroup(OwnedPropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(OwnedPropertiesPanelLayout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 682, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 682, Short.MAX_VALUE))
                     .addGroup(OwnedPropertiesPanelLayout.createSequentialGroup()
                         .addGap(60, 60, 60)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         Parent.add(OwnedPropertiesPanel, "OwnedPropertiesPanel");
@@ -285,23 +321,21 @@ public class CustomerDashboard extends javax.swing.JFrame {
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
         Session.logout();
-        
         new Authentication(userManager, propertyManager).setVisible(true);
-        
         this.dispose();
     }//GEN-LAST:event_logoutButtonActionPerformed
 
     private void ownedPropertiesPanelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ownedPropertiesPanelButtonActionPerformed
         CardLayout cl = (CardLayout)(Parent.getLayout());
         cl.show(Parent, "OwnedPropertiesPanel");
-        loadOwnedPropertiesToTable(); // Refresh the table when opening the panel
+        loadOwnedPropertiesToTable(); 
     }//GEN-LAST:event_ownedPropertiesPanelButtonActionPerformed
 
     private void propertiesPanelButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                      
         CardLayout cl = (CardLayout)(Parent.getLayout());
         cl.show(Parent, "PropertiesPanel");
         loadPropertiesToTable(); 
-    }                                                
+    }                                                     
 
     private void bookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bookButtonActionPerformed
         if (selectedProperty == null) {
@@ -314,20 +348,15 @@ public class CustomerDashboard extends javax.swing.JFrame {
             return;
         }
 
-        // Assign the customer as the owner temporarily and update status
-        // This alerts the AgentDashboard that there is a pending request!
         selectedProperty.setOwner(this.customer);
         selectedProperty.updateStatus("Book");
         
         javax.swing.JOptionPane.showMessageDialog(this, "Property Booked! Awaiting Agent Approval.");
         
-        // Refresh the UI to reflect changes
         loadPropertiesToTable();
         loadOwnedPropertiesToTable();
     }//GEN-LAST:event_bookButtonActionPerformed
 
-    // Note: If you have a separate Payment screen later, this button can just pop that screen open.
-    // Right now, if the Agent approves it, it automatically becomes "Sold".
     private void confirmPurchaseActionPerformed(java.awt.event.ActionEvent evt) {
         int selectedRow = ownedPropertiesTable.getSelectedRow();
         if (selectedRow == -1) {
@@ -339,7 +368,6 @@ public class CustomerDashboard extends javax.swing.JFrame {
         Property propToBuy = findPropertyById(propertyId);
         
         if (propToBuy != null && propToBuy.getStatus().equalsIgnoreCase("Booked")) {
-            // Customer confirms their intent, but agent still has the final say in the system
             javax.swing.JOptionPane.showMessageDialog(this, "Payment details sent to Agent. Please wait for them to confirm the sale.");
             loadOwnedPropertiesToTable();
             loadPropertiesToTable();
@@ -383,7 +411,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
 
                 model.addRow(new Object[]{
                     property.getPropertyId(),
-                    property.getBlockNumber(), // Directly from Property, exactly like Agent
+                    property.getBlockNumber(), 
                     property.getPropertyNumber(), 
                     property.getStatus(),
                     ownerName,
@@ -465,33 +493,43 @@ public class CustomerDashboard extends javax.swing.JFrame {
         });
     }
 
+    // --- REPLACED: GroupLayout with FlowLayout for Consistency ---
     private void injectFilters() {
         PropertiesPanel.removeAll();
         PropertiesPanel.setLayout(new java.awt.BorderLayout(10, 10));
-        PropertiesPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        PropertiesPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 25, 20, 25));
 
-        javax.swing.JPanel topArea = new javax.swing.JPanel(new java.awt.BorderLayout());
+        javax.swing.JPanel topArea = new javax.swing.JPanel(new java.awt.BorderLayout(0, 10));
         
-        javax.swing.JLabel title = new javax.swing.JLabel("Properties");
-        title.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 24));
+        javax.swing.JLabel title = new javax.swing.JLabel("Available Properties");
+        title.setFont(ThemeEngine.FONT_HEADER);
+        title.setForeground(ThemeEngine.TEXT_PRIMARY);
         topArea.add(title, java.awt.BorderLayout.NORTH);
 
-        javax.swing.JPanel filterBar = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 10));
+        javax.swing.JPanel filterBar = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        filterBar.setBackground(ThemeEngine.BG_MAIN);
+        topArea.setBackground(ThemeEngine.BG_MAIN);
+
+        minPriceField.setColumns(7);
+        maxPriceField.setColumns(7);
+        minSizeField.setColumns(7);
+        maxSizeField.setColumns(7);
+
+        ThemeEngine.stylePrimaryButton(filterButton);
+        
         filterBar.add(new javax.swing.JLabel("Block:"));
         filterBar.add(blockSelector);
+        filterBar.add(javax.swing.Box.createHorizontalStrut(10));
         filterBar.add(new javax.swing.JLabel("Min Price:"));
-        minPriceField.setColumns(7);
         filterBar.add(minPriceField);
         filterBar.add(new javax.swing.JLabel("Max Price:"));
-        maxPriceField.setColumns(7);
         filterBar.add(maxPriceField);
+        filterBar.add(javax.swing.Box.createHorizontalStrut(10));
         filterBar.add(new javax.swing.JLabel("Min Size:"));
-        minSizeField.setColumns(7);
         filterBar.add(minSizeField);
         filterBar.add(new javax.swing.JLabel("Max Size:"));
-        maxSizeField.setColumns(7);
         filterBar.add(maxSizeField);
-
+        filterBar.add(javax.swing.Box.createHorizontalStrut(10));
         filterBar.add(filterButton);
 
         topArea.add(filterBar, java.awt.BorderLayout.SOUTH);
@@ -499,12 +537,41 @@ public class CustomerDashboard extends javax.swing.JFrame {
         PropertiesPanel.add(topArea, java.awt.BorderLayout.NORTH);
         PropertiesPanel.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
-        javax.swing.JPanel bottomArea = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+        // Put the Book button neatly at the bottom right
+        javax.swing.JPanel bottomArea = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 0, 10));
+        bottomArea.setBackground(ThemeEngine.BG_MAIN);
+        ThemeEngine.stylePrimaryButton(bookButton);
         bottomArea.add(bookButton);
         PropertiesPanel.add(bottomArea, java.awt.BorderLayout.SOUTH);
 
         PropertiesPanel.revalidate();
         PropertiesPanel.repaint();
+    }
+
+    // --- NEW: Fixes the Owned Properties Layout ---
+    private void injectOwnedPropertiesPanel() {
+        OwnedPropertiesPanel.removeAll();
+        OwnedPropertiesPanel.setLayout(new java.awt.BorderLayout(10, 15));
+        OwnedPropertiesPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 25, 20, 25));
+
+        javax.swing.JLabel title = new javax.swing.JLabel("My Owned Properties");
+        title.setFont(ThemeEngine.FONT_HEADER);
+        title.setForeground(ThemeEngine.TEXT_PRIMARY);
+        OwnedPropertiesPanel.add(title, java.awt.BorderLayout.NORTH);
+
+        OwnedPropertiesPanel.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+
+        // A horizontal bar to keep the Confirm button neatly at the bottom right
+        javax.swing.JPanel buttonBar = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 0, 10));
+        buttonBar.setBackground(ThemeEngine.BG_MAIN);
+
+        ThemeEngine.stylePrimaryButton(jButton1); 
+        buttonBar.add(jButton1);
+
+        OwnedPropertiesPanel.add(buttonBar, java.awt.BorderLayout.SOUTH);
+
+        OwnedPropertiesPanel.revalidate();
+        OwnedPropertiesPanel.repaint();
     }
     
     public static void main(String args[]) {

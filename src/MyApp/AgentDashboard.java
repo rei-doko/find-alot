@@ -26,19 +26,89 @@ public class AgentDashboard extends javax.swing.JFrame {
     private javax.swing.JTextField minSizeField = new javax.swing.JTextField(7);
     private javax.swing.JTextField maxSizeField = new javax.swing.JTextField(7);
     
+    // Details Pane Labels
+    private javax.swing.JLabel detailBuyerLabel = new javax.swing.JLabel("Buyer: -");
+    private javax.swing.JLabel detailPropertyLabel = new javax.swing.JLabel("Property: -");
+    private javax.swing.JLabel detailStatusLabel = new javax.swing.JLabel("Status: -");
+    
     public AgentDashboard(UserManager userManager, PropertyManager propertyManager, Agent agent) {
         this.userManager = userManager;
         this.propertyManager = propertyManager;
         this.agent = agent;
         initComponents();
         
+        // 1. Structure the UI layout
+        restructureLayout();
         injectFilters();
-        injectRequestButtons(); 
+        injectRequestPanel(); // Creates the 70/30 Split
         
         setLocationRelativeTo(null);
+        
+        // 2. Wire up the functionality
         setupTable();
+        setupRequestTable();
         loadPropertiesToTable();
         loadRequestsToTable(); 
+        
+        // 3. Apply the Terracotta/Charcoal theme
+        applyTheme();
+    }
+
+    // --- NEW: Forces the JFrame into a strict Sidebar Layout ---
+    private void restructureLayout() {
+        this.getContentPane().removeAll();
+        this.getContentPane().setLayout(new java.awt.BorderLayout());
+        
+        // Setup the Sidebar (West)
+        NavigatorPanel.setPreferredSize(new java.awt.Dimension(220, 0));
+        NavigatorPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 20));
+        
+        // Re-add components to JFrame
+        this.getContentPane().add(NavigatorPanel, java.awt.BorderLayout.WEST);
+        this.getContentPane().add(Parent, java.awt.BorderLayout.CENTER);
+        
+        // Add a stylized Logo Label to the top of the Sidebar
+        javax.swing.JLabel logoLabel = new javax.swing.JLabel("FIND A LOT");
+        logoLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 28));
+        logoLabel.setForeground(ThemeEngine.BG_PANEL); // White text
+        NavigatorPanel.add(logoLabel, 0);
+        
+        // Re-add buttons nicely
+        propertiesButton.setPreferredSize(new java.awt.Dimension(180, 45));
+        requestsButton.setPreferredSize(new java.awt.Dimension(180, 45));
+        logoutButton.setPreferredSize(new java.awt.Dimension(180, 45));
+        
+        this.revalidate();
+        this.repaint();
+    }
+
+    // --- NEW: Applies the ThemeEngine to all static components ---
+    private void applyTheme() {
+        this.getContentPane().setBackground(ThemeEngine.BG_MAIN);
+        Parent.setBackground(ThemeEngine.BG_MAIN);
+        PropertiesPanel.setBackground(ThemeEngine.BG_MAIN);
+        RequestPanel.setBackground(ThemeEngine.BG_MAIN);
+        
+        // Sidebar color
+        NavigatorPanel.setBackground(ThemeEngine.TEXT_PRIMARY); 
+
+        // Apply Button Styles
+        ThemeEngine.stylePrimaryButton(propertiesButton);
+        ThemeEngine.stylePrimaryButton(requestsButton);
+        ThemeEngine.styleSecondaryButton(logoutButton);
+        
+        // Custom override for Logout to match dark sidebar
+        logoutButton.setBackground(ThemeEngine.TEXT_PRIMARY);
+        logoutButton.setForeground(ThemeEngine.ACCENT_COLOR);
+
+        // Apply Table Styles
+        ThemeEngine.styleTable(propertyTable, jScrollPane1);
+        ThemeEngine.styleTable(requestTable1, jScrollPane2);
+
+        javax.swing.JTextField[] filterFields = {minPriceField, maxPriceField, minSizeField, maxSizeField};
+        for (javax.swing.JTextField field : filterFields) {
+            ThemeEngine.styleTextField(field);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -190,9 +260,7 @@ public class AgentDashboard extends javax.swing.JFrame {
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
         Session.logout();
-        
         new Authentication(userManager, propertyManager).setVisible(true);
-        
         this.dispose();
     }//GEN-LAST:event_logoutButtonActionPerformed
 
@@ -205,12 +273,13 @@ public class AgentDashboard extends javax.swing.JFrame {
     private void injectFilters() {
         PropertiesPanel.removeAll();
         PropertiesPanel.setLayout(new java.awt.BorderLayout(10, 10));
-        PropertiesPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        PropertiesPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 25, 20, 25));
 
-        javax.swing.JPanel topArea = new javax.swing.JPanel(new java.awt.BorderLayout());
+        javax.swing.JPanel topArea = new javax.swing.JPanel(new java.awt.BorderLayout(0, 10));
         
         javax.swing.JLabel title = new javax.swing.JLabel("Properties");
-        title.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 24));
+        title.setFont(ThemeEngine.FONT_HEADER);
+        title.setForeground(ThemeEngine.TEXT_PRIMARY);
         topArea.add(title, java.awt.BorderLayout.NORTH);
 
         blockSelector.addActionListener(e -> {
@@ -222,19 +291,36 @@ public class AgentDashboard extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.JPanel filterBar = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 10));
+        javax.swing.JPanel filterBar = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        filterBar.setBackground(ThemeEngine.BG_MAIN);
+        topArea.setBackground(ThemeEngine.BG_MAIN);
+        
         filterBar.add(new javax.swing.JLabel("Block:"));
         filterBar.add(blockSelector);
+        filterBar.add(javax.swing.Box.createHorizontalStrut(10));
+        
         filterBar.add(new javax.swing.JLabel("Min Price:"));
+        minPriceField.setColumns(7);
         filterBar.add(minPriceField);
+        
         filterBar.add(new javax.swing.JLabel("Max Price:"));
+        maxPriceField.setColumns(7);
         filterBar.add(maxPriceField);
+        
+        filterBar.add(javax.swing.Box.createHorizontalStrut(10));
+        
         filterBar.add(new javax.swing.JLabel("Min Size:"));
+        minSizeField.setColumns(7);
         filterBar.add(minSizeField);
+        
         filterBar.add(new javax.swing.JLabel("Max Size:"));
+        maxSizeField.setColumns(7);
         filterBar.add(maxSizeField);
-
+        
+        filterBar.add(javax.swing.Box.createHorizontalStrut(10));
+        
         javax.swing.JButton filterBtn = new javax.swing.JButton("Filter");
+        ThemeEngine.stylePrimaryButton(filterBtn); // Styled!
         filterBtn.addActionListener(e -> loadPropertiesToTable());
         filterBar.add(filterBtn);
 
@@ -247,31 +333,64 @@ public class AgentDashboard extends javax.swing.JFrame {
         PropertiesPanel.repaint();
     }
 
-    private void injectRequestButtons() {
+    // --- NEW: Builds the 70/30 Split Layout for Requests ---
+    private void injectRequestPanel() {
         RequestPanel.removeAll();
-        RequestPanel.setLayout(new java.awt.BorderLayout(10, 10));
-        RequestPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        RequestPanel.setLayout(new java.awt.BorderLayout(10, 15));
+        RequestPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 25, 20, 25));
 
-        javax.swing.JPanel topArea = new javax.swing.JPanel(new java.awt.BorderLayout());
-        
+        // 1. Title Area
         javax.swing.JLabel title = new javax.swing.JLabel("Pending Customer Requests");
-        title.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 24));
-        topArea.add(title, java.awt.BorderLayout.NORTH);
+        title.setFont(ThemeEngine.FONT_HEADER);
+        title.setForeground(ThemeEngine.TEXT_PRIMARY);
+        RequestPanel.add(title, java.awt.BorderLayout.NORTH);
 
-        javax.swing.JPanel buttonBar = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 10));
-        javax.swing.JButton approveBtn = new javax.swing.JButton("Approve Sale");
-        javax.swing.JButton rejectBtn = new javax.swing.JButton("Reject Sale");
+        // 2. The Table (Center - 70%)
+        RequestPanel.add(jScrollPane2, java.awt.BorderLayout.CENTER); 
+        
+        // 3. The Details Pane (Bottom - 30%)
+        javax.swing.JPanel detailsCard = new javax.swing.JPanel(new java.awt.BorderLayout());
+        detailsCard.setBackground(ThemeEngine.BG_PANEL);
+        detailsCard.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(new java.awt.Color(229, 231, 235), 2),
+            javax.swing.BorderFactory.createEmptyBorder(15, 20, 15, 20)
+        ));
+        detailsCard.setPreferredSize(new java.awt.Dimension(0, 160));
+
+        // Details Text
+        javax.swing.JPanel infoGrid = new javax.swing.JPanel(new java.awt.GridLayout(2, 2, 10, 10));
+        infoGrid.setBackground(ThemeEngine.BG_PANEL);
+        
+        detailBuyerLabel.setFont(ThemeEngine.FONT_BODY);
+        detailPropertyLabel.setFont(ThemeEngine.FONT_BODY);
+        detailStatusLabel.setFont(ThemeEngine.FONT_BODY);
+        
+        infoGrid.add(detailBuyerLabel);
+        infoGrid.add(detailPropertyLabel);
+        infoGrid.add(detailStatusLabel);
+        infoGrid.add(new javax.swing.JLabel("")); // Empty filler
+
+        // Action Buttons
+        javax.swing.JPanel buttonBar = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 10, 0));
+        buttonBar.setBackground(ThemeEngine.BG_PANEL);
+        
+        javax.swing.JButton approveBtn = new javax.swing.JButton("Confirm Reservation");
+        javax.swing.JButton rejectBtn = new javax.swing.JButton("Cancel Request");
+
+        ThemeEngine.stylePrimaryButton(approveBtn);
+        ThemeEngine.styleSecondaryButton(rejectBtn);
 
         approveBtn.addActionListener(e -> handleRequest(true));
         rejectBtn.addActionListener(e -> handleRequest(false));
 
-        buttonBar.add(approveBtn);
         buttonBar.add(rejectBtn);
+        buttonBar.add(approveBtn);
 
-        topArea.add(buttonBar, java.awt.BorderLayout.SOUTH);
+        detailsCard.add(new javax.swing.JLabel("DETAILS"), java.awt.BorderLayout.NORTH);
+        detailsCard.add(infoGrid, java.awt.BorderLayout.CENTER);
+        detailsCard.add(buttonBar, java.awt.BorderLayout.SOUTH);
 
-        RequestPanel.add(topArea, java.awt.BorderLayout.NORTH);
-        RequestPanel.add(jScrollPane2, java.awt.BorderLayout.CENTER); 
+        RequestPanel.add(detailsCard, java.awt.BorderLayout.SOUTH);
         
         RequestPanel.revalidate();
         RequestPanel.repaint();
@@ -318,7 +437,6 @@ public class AgentDashboard extends javax.swing.JFrame {
         }
     }
 
-    //updated NO CLASSES NEEDED. JUST FINDS "BOOKED"
     private void loadRequestsToTable() {
         DefaultTableModel model = (DefaultTableModel) requestTable1.getModel();
         model.setRowCount(0);
@@ -343,9 +461,12 @@ public class AgentDashboard extends javax.swing.JFrame {
                 }
             }
         }
+        // Reset details pane
+        detailBuyerLabel.setText("Buyer: -");
+        detailPropertyLabel.setText("Property: -");
+        detailStatusLabel.setText("Status: -");
     }
 
-    // --- NEW: APPROVE UPDATES THE STATUS TO "SOLD" ---
     private void handleRequest(boolean isApprove) {
         int selectedRow = requestTable1.getSelectedRow();
         if (selectedRow == -1) {
@@ -358,13 +479,12 @@ public class AgentDashboard extends javax.swing.JFrame {
 
         if (selectedReq != null && selectedReq.getStatus().equalsIgnoreCase("Booked")) {
             if (isApprove) {
-                // Changing to "Buy" runs the Property.java logic to turn it into "Sold"
                 selectedReq.updateStatus("Buy"); 
                 agent.confirmSale(selectedReq, selectedReq.getOwner());
                 javax.swing.JOptionPane.showMessageDialog(this, "Sale successfully Approved!");
             } else {
-                selectedReq.updateStatus("Available"); // Resets to available
-                selectedReq.setOwner(null); // Removes the customer
+                selectedReq.updateStatus("Available"); 
+                selectedReq.setOwner(null); 
                 javax.swing.JOptionPane.showMessageDialog(this, "Sale successfully Rejected.");
             }
             
@@ -384,10 +504,35 @@ public class AgentDashboard extends javax.swing.JFrame {
                 int row = propertyTable.getSelectedRow();
                 if (row >= 0) { 
                     int propertyId = (int) propertyTable.getValueAt(row, 0); 
-                    // NO CRASH: Now properly using your team's updated agent.getProperty!
                     selectedProperty = agent.getProperty(propertyId);
                 } else {
                     selectedProperty = null;
+                }
+            }
+        });
+    }
+
+    // --- NEW: Wires the Request Table to update the Details Pane ---
+    private void setupRequestTable() {
+        requestTable1.setRowSelectionAllowed(true);
+        requestTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        
+        requestTable1.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int row = requestTable1.getSelectedRow();
+                if (row >= 0) {
+                    String block = requestTable1.getValueAt(row, 1).toString();
+                    String lot = requestTable1.getValueAt(row, 2).toString();
+                    String status = requestTable1.getValueAt(row, 3).toString();
+                    String buyer = requestTable1.getValueAt(row, 4).toString();
+
+                    detailBuyerLabel.setText("Buyer: " + buyer);
+                    detailPropertyLabel.setText("Property: Block " + block + " | Lot " + lot);
+                    detailStatusLabel.setText("Status: " + status);
+                } else {
+                    detailBuyerLabel.setText("Buyer: -");
+                    detailPropertyLabel.setText("Property: -");
+                    detailStatusLabel.setText("Status: -");
                 }
             }
         });
