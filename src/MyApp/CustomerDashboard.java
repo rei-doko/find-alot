@@ -286,6 +286,9 @@ public class CustomerDashboard extends javax.swing.JFrame {
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
         Session.logout();
+        
+        new Authentication(userManager, propertyManager).setVisible(true);
+        
         this.dispose();
     }//GEN-LAST:event_logoutButtonActionPerformed
 
@@ -295,11 +298,11 @@ public class CustomerDashboard extends javax.swing.JFrame {
         loadOwnedPropertiesToTable(); // Refresh the table when opening the panel
     }//GEN-LAST:event_ownedPropertiesPanelButtonActionPerformed
 
-    private void propertiesPanelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_propertiesPanelButtonActionPerformed
+    private void propertiesPanelButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                      
         CardLayout cl = (CardLayout)(Parent.getLayout());
         cl.show(Parent, "PropertiesPanel");
         loadPropertiesToTable(); 
-    }//GEN-LAST:event_propertiesButtonActionPerformed
+    }                                                
 
     private void bookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bookButtonActionPerformed
         if (selectedProperty == null) {
