@@ -15,9 +15,11 @@ public class PropertyManager {
     // A List of Lists: each inner list is one "Block" of 20 properties
     private Block block;
     private ArrayList<Block> blocks;
+    private ArrayList<Booking> bookings;
 
     public PropertyManager() {
         blocks = new ArrayList<>();
+        bookings = new ArrayList<>();
         generateProperties(5, 20); // 5 blocks, 20 properties each
     }
 
@@ -100,5 +102,52 @@ public class PropertyManager {
             }
         }
     return result;
+    }
+    
+    public void addBooking(Booking booking) {
+        bookings.add(booking);
+    }
+    
+    public void removeBooking(Booking booking) {
+        bookings.remove(booking);
+    }
+    
+    public ArrayList<Booking> getBookingForAgent(Agent agent) {
+        ArrayList<Booking> result = new ArrayList<>();
+        
+        for (Booking target : bookings) {
+            if(target.getAgent().equals(agent)) {
+                result.add(target);
+            }
+        }
+        return result;
+    }
+    
+    public ArrayList<Booking> getBookings() {
+        return bookings;
+    }
+    
+    public void removeBookingsForProperty(Property property) {
+        for(int i = 0; i < bookings.size(); i++) {
+            Booking booking = bookings.get(i);
+            
+            if(booking.getProperty().getPropertyId() == property.getPropertyId()) {
+                bookings.remove(i);
+                i--;
+            }
+        }
+    }
+    
+    public void removeNonReservedBookingsForProperty(Property property) {
+        for (int i = 0; i < bookings.size(); i++) {
+            Booking booking = bookings.get(i);
+
+            if (booking.getProperty().getPropertyId() == property.getPropertyId()) {
+                if (!"Reserved".equals(booking.getProperty().getStatus())) {
+                    bookings.remove(i);
+                    i--;
+                }
+            }
+        }
     }
 }

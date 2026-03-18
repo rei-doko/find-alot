@@ -7,6 +7,7 @@ package MyApp;
 import MyLib.Agent;
 import MyLib.Block;
 import MyLib.Booking;
+import MyLib.Customer;
 import MyLib.Detached;
 import MyLib.Property;
 import MyLib.PropertyManager;
@@ -31,7 +32,7 @@ public class AgentDashboard extends javax.swing.JFrame {
     private PropertyManager propertyManager;
     private Agent agent;
     private Property selectedProperty = null;
-    private Booking bookingManager;
+    private Booking selectedBooking = null;
 
 //This is the missing textfield
     private javax.swing.JTextField minPriceField = new javax.swing.JTextField(7);
@@ -53,6 +54,8 @@ public class AgentDashboard extends javax.swing.JFrame {
         
         setLocationRelativeTo(null);
         setupTable();
+        setupRequestTable();
+        loadBookingsToTable();
         loadPropertiesToTable();
     }
 
@@ -77,7 +80,10 @@ public class AgentDashboard extends javax.swing.JFrame {
         RequestPanel = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        requestTable1 = new javax.swing.JTable();
+        requestTable = new javax.swing.JTable();
+        removeReservationButton = new javax.swing.JButton();
+        confirmBookingButton = new javax.swing.JButton();
+        removeBookingButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -148,7 +154,7 @@ public class AgentDashboard extends javax.swing.JFrame {
 
         jLabel3.setText("Requests");
 
-        requestTable1.setModel(new javax.swing.table.DefaultTableModel(
+        requestTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null, null, null},
@@ -156,7 +162,7 @@ public class AgentDashboard extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Property ID", "Block Number", "Property Number", "Status", "Owner", "Property Price", "Property Size", "Property Floors", "Property Type"
+                "Property ID", "Block Number", "Property Number", "Status", "Booked By", "Property Price", "Property Size", "Property Floors", "Property Type"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -167,7 +173,16 @@ public class AgentDashboard extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(requestTable1);
+        jScrollPane2.setViewportView(requestTable);
+
+        removeReservationButton.setText("Remove Reservation");
+        removeReservationButton.addActionListener(this::removeReservationButtonActionPerformed);
+
+        confirmBookingButton.setText("Confirm Booking");
+        confirmBookingButton.addActionListener(this::confirmBookingButtonActionPerformed);
+
+        removeBookingButton.setText("Remove Booking");
+        removeBookingButton.addActionListener(this::removeBookingButtonActionPerformed);
 
         javax.swing.GroupLayout RequestPanelLayout = new javax.swing.GroupLayout(RequestPanel);
         RequestPanel.setLayout(RequestPanelLayout);
@@ -176,18 +191,47 @@ public class AgentDashboard extends javax.swing.JFrame {
             .addGroup(RequestPanelLayout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addGroup(RequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 645, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(RequestPanelLayout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 645, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                        .addComponent(removeReservationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(115, Short.MAX_VALUE))
+                .addContainerGap())
+            .addGroup(RequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RequestPanelLayout.createSequentialGroup()
+                    .addContainerGap(688, Short.MAX_VALUE)
+                    .addComponent(confirmBookingButton, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(4, 4, 4)))
+            .addGroup(RequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RequestPanelLayout.createSequentialGroup()
+                    .addContainerGap(686, Short.MAX_VALUE)
+                    .addComponent(removeBookingButton, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap()))
         );
         RequestPanelLayout.setVerticalGroup(
             RequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(RequestPanelLayout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 592, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24))
+                .addGroup(RequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(RequestPanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 592, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(24, 24, 24))
+                    .addGroup(RequestPanelLayout.createSequentialGroup()
+                        .addGap(248, 248, 248)
+                        .addComponent(removeReservationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(RequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(RequestPanelLayout.createSequentialGroup()
+                    .addGap(179, 179, 179)
+                    .addComponent(confirmBookingButton, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(539, Short.MAX_VALUE)))
+            .addGroup(RequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(RequestPanelLayout.createSequentialGroup()
+                    .addGap(252, 252, 252)
+                    .addComponent(removeBookingButton, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(466, Short.MAX_VALUE)))
         );
 
         Parent.add(RequestPanel, "RequestPanel");
@@ -216,6 +260,7 @@ public class AgentDashboard extends javax.swing.JFrame {
         // TODO add your handling code here:
        CardLayout cl = (CardLayout)(Parent.getLayout());
        cl.show(Parent, "RequestPanel");
+       loadBookingsToTable();
     }//GEN-LAST:event_requestsButtonActionPerformed
 
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
@@ -231,7 +276,76 @@ public class AgentDashboard extends javax.swing.JFrame {
         // TODO add your handling code here:
        CardLayout cl = (CardLayout)(Parent.getLayout());
        cl.show(Parent, "PropertiesPanel");
+       loadPropertiesToTable();
     }//GEN-LAST:event_propertiesButtonActionPerformed
+
+    private void removeReservationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeReservationButtonActionPerformed
+        // TODO add your handling code here:
+        Booking selectedBooking = getSelectedBooking();
+        
+        if(selectedBooking != null) {
+            Property property = selectedBooking.getProperty();
+            
+            if("Reserved".equals(property.getStatus())) {
+                property.updateStatus("For Sale");
+                property.setReservation(null);
+                propertyManager.removeBooking(selectedBooking);
+                
+                JOptionPane.showMessageDialog(this, "Reservation removed.");
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "Selected property is not reserved.");
+            }
+            
+            loadBookingsToTable();
+            selectedBooking = null;
+        }
+    }//GEN-LAST:event_removeReservationButtonActionPerformed
+
+    private void confirmBookingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmBookingButtonActionPerformed
+        // TODO add your handling code here:
+        Booking selectedBooking = getSelectedBooking();
+
+        if (selectedBooking != null) {
+            Property property = selectedBooking.getProperty();
+            Customer customer = selectedBooking.getCustomer();
+            
+            property.updateStatus("Reserved");
+            property.setReservation(customer);
+
+            
+            
+            ArrayList<Booking> bookings = propertyManager.getBookingForAgent(agent);
+            ArrayList<Booking> toRemove = new ArrayList<>();
+            for (Booking b : bookings) {
+                if (b.getProperty() == property && b.getCustomer() != customer) {
+                    toRemove.add(b);
+                }
+            }
+            for (Booking b : toRemove) {
+                propertyManager.removeBooking(b);
+            }
+
+            JOptionPane.showMessageDialog(this, "Booking confirmed!");
+            
+            loadBookingsToTable();
+            loadPropertiesToTable();
+            selectedBooking = null;
+        }
+    }//GEN-LAST:event_confirmBookingButtonActionPerformed
+
+    private void removeBookingButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBookingButtonActionPerformed
+        // TODO add your handling code here:
+        Booking selectedBooking = getSelectedBooking();
+        
+        if(selectedBooking != null) {
+            propertyManager.removeBooking(selectedBooking);
+            JOptionPane.showMessageDialog(this, "Booking removed.");
+
+            loadBookingsToTable();
+            selectedBooking = null;
+        }
+    }//GEN-LAST:event_removeBookingButtonActionPerformed
 
     //Ito yung manual injection ng filter bar natin, since it was missing from the GUI designer. This is a workaround to add it back in.
     // This is a workaround for the fact that the filter bar was not added in the GUI designer
@@ -277,6 +391,23 @@ public class AgentDashboard extends javax.swing.JFrame {
         if (!text.matches("\\d+(\\.\\d+)?")) return null;
         return Double.parseDouble(text);
     }
+    
+    private Booking getSelectedBooking() {
+        int selectedRow = requestTable.getSelectedRow();
+        if (selectedRow < 0) return null;
+
+        int propertyId = (int) requestTable.getValueAt(selectedRow, 0);
+        String customerName = (String) requestTable.getValueAt(selectedRow, 4);
+
+        for (Booking booking : propertyManager.getBookingForAgent(agent)) {
+            if (booking.getProperty().getPropertyId() == propertyId &&
+                booking.getCustomer().getUsername().equals(customerName)) {
+                return booking;
+            }
+        }
+
+        return null;
+    }
 
     //fixed filter and loop logic as well
     private void loadPropertiesToTable() {
@@ -318,6 +449,39 @@ public class AgentDashboard extends javax.swing.JFrame {
         }
     }
     
+    private void loadBookingsToTable() {
+        DefaultTableModel requestModel = (DefaultTableModel) requestTable.getModel();
+        requestModel.setRowCount(0); // Clear existing rows
+
+        for(Booking bookingRequest : propertyManager.getBookingForAgent(agent)) {
+            
+            Property property = bookingRequest.getProperty();
+            String type;
+            if (property instanceof TownHouse) {
+                type = "Town House";
+            } else if (property instanceof SemiDetached) {
+                type = "Semi-Detached";
+            } else if (property instanceof Detached) {
+                type = "Detached";
+            } else {
+                type = "";
+            }
+
+            requestModel.addRow(new Object[] {
+                property.getPropertyId(),
+                property.getBlockNumber(), 
+                property.getPropertyNumber(),   
+                property.getStatus(),
+                bookingRequest.getCustomer().getUsername(),
+                property.getContactPrice(),
+                property.getPropertySize(),
+                property.getFloors(),
+                type
+            });
+        }
+    }
+
+    
     private void setupTable() {
         propertyTable.setRowSelectionAllowed(true);
         propertyTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -336,49 +500,33 @@ public class AgentDashboard extends javax.swing.JFrame {
         });
     }
     
-    /// booking
-    private void loadRequestsToTable() {
-    DefaultTableModel model = (DefaultTableModel) requestTable1.getModel();
-    model.setRowCount(0);
+    private void setupRequestTable() {
+        requestTable.setRowSelectionAllowed(true);
+        requestTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
-    ArrayList<Booking.BookingRequest> requests = bookingManager.getRequestsForAgent(agent);
+        requestTable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int row = requestTable.getSelectedRow();
 
-    for(Booking.BookingRequest request : requests) {
-        Property property = request.getProperty();
-        model.addRow(new Object[] {
-            property.getPropertyId(),
-            property.getBlockNumber(),
-            property.getPropertyNumber(),
-            property.getStatus(),
-            (property.getOwner() != null ? property.getOwner().getUsername() : "None"),
-            property.getContactPrice(),
-            property.getPropertySize(),
-            property.getFloors(),
-            property.getClass().getSimpleName()
+                if (row >= 0) {
+                    int propertyId = (int) requestTable.getValueAt(row, 0);
+                    String customerName = (String) requestTable.getValueAt(row, 4);
+
+                    // Find the actual Booking object
+                    for (Booking booking : propertyManager.getBookingForAgent(agent)) {
+                        if (booking.getProperty().getPropertyId() == propertyId &&
+                            booking.getCustomer().getUsername().equals(customerName)) {
+                            selectedBooking = booking;
+                            break;
+                        }
+                    }
+                } else {
+                    selectedBooking = null;
+                }
+            }
         });
     }
-}
-
-// Confirm selected booking request
-private void confirmRequestButtonActionPerformed(java.awt.event.ActionEvent evt) {
-    int selectedRow = requestTable1.getSelectedRow();
-    if(selectedRow >= 0) {
-        int propertyId = (int) requestTable1.getValueAt(selectedRow, 0);
-        Booking.BookingRequest targetRequest = null;
-        for(Booking.BookingRequest req : bookingManager.getRequestsForAgent(agent)) {
-            if(req.getProperty().getPropertyId() == propertyId) {
-                targetRequest = req;
-                break;
-            }
-        }
-        if(targetRequest != null) {
-            bookingManager.confirmBooking(targetRequest);
-            JOptionPane.showMessageDialog(this, "Booking confirmed!");
-            loadRequestsToTable();
-            loadPropertiesToTable(); // Update agent property view
-        }
-    }
-}
+    
     /**
      * @param args the command line arguments
      */
@@ -407,6 +555,7 @@ private void confirmRequestButtonActionPerformed(java.awt.event.ActionEvent evt)
     private javax.swing.JPanel Parent;
     private javax.swing.JPanel PropertiesPanel;
     private javax.swing.JPanel RequestPanel;
+    private javax.swing.JButton confirmBookingButton;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
@@ -414,7 +563,9 @@ private void confirmRequestButtonActionPerformed(java.awt.event.ActionEvent evt)
     private javax.swing.JButton logoutButton;
     private javax.swing.JButton propertiesButton;
     private javax.swing.JTable propertyTable;
-    private javax.swing.JTable requestTable1;
+    private javax.swing.JButton removeBookingButton;
+    private javax.swing.JButton removeReservationButton;
+    private javax.swing.JTable requestTable;
     private javax.swing.JButton requestsButton;
     // End of variables declaration//GEN-END:variables
 }

@@ -7,7 +7,9 @@ package MyApp;
 import javax.swing.table.DefaultTableModel;
 import MyLib.Admin;
 import MyLib.Agent;
+import MyLib.Block;
 import MyLib.Customer;
+import MyLib.Property;
 import MyLib.PropertyManager;
 import MyLib.Session;
 import MyLib.User;
@@ -70,6 +72,8 @@ public class AdminDashboard extends javax.swing.JFrame {
         removeAccountButton = new javax.swing.JButton();
         PropertiesPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        propertyTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1024, 768));
@@ -162,21 +166,46 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         jLabel2.setText("Properties");
 
+        propertyTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Property ID", "Block Number", "Property Number", "Status", "Owner", "Property Price", "Property Size", "Property Floors", "Property Type"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(propertyTable);
+
         javax.swing.GroupLayout PropertiesPanelLayout = new javax.swing.GroupLayout(PropertiesPanel);
         PropertiesPanel.setLayout(PropertiesPanelLayout);
         PropertiesPanelLayout.setHorizontalGroup(
             PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PropertiesPanelLayout.createSequentialGroup()
                 .addGap(27, 27, 27)
-                .addComponent(jLabel2)
-                .addContainerGap(733, Short.MAX_VALUE))
+                .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 645, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addContainerGap(142, Short.MAX_VALUE))
         );
         PropertiesPanelLayout.setVerticalGroup(
             PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PropertiesPanelLayout.createSequentialGroup()
                 .addGap(29, 29, 29)
                 .addComponent(jLabel2)
-                .addContainerGap(717, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 95, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 592, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30))
         );
 
         Parent.add(PropertiesPanel, "PropertiesPanel");
@@ -337,25 +366,25 @@ public class AdminDashboard extends javax.swing.JFrame {
     
     // update admin
     private void loadPropertiesToTable() {
-    DefaultTableModel model = (DefaultTableModel) propertiesTable.getModel();
-    model.setRowCount(0);
+        DefaultTableModel model = (DefaultTableModel) propertyTable.getModel();
+        model.setRowCount(0);
 
-    for(Block block : propertyManager.getAllBlocks()) {
-        for(Property property : block.getProperties()) {
-            model.addRow(new Object[] {
-                property.getPropertyId(),
-                property.getBlockNumber(),
-                property.getPropertyNumber(),
-                property.getStatus(),
-                (property.getOwner() != null ? property.getOwner().getUsername() : "None"),
-                property.getContactPrice(),
-                property.getPropertySize(),
-                property.getFloors(),
-                property.getClass().getSimpleName()
-            });
+        for(Block block : propertyManager.getAllBlocks()) {
+            for(Property property : block.getProperties()) {
+                model.addRow(new Object[] {
+                    property.getPropertyId(),
+                    property.getBlockNumber(),
+                    property.getPropertyNumber(),
+                    property.getStatus(),
+                    property.getOwner(),
+                    property.getContactPrice(),
+                    property.getPropertySize(),
+                    property.getFloors(),
+                    property.getClass().getSimpleName()
+                });
+            }
         }
     }
-}
     
     //
     /**
@@ -392,8 +421,10 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton logoutButton;
     private javax.swing.JButton propertiesPanelButton;
+    private javax.swing.JTable propertyTable;
     private javax.swing.JButton removeAccountButton;
     // End of variables declaration//GEN-END:variables
 }

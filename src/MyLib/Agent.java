@@ -44,4 +44,9 @@ public class Agent extends User {
         }
         return null;
     }
+    
+    @Override
+    public String toString() {
+        return getUsername();
+    }
 }
