@@ -12,27 +12,24 @@ import java.util.ArrayList;
  */
 
 public class PropertyManager {
-    // A List of Lists: each inner list is one "Block" of 20 properties
     private Block block;
     private ArrayList<Block> blocks;
     private ArrayList<Booking> bookings;
 
     public PropertyManager() {
         blocks = new ArrayList<>();
-        bookings = new ArrayList<>();
-        generateProperties(5, 20); // 5 blocks, 20 properties each
+        generateProperties(5, 20);
     }
 
     private void generateProperties(int totalBlocks, int propsPerBlock) {
         for (int b = 1; b <= totalBlocks; b++) {
-            block = new Block(b); // Creates individual blocks
+            block = new Block(b);
             
-            for (int l = 1; l <= propsPerBlock; l++) { // Creates individual properties
-                // Factory creates the property and handles the ID/Type logic
+            for (int l = 1; l <= propsPerBlock; l++) {
                 Property newProp = PropertyFactory.createProperty(b, l);
                 block.addProperty(newProp);
             }
-            blocks.add(block); // Adds individual blocks to ArrayList<Block> blocks
+            blocks.add(block);
         }
     }
     
