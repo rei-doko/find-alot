@@ -75,9 +75,7 @@ public class PropertyManager {
             }
         }
     }
-
-    //filter
-
+    
     public ArrayList<Property> filterProperties(Integer blockNum, Double minPrice, Double maxPrice){
         ArrayList<Property> result = new ArrayList<>();
         for(Block block : blocks){
