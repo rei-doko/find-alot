@@ -314,12 +314,14 @@ public class CustomerDashboard extends javax.swing.JFrame {
         // TODO add your handling code here:
         CardLayout cl = (CardLayout)(Parent.getLayout());
         cl.show(Parent, "OwnedPropertiesPanel");
+        loadOwnedPropertiesToTable();
     }//GEN-LAST:event_ownedPropertiesPanelButtonActionPerformed
 
     private void propertiesPanelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_propertiesPanelButtonActionPerformed
         // TODO add your handling code here:
         CardLayout cl = (CardLayout)(Parent.getLayout());
         cl.show(Parent, "PropertiesPanel");
+        loadPropertiesToTable();
     }//GEN-LAST:event_propertiesPanelButtonActionPerformed
 
     private void bookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bookButtonActionPerformed
@@ -512,11 +514,13 @@ public class CustomerDashboard extends javax.swing.JFrame {
     );
 
     if(result == JOptionPane.OK_OPTION){
+        property.setReservedBy(null);
+        property.updateStatus("Buy");
         property.setOwner(customer);
         JOptionPane.showMessageDialog(this, "Purchase Confirmed!");
-
+        loadPropertiesToTable();
         loadOwnedPropertiesToTable();
-         }
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void loadPropertiesToTable() {

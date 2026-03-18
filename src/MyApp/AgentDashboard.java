@@ -288,7 +288,7 @@ public class AgentDashboard extends javax.swing.JFrame {
             
             if("Reserved".equals(property.getStatus())) {
                 property.updateStatus("For Sale");
-                property.setReservation(null);
+                property.setReservedBy(null);
                 propertyManager.removeBooking(selectedBooking);
                 
                 JOptionPane.showMessageDialog(this, "Reservation removed.");
@@ -311,7 +311,7 @@ public class AgentDashboard extends javax.swing.JFrame {
             Customer customer = selectedBooking.getCustomer();
             
             property.updateStatus("Reserved");
-            property.setReservation(customer);
+            property.setReservedBy(customer);
 
             
             

@@ -48,7 +48,7 @@ public abstract class Property {
         owner = buyer;
     }
     
-    public void setReservation(Customer booker) {
+    public void setReservedBy(Customer booker) {
         reservedBy = booker;
     }
 
