@@ -13,8 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.util.List;
+
 
 public class CustomerDashboard extends javax.swing.JFrame {
     
@@ -31,7 +30,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
         this.customer = customer;
         initComponents();
         
-        // 1. Restructure the layout to match the modern Sidebar look
+        
         restructureLayout();
         injectFilters();
         injectOwnedPropertiesPanel();
@@ -41,41 +40,95 @@ public class CustomerDashboard extends javax.swing.JFrame {
         
         jButton1.addActionListener(this::confirmPurchaseActionPerformed);
         
-        // 2. Load the data
         loadPropertiesToTable();
         loadOwnedPropertiesToTable();
         
-        // 3. Apply the ThemeEngine
         applyTheme();
     }
 
-    // --- NEW: Forces the JFrame into a strict Sidebar Layout ---
     private void restructureLayout() {
-        this.getContentPane().removeAll();
-        this.getContentPane().setLayout(new java.awt.BorderLayout());
-        
-        // Setup the Sidebar (West)
-        NavigatorPanel.setPreferredSize(new java.awt.Dimension(220, 0));
-        NavigatorPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 20));
-        
-        // Re-add components to JFrame
-        this.getContentPane().add(NavigatorPanel, java.awt.BorderLayout.WEST);
-        this.getContentPane().add(Parent, java.awt.BorderLayout.CENTER);
-        
-        // Add a stylized Logo Label to the top of the Sidebar
-        javax.swing.JLabel logoLabel = new javax.swing.JLabel("FIND A LOT");
-        logoLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 28));
-        logoLabel.setForeground(ThemeEngine.BG_PANEL); // White text
-        NavigatorPanel.add(logoLabel, 0);
-        
-        // Re-add buttons nicely
-        propertiesPanelButton.setPreferredSize(new java.awt.Dimension(180, 45));
-        ownedPropertiesPanelButton.setPreferredSize(new java.awt.Dimension(180, 45));
-        logoutButton.setPreferredSize(new java.awt.Dimension(180, 45));
-        
-        this.revalidate();
-        this.repaint();
+    this.getContentPane().removeAll();
+    
+    this.getContentPane().setLayout(new java.awt.BorderLayout(0, 0)); 
+
+    NavigatorPanel.setPreferredSize(new java.awt.Dimension(220, 0)); 
+    NavigatorPanel.setLayout(new javax.swing.BoxLayout(NavigatorPanel, javax.swing.BoxLayout.Y_AXIS));
+    NavigatorPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 15, 20, 15));
+    NavigatorPanel.setBackground(ThemeEngine.TEXT_PRIMARY); // Dark Sidebar
+
+    javax.swing.JLabel logoLabel = new javax.swing.JLabel();
+    try {
+        // Looks for the image in your src folder
+        java.net.URL imgURL = getClass().getResource("/logo/logo.png"); 
+        if (imgURL != null) {
+            ImageIcon icon = new ImageIcon(imgURL);
+            Image scaledImg = icon.getImage().getScaledInstance(160, -1, Image.SCALE_SMOOTH);
+            logoLabel.setIcon(new ImageIcon(scaledImg));
+        } else {
+            logoLabel.setText("FIND A LOT");
+            logoLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 26));
+            logoLabel.setForeground(Color.WHITE);
+        }
+    } catch (Exception e) {
+        logoLabel.setText("FIND A LOT");
     }
+    logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    NavigatorPanel.add(logoLabel);
+    NavigatorPanel.add(javax.swing.Box.createVerticalStrut(40)); 
+
+    // 4. Navigation Buttons (Properties & Owned)
+    Dimension btnSize = new Dimension(190, 45);
+    JButton[] navButtons = {propertiesPanelButton, ownedPropertiesPanelButton};
+
+    for (JButton btn : navButtons) {
+        btn.setMaximumSize(btnSize);
+        btn.setPreferredSize(btnSize);
+        btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        NavigatorPanel.add(btn);
+        NavigatorPanel.add(javax.swing.Box.createVerticalStrut(15)); 
+    }
+
+    // 5. Pushes Profile Card to the Bottom
+    NavigatorPanel.add(javax.swing.Box.createVerticalGlue());
+
+    // 6. Account Identification Card
+    JPanel profileCard = new JPanel();
+    profileCard.setLayout(new javax.swing.BoxLayout(profileCard, javax.swing.BoxLayout.Y_AXIS));
+    profileCard.setBackground(new java.awt.Color(45, 55, 72)); // Modern slate
+    profileCard.setMaximumSize(new Dimension(190, 75));
+    profileCard.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
+    profileCard.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    JLabel nameLabel = new JLabel(customer.getUsername().toUpperCase());
+    nameLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+    nameLabel.setForeground(Color.WHITE);
+    nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    JLabel roleLabel = new JLabel("CLIENT PORTAL");
+    roleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+    roleLabel.setForeground(ThemeEngine.ACCENT_COLOR); 
+    roleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    profileCard.add(nameLabel);
+    profileCard.add(Box.createVerticalStrut(3));
+    profileCard.add(roleLabel);
+
+    NavigatorPanel.add(profileCard);
+    NavigatorPanel.add(javax.swing.Box.createVerticalStrut(15));
+
+    // 7. Logout Button (Pinned to bottom)
+    logoutButton.setMaximumSize(btnSize);
+    logoutButton.setPreferredSize(btnSize);
+    logoutButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    NavigatorPanel.add(logoutButton);
+
+    // 8. Re-attach to JFrame
+    this.getContentPane().add(NavigatorPanel, java.awt.BorderLayout.WEST);
+    this.getContentPane().add(Parent, java.awt.BorderLayout.CENTER); 
+
+    this.revalidate();
+    this.repaint();
+}
 
     // --- NEW: Applies the ThemeEngine to all static components ---
     private void applyTheme() {
@@ -357,7 +410,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
         }
 
         selectedProperty.setOwner(this.customer);
-        selectedProperty.updateStatus("Book");
+        selectedProperty.updateStatus("Booked");     
         
         javax.swing.JOptionPane.showMessageDialog(this, "Property Booked! Awaiting Agent Approval.");
         
@@ -400,146 +453,121 @@ public class CustomerDashboard extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
     // TODO add your handling code here:                                      
-    int row = ownedPropertiesTable.getSelectedRow();
-
-    if(row < 0){
-        JOptionPane.showMessageDialog(this, "Please select a property.");
-        return;
-    }
-
-    int propertyId = (int) ownedPropertiesTable.getValueAt(row, 0);
-    Property property = customer.getProperty(propertyId);
-
-    if(property == null){
-        JOptionPane.showMessageDialog(this, "Invalid property.");
-        return;
-    }
-
-    double contactPrice = property.getContactPrice();
-    double downpayment = contactPrice * 0.05;
-    double reservationFee = 20000;
-    double capitalTax = contactPrice * 0.06;
-    double docStamp = contactPrice * 0.015;
-    double transferTax = contactPrice * 0.005;
-    double notarial = contactPrice * 0.02;
-
-    double otherFees = capitalTax + docStamp + transferTax + notarial;
-    double totalCashOut = downpayment + reservationFee + otherFees;
-    double loanAmount = contactPrice - downpayment;
-
-    // PANEL UI
-    JPanel panel = new JPanel();
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-    JLabel infoLabel = new JLabel("Receipt Summary:");
-    JLabel receiptLabel = new JLabel();
-
-    // PAYMENT TYPE
-    JRadioButton cashOption = new JRadioButton("Cash", true);
-    JRadioButton installmentOption = new JRadioButton("Installment");
-
-    ButtonGroup group = new ButtonGroup();
-    group.add(cashOption);
-    group.add(installmentOption);
-
-    // INSTALLMENT OPTIONS
-    JComboBox<String> bankBox = new JComboBox<>(new String[]{
-        "Pag-IBIG (6.25%)",
-        "RCBC (6.60%)",
-        "SBC (6.80%)",
-        "BDO (6.88%)",
-        "CTS (10.50%)"
-    });
-
-    JComboBox<Integer> yearsBox = new JComboBox<>();
-    for(int i = 1; i <= 30; i++){
-        yearsBox.addItem(i);
-    }
-
-    bankBox.setEnabled(false);
-    yearsBox.setEnabled(false);
-
-    // LISTENERS
-    ActionListener updateReceipt = e -> {
-        double monthly = 0;
-        double gmi = 0;
-
-        if(installmentOption.isSelected()){
-            bankBox.setEnabled(true);
-            yearsBox.setEnabled(true);
-
-            double rate = 0;
-
-            String bank = (String) bankBox.getSelectedItem();
-            int years = (int) yearsBox.getSelectedItem();
-
-            if(bank.contains("6.25")) rate = 0.0625;
-            else if(bank.contains("6.60")) rate = 0.066;
-            else if(bank.contains("6.80")) rate = 0.068;
-            else if(bank.contains("6.88")) rate = 0.0688;
-            else if(bank.contains("10.50")) rate = 0.105;
-
-            monthly = computeMonthlyAmortization(loanAmount, rate, years);
-            gmi = monthly / 0.35;
-
-        } else {
-            bankBox.setEnabled(false);
-            yearsBox.setEnabled(false);
+int row = ownedPropertiesTable.getSelectedRow();
+        if (row < 0) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please select a property from the table.");
+            return;
         }
 
-        receiptLabel.setText(
-            "<html>" +
-            "Contact Price: " + contactPrice + "<br>" +
-            "Downpayment (5%): " + downpayment + "<br>" +
-            "Reservation Fee: " + reservationFee + "<br>" +
-            "Other Fees: " + otherFees + "<br>" +
-            "Total Cash Out: " + totalCashOut + "<br>" +
-            "Loan Amount: " + loanAmount + "<br>" +
-            (installmentOption.isSelected() ? 
-                "Monthly Amortization: " + String.format("%.2f", monthly) + "<br>" +
-                "Minimum GMI: " + String.format("%.2f", gmi) + "<br>" : 
-                "Mode: CASH<br>"
-            ) +
-            "</html>"
-        );
-    };
+        int propertyId = (int) ownedPropertiesTable.getValueAt(row, 0);
+        final Property property = customer.getProperty(propertyId);
 
-    cashOption.addActionListener(updateReceipt);
-    installmentOption.addActionListener(updateReceipt);
-    bankBox.addActionListener(updateReceipt);
-    yearsBox.addActionListener(updateReceipt);
+        if (property == null) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Error: Property data not found.");
+            return;
+        }
 
-    // INITIAL COMPUTE
-    updateReceipt.actionPerformed(null);
+        final double contactPrice = property.getContactPrice();
+        final double downpayment = contactPrice * 0.05;
+        final double reservationFee = 20000;
+        final double taxes = (contactPrice * 0.06) + (contactPrice * 0.015) + (contactPrice * 0.005) + (contactPrice * 0.02);
+        final double totalCashOut = downpayment + reservationFee + taxes;
+        final double loanAmount = contactPrice - downpayment;
 
-    // ADD COMPONENTS
-    panel.add(infoLabel);
-    panel.add(cashOption);
-    panel.add(installmentOption);
-    panel.add(new JLabel("Bank:"));
-    panel.add(bankBox);
-    panel.add(new JLabel("Years:"));
-    panel.add(yearsBox);
-    panel.add(receiptLabel);
-    
-    JButton confirmBtn = new JButton("Confirm Purchase");
-    panel.add(confirmBtn);
+        javax.swing.JPanel mainPanel = new javax.swing.JPanel(new java.awt.BorderLayout(10, 10));
+        mainPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        mainPanel.setPreferredSize(new java.awt.Dimension(450, 280));
 
-    int result = JOptionPane.showConfirmDialog(
-        this,
-        panel,
-        "Confirm Purchase",
-        JOptionPane.OK_CANCEL_OPTION,
-        JOptionPane.PLAIN_MESSAGE
-    );
+        javax.swing.JPanel optionsPanel = new javax.swing.JPanel();
+        optionsPanel.setLayout(new javax.swing.BoxLayout(optionsPanel, javax.swing.BoxLayout.Y_AXIS));
+        optionsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Payment Plan"));
 
-    if(result == JOptionPane.OK_OPTION){
-        property.setReservedBy(null);
-        property.updateStatus("Buy");
-        property.setOwner(customer);
-        JOptionPane.showMessageDialog(this, "Purchase Confirmed!");
-        loadPropertiesToTable();
-        loadOwnedPropertiesToTable();
+        javax.swing.JRadioButton cashOption = new javax.swing.JRadioButton("Full Cash", true);
+        final javax.swing.JRadioButton installmentOption = new javax.swing.JRadioButton("Bank Financing");
+        javax.swing.ButtonGroup group = new javax.swing.ButtonGroup();
+        group.add(cashOption); 
+        group.add(installmentOption);
+
+        final javax.swing.JComboBox<String> bankBox = new javax.swing.JComboBox<>(new String[]{"Pag-IBIG (6.25%)", "RCBC (6.60%)", "SBC (6.80%)", "BDO (6.88%)", "CTS (10.50%)"});
+        final javax.swing.JComboBox<Integer> yearsBox = new javax.swing.JComboBox<>();
+        for (int i = 5; i <= 30; i += 5) {
+            yearsBox.addItem(i);
+        }
+
+        bankBox.setEnabled(false);
+        yearsBox.setEnabled(false);
+
+        optionsPanel.add(cashOption);
+        optionsPanel.add(installmentOption);
+        optionsPanel.add(new javax.swing.JLabel("Bank:"));
+        optionsPanel.add(bankBox);
+        optionsPanel.add(new javax.swing.JLabel("Years:"));
+        optionsPanel.add(yearsBox);
+
+        final javax.swing.JLabel receiptLabel = new javax.swing.JLabel();
+        receiptLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        
+        // --- THE TRADITIONAL JAVA FIX ---
+        java.awt.event.ActionListener updateUI = new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                boolean isInstallment = installmentOption.isSelected();
+                bankBox.setEnabled(isInstallment);
+                yearsBox.setEnabled(isInstallment);
+
+                double rate = 0;
+                String bank = (String) bankBox.getSelectedItem();
+                if (bank.contains("6.25")) rate = 0.0625;
+                else if (bank.contains("6.60")) rate = 0.066;
+                else if (bank.contains("6.80")) rate = 0.068;
+                else if (bank.contains("6.88")) rate = 0.0688;
+                else if (bank.contains("10.50")) rate = 0.105;
+
+                double monthly = 0;
+                if (isInstallment && yearsBox.getSelectedItem() != null) {
+                    int years = (Integer) yearsBox.getSelectedItem();
+                    monthly = computeMonthlyAmortization(loanAmount, rate, years);
+                }
+                double gmi = monthly / 0.35;
+
+                String html = "<html><div style='width:250px; font-family:sans-serif;'>" +
+                    "<h2 style='color:#2E7D32;'>Receipt Summary</h2>" +
+                    "<table style='width:100%;'>" +
+                    "<tr><td>Contact Price:</td><td align='right'><b>" + String.format("%,.2f", contactPrice) + "</b></td></tr>" +
+                    "<tr><td>Downpayment (5%):</td><td align='right'>" + String.format("%,.2f", downpayment) + "</td></tr>" +
+                    "<tr><td>Reservation Fee:</td><td align='right'>" + String.format("%,.2f", reservationFee) + "</td></tr>" +
+                    "<tr><td>Taxes & Fees:</td><td align='right'>" + String.format("%,.2f", taxes) + "</td></tr>" +
+                    "<tr style='border-top:1px solid black;'><td style='padding-top:5px;'><b>Total Cash Out:</b></td>" +
+                    "<td align='right' style='padding-top:5px; color:#D32F2F;'><b>" + String.format("₱%,.2f", totalCashOut) + "</b></td></tr>" +
+                    "</table>" +
+                    (isInstallment ? 
+                        "<div style='margin-top:10px; padding:5px; background-color:#F5F5F5;'>" +
+                        "<b>Monthly: ₱" + String.format("%,.2f", monthly) + "</b><br>" +
+                        "<small>Req. Income: ₱" + String.format("%,.2f", gmi) + "</small></div>" : 
+                        "<p style='margin-top:10px; text-align:center;'><b>MODE: FULL CASH</b></p>") +
+                    "</div></html>";
+                receiptLabel.setText(html);
+            }
+        };
+
+        cashOption.addActionListener(updateUI);
+        installmentOption.addActionListener(updateUI);
+        bankBox.addActionListener(updateUI);
+        yearsBox.addActionListener(updateUI);
+        updateUI.actionPerformed(null);
+
+        mainPanel.add(optionsPanel, java.awt.BorderLayout.WEST);
+        mainPanel.add(receiptLabel, java.awt.BorderLayout.CENTER);
+
+        int result = javax.swing.JOptionPane.showConfirmDialog(this, mainPanel, "Confirm Purchase", javax.swing.JOptionPane.OK_CANCEL_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE);
+
+        if (result == javax.swing.JOptionPane.OK_OPTION) {
+            property.setReservedBy(null);
+            property.updateStatus("Buy");
+            property.setOwner(customer);
+            javax.swing.JOptionPane.showMessageDialog(this, "Purchase Confirmed!");
+            loadPropertiesToTable();
+            loadOwnedPropertiesToTable();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -660,7 +688,6 @@ public class CustomerDashboard extends javax.swing.JFrame {
         });
     }
 
-    // --- REPLACED: GroupLayout with FlowLayout for Consistency ---
     private void injectFilters() {
         PropertiesPanel.removeAll();
         PropertiesPanel.setLayout(new java.awt.BorderLayout(10, 10));
@@ -682,8 +709,11 @@ public class CustomerDashboard extends javax.swing.JFrame {
         minSizeField.setColumns(7);
         maxSizeField.setColumns(7);
 
+        // Style both buttons
         ThemeEngine.stylePrimaryButton(filterButton);
+        ThemeEngine.stylePrimaryButton(bookButton);
         
+        // Add only the inputs to the top bar
         filterBar.add(new javax.swing.JLabel("Block:"));
         filterBar.add(blockSelector);
         filterBar.add(javax.swing.Box.createHorizontalStrut(10));
@@ -696,26 +726,26 @@ public class CustomerDashboard extends javax.swing.JFrame {
         filterBar.add(minSizeField);
         filterBar.add(new javax.swing.JLabel("Max Size:"));
         filterBar.add(maxSizeField);
-        filterBar.add(javax.swing.Box.createHorizontalStrut(10));
-        filterBar.add(filterButton);
+        // NOTE: Filter button removed from here so it stops hiding!
 
         topArea.add(filterBar, java.awt.BorderLayout.SOUTH);
 
         PropertiesPanel.add(topArea, java.awt.BorderLayout.NORTH);
         PropertiesPanel.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
-        // Put the Book button neatly at the bottom right
-        javax.swing.JPanel bottomArea = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 0, 10));
+        // NEW BOTTOM AREA: Puts both buttons safely at the bottom right
+        javax.swing.JPanel bottomArea = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 15, 10));
         bottomArea.setBackground(ThemeEngine.BG_MAIN);
-        ThemeEngine.stylePrimaryButton(bookButton);
+        
+        bottomArea.add(filterButton); // Filter is now down here!
         bottomArea.add(bookButton);
+        
         PropertiesPanel.add(bottomArea, java.awt.BorderLayout.SOUTH);
 
         PropertiesPanel.revalidate();
         PropertiesPanel.repaint();
     }
 
-    // --- NEW: Fixes the Owned Properties Layout ---
     private void injectOwnedPropertiesPanel() {
         OwnedPropertiesPanel.removeAll();
         OwnedPropertiesPanel.setLayout(new java.awt.BorderLayout(10, 15));

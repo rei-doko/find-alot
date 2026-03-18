@@ -33,13 +33,13 @@ public abstract class Property {
     }
     
     public void updateStatus(String action) {
-        if(action.equalsIgnoreCase("Reserved")) {
-            this.status = "Reserved"; 
+        if(action.equalsIgnoreCase("Reserved") || action.equalsIgnoreCase("Booked")) {
+            this.status = "Booked"; 
         }
-        else if(action.equalsIgnoreCase("Buy")) {
+        else if(action.equalsIgnoreCase("Buy") || action.equalsIgnoreCase("Sold")) {
             this.status = "Sold";
         }
-        else {
+        else if(action.equalsIgnoreCase("Available") || action.equalsIgnoreCase("For Sale")) {
             this.status = "For Sale";
         }
     }

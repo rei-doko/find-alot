@@ -1,5 +1,8 @@
 package MyApp;
 
+import MyLib.TownHouse;
+import MyLib.SemiDetached;
+import MyLib.Detached;
 import MyLib.Agent;
 import MyLib.Block;
 import MyLib.Booking;
@@ -43,72 +46,118 @@ public class AgentDashboard extends javax.swing.JFrame {
         this.propertyManager = propertyManager;
         this.agent = agent;
         initComponents();
-        
-        // 1. Structure the UI layout
+        this.setSize(1200, 750);
         restructureLayout();
         injectFilters();
-        injectRequestPanel(); // Creates the 70/30 Split
+        injectRequestPanel(); 
         
         setLocationRelativeTo(null);
         
-        // 2. Wire up the functionality
         setupTable();
         setupRequestTable();
         loadPropertiesToTable();
         loadRequestsToTable(); 
         
-        // 3. Apply the Terracotta/Charcoal theme
         applyTheme();
+        
+        this.pack(); 
+        this.setVisible(true);
     }
 
-    // --- NEW: Forces the JFrame into a strict Sidebar Layout ---
     private void restructureLayout() {
-        this.getContentPane().removeAll();
-        this.getContentPane().setLayout(new java.awt.BorderLayout());
-        
-        // Setup the Sidebar (West)
-        NavigatorPanel.setPreferredSize(new java.awt.Dimension(220, 0));
-        NavigatorPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 20));
-        
-        // Re-add components to JFrame
-        this.getContentPane().add(NavigatorPanel, java.awt.BorderLayout.WEST);
-        this.getContentPane().add(Parent, java.awt.BorderLayout.CENTER);
-        
-        // Add a stylized Logo Label to the top of the Sidebar
-        javax.swing.JLabel logoLabel = new javax.swing.JLabel("FIND A LOT");
-        logoLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 28));
-        logoLabel.setForeground(ThemeEngine.BG_PANEL); // White text
-        NavigatorPanel.add(logoLabel, 0);
-        
-        // Re-add buttons nicely
-        propertiesButton.setPreferredSize(new java.awt.Dimension(180, 45));
-        requestsButton.setPreferredSize(new java.awt.Dimension(180, 45));
-        logoutButton.setPreferredSize(new java.awt.Dimension(180, 45));
-        
-        this.revalidate();
-        this.repaint();
+    this.getContentPane().removeAll();
+    this.getContentPane().setLayout(new java.awt.BorderLayout(0, 0)); 
+
+    NavigatorPanel.setPreferredSize(new java.awt.Dimension(220, 0)); 
+    NavigatorPanel.setLayout(new javax.swing.BoxLayout(NavigatorPanel, javax.swing.BoxLayout.Y_AXIS));
+    NavigatorPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 15, 20, 15));
+    NavigatorPanel.setBackground(ThemeEngine.TEXT_PRIMARY); // Ensures sidebar matches theme
+
+    javax.swing.JLabel logoLabel = new javax.swing.JLabel();
+    try {
+        java.net.URL imgURL = getClass().getResource("/logo/logo.png"); 
+        if (imgURL != null) {
+            javax.swing.ImageIcon icon = new javax.swing.ImageIcon(imgURL);
+            java.awt.Image scaledImg = icon.getImage().getScaledInstance(160, -1, java.awt.Image.SCALE_SMOOTH);
+            logoLabel.setIcon(new javax.swing.ImageIcon(scaledImg));
+        } else {
+            logoLabel.setText("FIND A LOT");
+            logoLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 26));
+            logoLabel.setForeground(java.awt.Color.WHITE);
+        }
+    } catch (Exception e) {
+        logoLabel.setText("FIND A LOT");
+    }
+    logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    NavigatorPanel.add(logoLabel);
+    NavigatorPanel.add(javax.swing.Box.createVerticalStrut(40)); 
+
+    Dimension btnSize = new Dimension(190, 45);
+    JButton[] navButtons = {propertiesButton, requestsButton}; 
+
+    for (JButton btn : navButtons) {
+        btn.setMaximumSize(btnSize);
+        btn.setPreferredSize(btnSize);
+        btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        NavigatorPanel.add(btn);
+        NavigatorPanel.add(javax.swing.Box.createVerticalStrut(15)); 
     }
 
-    // --- NEW: Applies the ThemeEngine to all static components ---
+    NavigatorPanel.add(javax.swing.Box.createVerticalGlue());
+
+    JPanel profileCard = new JPanel();
+    profileCard.setLayout(new javax.swing.BoxLayout(profileCard, javax.swing.BoxLayout.Y_AXIS));
+    profileCard.setBackground(new java.awt.Color(45, 55, 72)); 
+    profileCard.setMaximumSize(new Dimension(190, 70));
+    profileCard.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 5));
+    profileCard.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    String userName = (agent != null) ? agent.getUsername().toUpperCase() : "AGENT";
+    JLabel nameLabel = new JLabel(userName);
+    nameLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+    nameLabel.setForeground(Color.WHITE);
+    nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    JLabel roleLabel = new JLabel("LOGGED IN AS AGENT");
+    roleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+    roleLabel.setForeground(ThemeEngine.ACCENT_COLOR); 
+    roleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    profileCard.add(nameLabel);
+    profileCard.add(Box.createVerticalStrut(3));
+    profileCard.add(roleLabel);
+
+    NavigatorPanel.add(profileCard);
+    NavigatorPanel.add(javax.swing.Box.createVerticalStrut(15));
+
+    // 6. Logout Button
+    logoutButton.setMaximumSize(btnSize);
+    logoutButton.setPreferredSize(btnSize);
+    logoutButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    NavigatorPanel.add(logoutButton);
+
+    // 7. Attach to Frame
+    this.getContentPane().add(NavigatorPanel, java.awt.BorderLayout.WEST);
+    this.getContentPane().add(Parent, java.awt.BorderLayout.CENTER); 
+
+    this.revalidate();
+    this.repaint();
+}
     private void applyTheme() {
         this.getContentPane().setBackground(ThemeEngine.BG_MAIN);
         Parent.setBackground(ThemeEngine.BG_MAIN);
         PropertiesPanel.setBackground(ThemeEngine.BG_MAIN);
         RequestPanel.setBackground(ThemeEngine.BG_MAIN);
         
-        // Sidebar color
         NavigatorPanel.setBackground(ThemeEngine.TEXT_PRIMARY); 
 
-        // Apply Button Styles
         ThemeEngine.stylePrimaryButton(propertiesButton);
         ThemeEngine.stylePrimaryButton(requestsButton);
         ThemeEngine.styleSecondaryButton(logoutButton);
         
-        // Custom override for Logout to match dark sidebar
         logoutButton.setBackground(ThemeEngine.TEXT_PRIMARY);
         logoutButton.setForeground(ThemeEngine.ACCENT_COLOR);
 
-        // Apply Table Styles
         ThemeEngine.styleTable(propertyTable, jScrollPane1);
         ThemeEngine.styleTable(requestTable, jScrollPane2);
 
@@ -330,6 +379,8 @@ public class AgentDashboard extends javax.swing.JFrame {
         title.setForeground(ThemeEngine.TEXT_PRIMARY);
         topArea.add(title, java.awt.BorderLayout.NORTH);
 
+        // The blockSelector ActionListener is already set up in your constructor/variables, 
+        // but we'll ensure it maps correctly if changed here.
         blockSelector.addActionListener(e -> {
             String selected = (String) blockSelector.getSelectedItem();
             if(selected == null || selected.equals("All")) {
@@ -342,106 +393,107 @@ public class AgentDashboard extends javax.swing.JFrame {
         javax.swing.JPanel filterBar = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
         filterBar.setBackground(ThemeEngine.BG_MAIN);
         topArea.setBackground(ThemeEngine.BG_MAIN);
+
+        minPriceField.setColumns(7);
+        maxPriceField.setColumns(7);
+        minSizeField.setColumns(7);
+        maxSizeField.setColumns(7);
         
         filterBar.add(new javax.swing.JLabel("Block:"));
         filterBar.add(blockSelector);
         filterBar.add(javax.swing.Box.createHorizontalStrut(10));
-        
         filterBar.add(new javax.swing.JLabel("Min Price:"));
-        minPriceField.setColumns(7);
         filterBar.add(minPriceField);
-        
         filterBar.add(new javax.swing.JLabel("Max Price:"));
-        maxPriceField.setColumns(7);
         filterBar.add(maxPriceField);
-        
         filterBar.add(javax.swing.Box.createHorizontalStrut(10));
-        
         filterBar.add(new javax.swing.JLabel("Min Size:"));
-        minSizeField.setColumns(7);
         filterBar.add(minSizeField);
-        
         filterBar.add(new javax.swing.JLabel("Max Size:"));
-        maxSizeField.setColumns(7);
         filterBar.add(maxSizeField);
-        
-        filterBar.add(javax.swing.Box.createHorizontalStrut(10));
-        
-        javax.swing.JButton filterBtn = new javax.swing.JButton("Filter");
-        ThemeEngine.stylePrimaryButton(filterBtn); // Styled!
-        filterBtn.addActionListener(e -> loadPropertiesToTable());
-        filterBar.add(filterBtn);
 
         topArea.add(filterBar, java.awt.BorderLayout.SOUTH);
 
         PropertiesPanel.add(topArea, java.awt.BorderLayout.NORTH);
         PropertiesPanel.add(jScrollPane1, java.awt.BorderLayout.CENTER); 
         
+        // --- NEW BOTTOM AREA: Anchors the Filter Button to the bottom right ---
+        javax.swing.JPanel bottomArea = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 15, 10));
+        bottomArea.setBackground(ThemeEngine.BG_MAIN);
+        
+        javax.swing.JButton filterBtn = new javax.swing.JButton("Filter");
+        ThemeEngine.stylePrimaryButton(filterBtn); 
+        filterBtn.addActionListener(e -> loadPropertiesToTable());
+        
+        bottomArea.add(filterBtn);
+
+        PropertiesPanel.add(bottomArea, java.awt.BorderLayout.SOUTH);
+
         PropertiesPanel.revalidate();
         PropertiesPanel.repaint();
     }
-
-    // --- NEW: Builds the 70/30 Split Layout for Requests ---
     private void injectRequestPanel() {
-        RequestPanel.removeAll();
-        RequestPanel.setLayout(new java.awt.BorderLayout(10, 15));
-        RequestPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 25, 20, 25));
+        PropertiesPanel.removeAll();
+        PropertiesPanel.setLayout(new java.awt.BorderLayout(10, 10));
+        PropertiesPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 25, 20, 25));
 
-        // 1. Title Area
-        javax.swing.JLabel title = new javax.swing.JLabel("Pending Customer Requests");
+        javax.swing.JPanel topArea = new javax.swing.JPanel(new java.awt.BorderLayout(0, 10));
+        topArea.setBackground(ThemeEngine.BG_MAIN);
+        
+        javax.swing.JLabel title = new javax.swing.JLabel("Properties");
         title.setFont(ThemeEngine.FONT_HEADER);
         title.setForeground(ThemeEngine.TEXT_PRIMARY);
-        RequestPanel.add(title, java.awt.BorderLayout.NORTH);
+        topArea.add(title, java.awt.BorderLayout.NORTH);
 
-        // 2. The Table (Center - 70%)
-        RequestPanel.add(jScrollPane2, java.awt.BorderLayout.CENTER); 
+        blockSelector.addActionListener(e -> {
+            String selected = (String) blockSelector.getSelectedItem();
+            if(selected == null || selected.equals("All")) {
+                selectedBlock = 0;
+            } else {
+                selectedBlock = Integer.parseInt(selected);
+            }
+        });
+
+        // 1. The Inputs (Left side)
+        javax.swing.JPanel filterBar = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
+        filterBar.setBackground(ThemeEngine.BG_MAIN);
+
+        minPriceField.setColumns(7);
+        maxPriceField.setColumns(7);
+        minSizeField.setColumns(7);
+        maxSizeField.setColumns(7);
         
-        // 3. The Details Pane (Bottom - 30%)
-        javax.swing.JPanel detailsCard = new javax.swing.JPanel(new java.awt.BorderLayout());
-        detailsCard.setBackground(ThemeEngine.BG_PANEL);
-        detailsCard.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-            javax.swing.BorderFactory.createLineBorder(new java.awt.Color(229, 231, 235), 2),
-            javax.swing.BorderFactory.createEmptyBorder(15, 20, 15, 20)
-        ));
-        detailsCard.setPreferredSize(new java.awt.Dimension(0, 160));
+        filterBar.add(new javax.swing.JLabel("Block:"));
+        filterBar.add(blockSelector);
+        filterBar.add(javax.swing.Box.createHorizontalStrut(10));
+        filterBar.add(new javax.swing.JLabel("Min Price:"));
+        filterBar.add(minPriceField);
+        filterBar.add(new javax.swing.JLabel("Max Price:"));
+        filterBar.add(maxPriceField);
+        filterBar.add(javax.swing.Box.createHorizontalStrut(10));
+        filterBar.add(new javax.swing.JLabel("Min Size:"));
+        filterBar.add(minSizeField);
+        filterBar.add(new javax.swing.JLabel("Max Size:"));
+        filterBar.add(maxSizeField);
 
-        // Details Text
-        javax.swing.JPanel infoGrid = new javax.swing.JPanel(new java.awt.GridLayout(2, 2, 10, 10));
-        infoGrid.setBackground(ThemeEngine.BG_PANEL);
-        
-        detailBuyerLabel.setFont(ThemeEngine.FONT_BODY);
-        detailPropertyLabel.setFont(ThemeEngine.FONT_BODY);
-        detailStatusLabel.setFont(ThemeEngine.FONT_BODY);
-        
-        infoGrid.add(detailBuyerLabel);
-        infoGrid.add(detailPropertyLabel);
-        infoGrid.add(detailStatusLabel);
-        infoGrid.add(new javax.swing.JLabel("")); // Empty filler
+        // 2. The Button (Right side)
+        javax.swing.JButton filterBtn = new javax.swing.JButton("Filter");
+        ThemeEngine.stylePrimaryButton(filterBtn); 
+        filterBtn.addActionListener(e -> loadPropertiesToTable());
 
-        // Action Buttons
-        javax.swing.JPanel buttonBar = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 10, 0));
-        buttonBar.setBackground(ThemeEngine.BG_PANEL);
-        
-        javax.swing.JButton approveBtn = new javax.swing.JButton("Confirm Reservation");
-        javax.swing.JButton rejectBtn = new javax.swing.JButton("Cancel Request");
+        // 3. THE FIX: Pin the button to the EAST wall so it can never be pushed down
+        javax.swing.JPanel wrapper = new javax.swing.JPanel(new java.awt.BorderLayout(10, 0));
+        wrapper.setBackground(ThemeEngine.BG_MAIN);
+        wrapper.add(filterBar, java.awt.BorderLayout.CENTER); // Inputs fill the center
+        wrapper.add(filterBtn, java.awt.BorderLayout.EAST);   // Button is locked to the right
 
-        ThemeEngine.stylePrimaryButton(approveBtn);
-        ThemeEngine.styleSecondaryButton(rejectBtn);
+        topArea.add(wrapper, java.awt.BorderLayout.SOUTH);
 
-        approveBtn.addActionListener(e -> handleRequest(true));
-        rejectBtn.addActionListener(e -> handleRequest(false));
+        PropertiesPanel.add(topArea, java.awt.BorderLayout.NORTH);
+        PropertiesPanel.add(jScrollPane1, java.awt.BorderLayout.CENTER); 
 
-        buttonBar.add(rejectBtn);
-        buttonBar.add(approveBtn);
-
-        detailsCard.add(new javax.swing.JLabel("DETAILS"), java.awt.BorderLayout.NORTH);
-        detailsCard.add(infoGrid, java.awt.BorderLayout.CENTER);
-        detailsCard.add(buttonBar, java.awt.BorderLayout.SOUTH);
-
-        RequestPanel.add(detailsCard, java.awt.BorderLayout.SOUTH);
-        
-        RequestPanel.revalidate();
-        RequestPanel.repaint();
+        PropertiesPanel.revalidate();
+        PropertiesPanel.repaint();
     }
 
     private Double parseDoubleOrNull(String text){
@@ -506,17 +558,31 @@ public class AgentDashboard extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) requestTable.getModel();
         model.setRowCount(0);
 
+        if (agent.getAllBlocks() == null || agent.getAllBlocks().isEmpty()) {
+            System.out.println("DEBUG: Agent " + agent.getUsername() + " has NO blocks assigned!");
+            return;
+        }
+
         for (Block block : agent.getAllBlocks()) {
             for (Property property : block.getProperties()) {
-                if (property.getStatus().equalsIgnoreCase("Booked")) {
+                
+                String status = property.getStatus();
+                if (status != null && (status.equalsIgnoreCase("Booked") || status.equalsIgnoreCase("Book"))) {
+                    
                     String type = property.getClass().getSimpleName();
-                    String ownerName = (property.getOwner() != null) ? property.getOwner().getUsername() : "None";
+                    
+                    String ownerName = "Unknown";
+                    if (property.getOwner() != null) {
+                        ownerName = property.getOwner().getUsername();
+                    } else if (property.getReservedBy() != null) {
+                        ownerName = property.getReservedBy().getUsername();
+                    }
                     
                     model.addRow(new Object[]{
                         property.getPropertyId(),
                         property.getBlockNumber(),
                         property.getPropertyNumber(),
-                        property.getStatus(),
+                        "Pending Approval", 
                         ownerName,
                         property.getContactPrice(),
                         property.getPropertySize(),
@@ -526,7 +592,8 @@ public class AgentDashboard extends javax.swing.JFrame {
                 }
             }
         }
-        // Reset details pane
+        
+        // Reset the Details Pane so it doesn't show old data
         detailBuyerLabel.setText("Buyer: -");
         detailPropertyLabel.setText("Property: -");
         detailStatusLabel.setText("Status: -");
@@ -610,7 +677,6 @@ public class AgentDashboard extends javax.swing.JFrame {
         });
     }
 
-    // --- NEW: Wires the Request Table to update the Details Pane ---
     private void setupRequestTable() {
         requestTable.setRowSelectionAllowed(true);
         requestTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);

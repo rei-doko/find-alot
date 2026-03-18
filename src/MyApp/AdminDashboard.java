@@ -45,8 +45,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         this.propertyManager = propertyManager;
         this.admin = admin;
         initComponents();
-        
-        // 1. Restructure the layout to match the modern Sidebar look
+        this.setSize(1200, 750);
         restructureLayout();
         setupPropertyTable();
         injectFilters();
@@ -63,33 +62,85 @@ public class AdminDashboard extends javax.swing.JFrame {
         applyTheme();
     }
 
-    //Forces the JFrame into a strict Sidebar Layout
     private void restructureLayout() {
-        this.getContentPane().removeAll();
-        this.getContentPane().setLayout(new java.awt.BorderLayout());
-        
-        // Setup the Sidebar (West)
-        NavigatorPanel.setPreferredSize(new java.awt.Dimension(220, 0));
-        NavigatorPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 20));
-        
-        // Re-add components to JFrame
-        this.getContentPane().add(NavigatorPanel, java.awt.BorderLayout.WEST);
-        this.getContentPane().add(Parent, java.awt.BorderLayout.CENTER);
-        
-        // Add a stylized Logo Label to the top of the Sidebar
-        javax.swing.JLabel logoLabel = new javax.swing.JLabel("FIND A LOT");
-        logoLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 28));
-        logoLabel.setForeground(ThemeEngine.BG_PANEL); // White text
-        NavigatorPanel.add(logoLabel, 0);
-        
-        // Re-add buttons nicely
-        propertiesPanelButton.setPreferredSize(new java.awt.Dimension(180, 45));
-        accountsPanelButton.setPreferredSize(new java.awt.Dimension(180, 45));
-        logoutButton.setPreferredSize(new java.awt.Dimension(180, 45));
-        
-        this.revalidate();
-        this.repaint();
+this.getContentPane().removeAll();
+    
+    this.getContentPane().setLayout(new java.awt.BorderLayout(0, 0)); 
+
+    NavigatorPanel.setPreferredSize(new java.awt.Dimension(220, 0)); 
+    NavigatorPanel.setLayout(new javax.swing.BoxLayout(NavigatorPanel, javax.swing.BoxLayout.Y_AXIS));
+    NavigatorPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 15, 20, 15));
+    NavigatorPanel.setBackground(ThemeEngine.TEXT_PRIMARY); // Set dark background
+
+    javax.swing.JLabel logoLabel = new javax.swing.JLabel();
+    try {
+        java.net.URL imgURL = getClass().getResource("/logo/logo.png"); 
+        if (imgURL != null) {
+            javax.swing.ImageIcon icon = new javax.swing.ImageIcon(imgURL);
+            // Scaling to 160px width for a clean look inside the 220px sidebar
+            java.awt.Image scaledImg = icon.getImage().getScaledInstance(160, -1, java.awt.Image.SCALE_SMOOTH);
+            logoLabel.setIcon(new javax.swing.ImageIcon(scaledImg));
+        } else {
+            // Text fallback if the image path is broken
+            logoLabel.setText("FIND A LOT");
+            logoLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 26));
+            logoLabel.setForeground(java.awt.Color.WHITE);
+        }
+    } catch (Exception e) {
+        logoLabel.setText("FIND A LOT");
     }
+    logoLabel.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+    NavigatorPanel.add(logoLabel);
+    NavigatorPanel.add(javax.swing.Box.createVerticalStrut(40)); 
+
+    java.awt.Dimension btnSize = new java.awt.Dimension(190, 45);
+    javax.swing.JButton[] navButtons = {accountsPanelButton, propertiesPanelButton};
+
+    for (javax.swing.JButton btn : navButtons) {
+        btn.setMaximumSize(btnSize);
+        btn.setPreferredSize(btnSize);
+        btn.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+        NavigatorPanel.add(btn);
+        NavigatorPanel.add(javax.swing.Box.createVerticalStrut(15)); 
+    }
+
+    NavigatorPanel.add(javax.swing.Box.createVerticalGlue());
+
+    javax.swing.JPanel profileCard = new javax.swing.JPanel();
+    profileCard.setLayout(new javax.swing.BoxLayout(profileCard, javax.swing.BoxLayout.Y_AXIS));
+    profileCard.setBackground(new java.awt.Color(45, 55, 72)); // Modern dark slate
+    profileCard.setMaximumSize(new java.awt.Dimension(190, 70));
+    profileCard.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 5, 10, 5));
+    profileCard.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+
+    javax.swing.JLabel nameLabel = new javax.swing.JLabel(admin.getUsername().toUpperCase());
+    nameLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14));
+    nameLabel.setForeground(java.awt.Color.WHITE);
+    nameLabel.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+
+    javax.swing.JLabel roleLabel = new javax.swing.JLabel("SYSTEM ADMIN");
+    roleLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 10));
+    roleLabel.setForeground(ThemeEngine.ACCENT_COLOR); 
+    roleLabel.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+
+    profileCard.add(nameLabel);
+    profileCard.add(javax.swing.Box.createVerticalStrut(3));
+    profileCard.add(roleLabel);
+
+    NavigatorPanel.add(profileCard);
+    NavigatorPanel.add(javax.swing.Box.createVerticalStrut(15));
+
+    logoutButton.setMaximumSize(btnSize);
+    logoutButton.setPreferredSize(btnSize);
+    logoutButton.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+    NavigatorPanel.add(logoutButton);
+
+    this.getContentPane().add(NavigatorPanel, java.awt.BorderLayout.WEST);
+    this.getContentPane().add(Parent, java.awt.BorderLayout.CENTER);
+
+    this.revalidate();
+    this.repaint();
+}
 
     // --- NEW: Applies the ThemeEngine to all static components ---
     private void applyTheme() {
@@ -105,6 +156,12 @@ public class AdminDashboard extends javax.swing.JFrame {
         ThemeEngine.stylePrimaryButton(propertiesPanelButton);
         ThemeEngine.stylePrimaryButton(accountsPanelButton);
         ThemeEngine.styleSecondaryButton(logoutButton);
+        ThemeEngine.styleTable(propertyTable, propertyScrollPane);
+        ThemeEngine.styleTable(accountsTable, jScrollPane1);
+        
+        // Force tables to fill the panel height
+        propertyTable.setFillsViewportHeight(true);
+        accountsTable.setFillsViewportHeight(true);
         
         // Custom override for Logout to match dark sidebar
         logoutButton.setBackground(ThemeEngine.TEXT_PRIMARY);
@@ -484,14 +541,13 @@ public class AdminDashboard extends javax.swing.JFrame {
         propertyScrollPane.setViewportView(propertyTable);
     }
 
-    // --- REPLACED: GroupLayout with clean FlowLayout for consistency ---
-    private void injectFilters() {
+private void injectFilters() {
         PropertiesPanel.removeAll();
         PropertiesPanel.setLayout(new java.awt.BorderLayout(10, 10));
         PropertiesPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 25, 20, 25));
 
         javax.swing.JPanel topArea = new javax.swing.JPanel(new java.awt.BorderLayout(0, 10));
-        javax.swing.JLabel title = new javax.swing.JLabel("Properties");
+        javax.swing.JLabel title = new javax.swing.JLabel("Property Database");
         title.setFont(ThemeEngine.FONT_HEADER);
         title.setForeground(ThemeEngine.TEXT_PRIMARY);
         topArea.add(title, java.awt.BorderLayout.NORTH);
@@ -532,13 +588,20 @@ public class AdminDashboard extends javax.swing.JFrame {
         filterBar.add(minSizeField);
         filterBar.add(new javax.swing.JLabel("Max Size:"));
         filterBar.add(maxSizeField);
-        filterBar.add(javax.swing.Box.createHorizontalStrut(10));
-        filterBar.add(filterButton);
+        // NOTE: Filter button removed from this overcrowded row!
 
         topArea.add(filterBar, java.awt.BorderLayout.SOUTH);
 
         PropertiesPanel.add(topArea, java.awt.BorderLayout.NORTH);
         PropertiesPanel.add(propertyScrollPane, java.awt.BorderLayout.CENTER);
+
+        // --- NEW BOTTOM AREA: Puts Filter safely at the bottom right ---
+        javax.swing.JPanel bottomArea = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 15, 10));
+        bottomArea.setBackground(ThemeEngine.BG_MAIN);
+        
+        bottomArea.add(filterButton); 
+        
+        PropertiesPanel.add(bottomArea, java.awt.BorderLayout.SOUTH);
 
         PropertiesPanel.revalidate();
         PropertiesPanel.repaint();

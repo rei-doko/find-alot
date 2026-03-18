@@ -7,10 +7,20 @@ import MyLib.PropertyManager;
 import MyLib.Session;
 import MyLib.User;
 import MyLib.UserManager;
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Image;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class Authentication extends javax.swing.JFrame {
@@ -24,71 +34,106 @@ public class Authentication extends javax.swing.JFrame {
         this.userManager = userManager;
         this.propertyManager = propertyManager;
         initComponents();
-        setLocationRelativeTo(null);
         
-        // Radio Button
+        // INJECT DYNAMIC LOGO TO MAIN PANEL
+        setupMainPanelBranding();
+        setupLoginPanelBranding();
+        setupRegisterPanelBranding();
+        
+        setLocationRelativeTo(null);
         this.roleGroup = new ButtonGroup();
         roleGroup.add(rbCustomer);
         roleGroup.add(rbAgent);
-        
-        // Apply the sleek modern theme!
         applyTheme();
     }
 
+    private void setupMainPanelBranding() {
+    MainPanel.removeAll();
+    // GridBagLayout is best for perfectly centering a single component
+    MainPanel.setLayout(new java.awt.GridBagLayout());
+    java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+
+    // 1. Create a "Card" container
+    JPanel card = new JPanel();
+    card.setLayout(new javax.swing.BoxLayout(card, javax.swing.BoxLayout.Y_AXIS));
+    card.setBackground(Color.WHITE);
+    // Subtle line and comfortable padding
+    card.setBorder(BorderFactory.createCompoundBorder(
+        BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
+        BorderFactory.createEmptyBorder(40, 50, 40, 50)
+    ));
+
+    // 2. Add the Integrated Logo (Image Version)
+    javax.swing.JLabel logoLabel = new javax.swing.JLabel();
+    try {
+        java.net.URL imgURL = getClass().getResource("/logo/logo.png"); 
+        if (imgURL != null) {
+            ImageIcon icon = new ImageIcon(imgURL);
+            // Scale to 200px width
+            Image scaledImg = icon.getImage().getScaledInstance(200, -1, Image.SCALE_SMOOTH);
+            logoLabel.setIcon(new ImageIcon(scaledImg));
+        } else {
+            logoLabel.setText("FIND A LOT"); // Text fallback
+            logoLabel.setFont(new java.awt.Font("Segoe UI", Font.BOLD, 36));
+            logoLabel.setForeground(ThemeEngine.TEXT_PRIMARY);
+        }
+    } catch (Exception e) { logoLabel.setText("FIND A LOT"); }
+    logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    // 3. Add Buttons with spacing
+    card.add(logoLabel);
+    // Uses Box Strut for clean, intentional spacing, not arbitrary pixels
+    card.add(javax.swing.Box.createVerticalStrut(35)); 
+
+    loginPanelButton.setMaximumSize(new java.awt.Dimension(250, 45));
+    loginPanelButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    card.add(loginPanelButton);
+    
+    card.add(javax.swing.Box.createVerticalStrut(15));
+
+    registerPanelButton.setMaximumSize(new java.awt.Dimension(250, 45));
+    registerPanelButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    card.add(registerPanelButton);
+
+    // Add the card to MainPanel (which is using GridBagLayout)
+    MainPanel.add(card, gbc);
+    MainPanel.revalidate();
+    MainPanel.repaint();
+}
     // --- NEW: Applies the ThemeEngine to the Login and Register screens ---
     private void applyTheme() {
-        // 1. Background Colors
         this.getContentPane().setBackground(ThemeEngine.BG_MAIN);
         Parent.setBackground(ThemeEngine.BG_MAIN);
         MainPanel.setBackground(ThemeEngine.BG_MAIN);
         LoginPanel.setBackground(ThemeEngine.BG_MAIN);
         RegisterPanel.setBackground(ThemeEngine.BG_MAIN);
 
-        // 2. Typography & Labels
-        authenticationLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 36));
+        // Center the cards using a matte border to simulate "Elevation"
+        javax.swing.border.Border line = BorderFactory.createLineBorder(new Color(229, 231, 235), 1);
+        javax.swing.border.Border padding = BorderFactory.createEmptyBorder(30, 40, 30, 40);
+        
+        // Apply to the internal form containers
+        // Note: You'll need to wrap your forms in a sub-panel in the designer or use the code below
+        
+        authenticationLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 32));
         authenticationLabel.setForeground(ThemeEngine.TEXT_PRIMARY);
-        
-        usernameLabel.setFont(ThemeEngine.FONT_SUBHEADER);
-        usernameLabel.setForeground(ThemeEngine.TEXT_PRIMARY);
-        passwordLabel.setFont(ThemeEngine.FONT_SUBHEADER);
-        passwordLabel.setForeground(ThemeEngine.TEXT_PRIMARY);
-        
-        usernameLabel1.setFont(ThemeEngine.FONT_SUBHEADER);
-        usernameLabel1.setForeground(ThemeEngine.TEXT_PRIMARY);
-        passwordLabel1.setFont(ThemeEngine.FONT_SUBHEADER);
-        passwordLabel1.setForeground(ThemeEngine.TEXT_PRIMARY);
 
-        // 3. Style the Text Fields to look modern and flat
         JTextField[] fields = {usernameTextField, usernameTextField1, passwordField, passwordField1};
         for (JTextField field : fields) {
-            field.setFont(ThemeEngine.FONT_BODY);
-            field.setBackground(ThemeEngine.BG_PANEL);
-            field.setForeground(ThemeEngine.TEXT_PRIMARY);
-            // Creates a subtle gray outline with nice internal padding
-            field.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(209, 213, 219), 2),
-                BorderFactory.createEmptyBorder(5, 10, 5, 10)
-            ));
+            ThemeEngine.styleTextField(field); // Use the central style
         }
 
-        // 4. Style Radio Buttons
-        rbCustomer.setFont(ThemeEngine.FONT_BODY);
-        rbCustomer.setForeground(ThemeEngine.TEXT_PRIMARY);
-        rbCustomer.setOpaque(false); // Lets the background show through
-        
-        rbAgent.setFont(ThemeEngine.FONT_BODY);
-        rbAgent.setForeground(ThemeEngine.TEXT_PRIMARY);
-        rbAgent.setOpaque(false);
-
-        // 5. Apply ThemeEngine to all Buttons
         ThemeEngine.stylePrimaryButton(loginPanelButton);
         ThemeEngine.stylePrimaryButton(registerPanelButton);
         ThemeEngine.stylePrimaryButton(loginButton);
         ThemeEngine.stylePrimaryButton(registerButton);
-        
-        // Make the "Home" buttons hollow/secondary so they don't distract
         ThemeEngine.styleSecondaryButton(homeButton);
         ThemeEngine.styleSecondaryButton(homeButton1);
+
+        rbCustomer.setOpaque(false);
+        rbAgent.setOpaque(false);
+        rbCustomer.setForeground(ThemeEngine.TEXT_PRIMARY);
+        rbAgent.setForeground(ThemeEngine.TEXT_PRIMARY);
     }
 
     @SuppressWarnings("unchecked")
@@ -495,6 +540,7 @@ public class Authentication extends javax.swing.JFrame {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel LoginPanel;
@@ -519,4 +565,170 @@ public class Authentication extends javax.swing.JFrame {
     private javax.swing.JTextField usernameTextField;
     private javax.swing.JTextField usernameTextField1;
     // End of variables declaration//GEN-END:variables
+
+private void setupLoginPanelBranding() {
+    LoginPanel.removeAll();
+    // GridBagLayout centers the card
+    LoginPanel.setLayout(new java.awt.GridBagLayout());
+    java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+
+    // 1. The Container Card
+    JPanel card = new JPanel();
+    card.setLayout(new javax.swing.BoxLayout(card, javax.swing.BoxLayout.Y_AXIS));
+    card.setBackground(Color.WHITE);
+    card.setBorder(BorderFactory.createCompoundBorder(
+        BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
+        BorderFactory.createEmptyBorder(30, 40, 30, 40)
+    ));
+
+    // 2. Add the Logo to the top of the Login card
+    javax.swing.JLabel miniLogo = new javax.swing.JLabel();
+    try {
+        java.net.URL imgURL = getClass().getResource("/logo/logo.png");
+        if (imgURL != null) {
+            ImageIcon icon = new ImageIcon(imgURL);
+            // Scale smaller for the form (150px)
+            Image img = icon.getImage().getScaledInstance(150, -1, Image.SCALE_SMOOTH);
+            miniLogo.setIcon(new ImageIcon(img));
+        }
+    } catch (Exception e) {}
+    miniLogo.setAlignmentX(Component.CENTER_ALIGNMENT);
+    
+    JLabel subtitle = new JLabel("Hello!");
+    subtitle.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+    subtitle.setForeground(new Color(100, 100, 100));
+    subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    // 3. Re-organize the existing fields
+    // Set fixed sizes so BoxLayout respects them
+    Dimension fieldSize = new Dimension(300, 40);
+    usernameTextField1.setMaximumSize(fieldSize);
+    passwordField1.setMaximumSize(fieldSize);
+    
+    // Aligns the labels to the center of the vertical axis
+    usernameLabel1.setAlignmentX(Component.CENTER_ALIGNMENT);
+    passwordLabel1.setAlignmentX(Component.CENTER_ALIGNMENT);
+    
+    // 4. Build the Card
+    card.add(miniLogo);
+    card.add(Box.createVerticalStrut(10));
+    card.add(subtitle);
+    card.add(Box.createVerticalStrut(30));
+    
+    // Grouping labels and fields
+    card.add(usernameLabel1);
+    card.add(Box.createVerticalStrut(5));
+    card.add(usernameTextField1);
+    card.add(Box.createVerticalStrut(15));
+    
+    card.add(passwordLabel1);
+    card.add(Box.createVerticalStrut(5));
+    card.add(passwordField1);
+    
+    card.add(Box.createVerticalStrut(30));
+    
+    // Primary action button (Match the size of the text fields)
+    loginButton.setMaximumSize(new Dimension(300, 45));
+    loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    card.add(loginButton);
+
+    // 5. Place the Card and the Home Button
+    // We add the card to the centered GridBagLayout
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    LoginPanel.add(card, gbc);
+    
+    // Now add the Home Button at the absolute top-left, separately from the card
+    JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    topBar.setOpaque(false);
+    topBar.add(homeButton1);
+    
+    // Temporarily switch LoginPanel back to BorderLayout to place the topBar and card
+    LoginPanel.setLayout(new BorderLayout());
+    LoginPanel.add(topBar, BorderLayout.NORTH);
+    LoginPanel.add(card, BorderLayout.CENTER);
+
+    LoginPanel.revalidate();
+    LoginPanel.repaint();
+}
+
+private void setupRegisterPanelBranding() {
+    RegisterPanel.removeAll();
+    RegisterPanel.setLayout(new java.awt.GridBagLayout());
+    java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+
+    javax.swing.JPanel card = new javax.swing.JPanel();
+    card.setLayout(new javax.swing.BoxLayout(card, javax.swing.BoxLayout.Y_AXIS));
+    card.setBackground(java.awt.Color.WHITE);
+    card.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+        javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 230, 230), 1),
+        javax.swing.BorderFactory.createEmptyBorder(30, 45, 30, 45)
+    ));
+
+    javax.swing.JLabel miniLogo = new javax.swing.JLabel();
+    try {
+        java.net.URL imgURL = getClass().getResource("/logo/logo.png"); // Path to your new logo.png
+        if (imgURL != null) {
+            javax.swing.ImageIcon icon = new javax.swing.ImageIcon(imgURL);
+            java.awt.Image img = icon.getImage().getScaledInstance(140, -1, java.awt.Image.SCALE_SMOOTH);
+            miniLogo.setIcon(new javax.swing.ImageIcon(img));
+        } else {
+            miniLogo.setText("CREATE ACCOUNT");
+            miniLogo.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 22));
+            miniLogo.setForeground(ThemeEngine.ACCENT_COLOR);
+        }
+    } catch (Exception e) {
+        miniLogo.setText("CREATE ACCOUNT");
+    }
+    miniLogo.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+
+    javax.swing.JLabel subtitle = new javax.swing.JLabel("Join Find-A-Lot");
+    subtitle.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
+    subtitle.setForeground(new java.awt.Color(120, 120, 120));
+    subtitle.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+
+    java.awt.Dimension fieldSize = new java.awt.Dimension(300, 40);
+    usernameTextField.setMaximumSize(fieldSize);
+    passwordField.setMaximumSize(fieldSize);
+    usernameLabel.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+    passwordLabel.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+
+    card.add(miniLogo);
+    card.add(javax.swing.Box.createVerticalStrut(10));
+    card.add(subtitle);
+    card.add(javax.swing.Box.createVerticalStrut(30));
+
+    card.add(usernameLabel);
+    card.add(javax.swing.Box.createVerticalStrut(5));
+    card.add(usernameTextField);
+    card.add(javax.swing.Box.createVerticalStrut(15));
+
+    card.add(passwordLabel);
+    card.add(javax.swing.Box.createVerticalStrut(5));
+    card.add(passwordField);
+    card.add(javax.swing.Box.createVerticalStrut(15));
+
+    javax.swing.JPanel roleRow = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, 0));
+    roleRow.setOpaque(false);
+    roleRow.add(rbCustomer);
+    roleRow.add(rbAgent);
+    card.add(roleRow);
+
+    card.add(javax.swing.Box.createVerticalStrut(25));
+
+    registerButton.setMaximumSize(new java.awt.Dimension(300, 45));
+    registerButton.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+    card.add(registerButton);
+
+    javax.swing.JPanel topBar = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+    topBar.setOpaque(false);
+    topBar.add(homeButton);
+
+    RegisterPanel.setLayout(new java.awt.BorderLayout());
+    RegisterPanel.add(topBar, java.awt.BorderLayout.NORTH);
+    RegisterPanel.add(card, java.awt.BorderLayout.CENTER);
+
+    RegisterPanel.revalidate();
+    RegisterPanel.repaint();
+}
 }
