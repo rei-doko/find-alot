@@ -27,6 +27,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
     private PropertyManager propertyManager;
     private Customer customer;
     private Property selectedProperty = null;
+    private int selectedBlock = 0;
     
     /**
      * Creates new form AdminDashboard
@@ -60,15 +61,15 @@ public class CustomerDashboard extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         propertyTable = new javax.swing.JTable();
         bookButton = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        blockSelector = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
+        minSizeField = new javax.swing.JTextField();
+        maxSizeField = new javax.swing.JTextField();
+        minPriceField = new javax.swing.JTextField();
+        maxPriceField = new javax.swing.JTextField();
+        filterButton = new javax.swing.JButton();
         OwnedPropertiesPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -122,7 +123,8 @@ public class CustomerDashboard extends javax.swing.JFrame {
         bookButton.setText("Book Property");
         bookButton.addActionListener(this::bookButtonActionPerformed);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        blockSelector.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "1", "2", "3", "4", "5" }));
+        blockSelector.addActionListener(this::blockSelectorActionPerformed);
 
         jLabel3.setText("Block Number: ");
 
@@ -130,16 +132,8 @@ public class CustomerDashboard extends javax.swing.JFrame {
 
         jLabel5.setText("Price: ");
 
-        jTextField1.setText("jTextField1");
-
-        jTextField2.setText("jTextField2");
-
-        jTextField3.setText("jTextField3");
-
-        jTextField4.setText("jTextField4");
-
-        jButton2.setText("Filter");
-        jButton2.addActionListener(this::jButton2ActionPerformed);
+        filterButton.setText("Filter");
+        filterButton.addActionListener(this::filterButtonActionPerformed);
 
         javax.swing.GroupLayout PropertiesPanelLayout = new javax.swing.GroupLayout(PropertiesPanel);
         PropertiesPanel.setLayout(PropertiesPanelLayout);
@@ -150,8 +144,8 @@ public class CustomerDashboard extends javax.swing.JFrame {
                 .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(PropertiesPanelLayout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 645, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(bookButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bookButton, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE))
                     .addGroup(PropertiesPanelLayout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -159,57 +153,57 @@ public class CustomerDashboard extends javax.swing.JFrame {
                             .addGroup(PropertiesPanelLayout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addGap(18, 18, 18)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(blockSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(PropertiesPanelLayout.createSequentialGroup()
                                 .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addGroup(PropertiesPanelLayout.createSequentialGroup()
                                         .addComponent(jLabel5)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(minPriceField, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(maxPriceField, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(PropertiesPanelLayout.createSequentialGroup()
                                         .addComponent(jLabel4)
                                         .addGap(18, 18, 18)
-                                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(minSizeField, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(32, 32, 32)
-                                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(maxSizeField, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(37, 37, 37)
-                                .addComponent(jButton2)))))
-                .addContainerGap(7, Short.MAX_VALUE))
+                                .addComponent(filterButton)))))
+                .addContainerGap())
         );
         PropertiesPanelLayout.setVerticalGroup(
             PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PropertiesPanelLayout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(blockSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(PropertiesPanelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(PropertiesPanelLayout.createSequentialGroup()
-                                .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PropertiesPanelLayout.createSequentialGroup()
-                                .addComponent(jButton2)
-                                .addGap(2, 2, 2)))
-                        .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel4)
+                            .addComponent(minSizeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(maxSizeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PropertiesPanelLayout.createSequentialGroup()
+                        .addComponent(filterButton)
+                        .addGap(2, 2, 2)))
+                .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(minPriceField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(maxPriceField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(PropertiesPanelLayout.createSequentialGroup()
                         .addGap(40, 40, 40)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 592, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(PropertiesPanelLayout.createSequentialGroup()
-                        .addGap(100, 100, 100)
-                        .addComponent(bookButton)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(60, 60, 60)
+                        .addComponent(bookButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(9, Short.MAX_VALUE))
         );
 
         Parent.add(PropertiesPanel, "PropertiesPanel");
@@ -313,16 +307,137 @@ public class CustomerDashboard extends javax.swing.JFrame {
 
     private void bookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bookButtonActionPerformed
         // TODO add your handling code here:
+        // When book is clicked, it should open a prompt to select which agent to contact.
+        
     }//GEN-LAST:event_bookButtonActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void filterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+        filterProperties();
+    }//GEN-LAST:event_filterButtonActionPerformed
+
+    private void blockSelectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blockSelectorActionPerformed
+        // TODO add your handling code here:
+        String selected = (String) blockSelector.getSelectedItem();
+        
+        if(selected == null || selected.equals("All")) {
+            selectedBlock = 0;
+        }
+        else {
+            selectedBlock = Integer.parseInt(selected);
+        }
+    }//GEN-LAST:event_blockSelectorActionPerformed
 
     private void loadPropertiesToTable() {
         DefaultTableModel model = (DefaultTableModel) propertyTable.getModel();
-        
         model.setRowCount(0); // Clear existing rows
+        
+        Integer blockFilter;
+        if(selectedBlock == 0) {
+            blockFilter = null;
+        }
+        else {
+            blockFilter = selectedBlock;
+        }
+        
+        Double minPrice = parseDoubleOrNull(minPriceField.getText());
+        Double maxPrice = parseDoubleOrNull(maxPriceField.getText());
+        Double minSize = parseDoubleOrNull(minSizeField.getText());
+        Double maxSize = parseDoubleOrNull(maxSizeField.getText());
+        
+        for (Block block : customer.getAllBlocks()) {
+            if (blockFilter != null) {
+                if (block.getBlockNumber() != blockFilter) {
+                    continue;
+                }
+            }
+
+            for (Property property : block.getProperties()) {
+                if (minPrice != null) {
+                    if (property.getContactPrice() < minPrice) {
+                        continue;
+                    }
+                }
+
+                if (maxPrice != null) {
+                    if (property.getContactPrice() > maxPrice) {
+                        continue;
+                    }
+                }
+
+                if (minSize != null) {
+                    if (property.getPropertySize() < minSize) {
+                        continue;
+                    }
+                }
+
+                if (maxSize != null) {
+                    if (property.getPropertySize() > maxSize) {
+                        continue;
+                    }
+                }
+
+                String type;
+                if (property instanceof TownHouse) {
+                    type = "Town House";
+                } else if (property instanceof SemiDetached) {
+                    type = "Semi-Detached";
+                } else if (property instanceof Detached) {
+                    type = "Detached";
+                } else {
+                    type = "";
+                }
+
+                model.addRow(new Object[]{
+                    property.getPropertyId(),
+                    block.getBlockNumber(),
+                    property.getPropertyNum(),
+                    property.getStatus(),
+                    property.getOwner(),
+                    property.getContactPrice(),
+                    property.getPropertySize(),
+                    property.getFloors(),
+                    type
+                });
+            }
+        }
+    }
+    
+    private Double parseDoubleOrNull(String text){
+        if (text == null || text.isEmpty())
+            return null;
+        if (!text.matches("\\d+(\\.\\d+)?"))
+            return null;
+        return Double.parseDouble(text);
+    }
+    
+    private boolean isInvalidPrice(String text, Double price) {
+        return text != null && !text.isEmpty() && price == null;
+    }
+    
+    private void filterProperties(){
+        double minPrice = parseDoubleOrNull(minPriceField.getText());
+        double maxPrice = parseDoubleOrNull(maxPriceField.getText());
+        
+        // If minimum price is invalid
+        if (isInvalidPrice(minPriceField.getText(), minPrice)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Enter a valid numeric value for minimum price.");
+            return;
+        }
+
+        // Check if the maximum price is invalid
+        if (isInvalidPrice(maxPriceField.getText(), maxPrice)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Enter a valid numeric value for maximum price.");
+            return;
+        }
+        
+        loadPropertiesToTable();
+    }
+        
+    private void loadOwnedPropertiesToTable() { // not loaded/used yet
+        DefaultTableModel ownedModel = (DefaultTableModel) ownedPropertiesTable.getModel();
+        
+        ownedModel.setRowCount(0); // Clear existing rows
         
         for(Block block : customer.getAllBlocks()) { // Gets all block(s) in ArrayList<Block> blocks
             for(Property property : block.getProperties()) { // Gets all properties in ArrayList<Property> properties for each block
@@ -338,50 +453,20 @@ public class CustomerDashboard extends javax.swing.JFrame {
                     type = "Detached";
                 }
                 
-                model.addRow(new Object[] {
-                    property.getPropertyId(),
-                    block.getBlockNumber(),
-                    property.getPropertyNum(),
-                    property.getStatus(),
-                    property.getOwner(),
-                    property.getContactPrice(),
-                    property.getPropertySize(),
-                    property.getFloors(),
-                    type
-                });
+                if(property.getOwner().equals(customer)) { // ?If owner attribute in property is customer, then add to row
+                    ownedModel.addRow(new Object[] {
+                        property.getPropertyId(),
+                        block.getBlockNumber(),
+                        property.getPropertyNum(),
+                        property.getStatus(),
+                        property.getOwner(),
+                        property.getContactPrice(),
+                        property.getPropertySize(),
+                        property.getFloors(),
+                        type
+                    });
+                }
             }
-        }
-    }
-    
-    private void loadOwnedPropertiesToTable() { // not loaded/used yet
-        DefaultTableModel ownedModel = (DefaultTableModel) ownedPropertiesTable.getModel();
-        
-        ownedModel.setRowCount(0); // Clear existing rows
-        
-        for(Property property : customer.getOwnedProperties()) { // Gets all block(s) in ArrayList<Block> blocks
-           
-            String type = "";
-
-            if(property instanceof TownHouse) {
-                type = "Town House";
-            }
-            else if(property instanceof SemiDetached) {
-                type = "Semi-Detached";
-            }
-            else if(property instanceof Detached) {
-                type = "Detached";
-            }
-
-            ownedModel.addRow(new Object[] {
-                property.getPropertyId(),
-                property.getBlockNumber(),
-                property.getPropertyNum(),
-                property.getStatus(),
-                property.getContactPrice(),
-                property.getPropertySize(),
-                property.getFloors(),
-                type
-            });
         }
     }
     
@@ -431,10 +516,10 @@ public class CustomerDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel OwnedPropertiesPanel;
     private javax.swing.JPanel Parent;
     private javax.swing.JPanel PropertiesPanel;
+    private javax.swing.JComboBox<String> blockSelector;
     private javax.swing.JButton bookButton;
+    private javax.swing.JButton filterButton;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -442,11 +527,11 @@ public class CustomerDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
     private javax.swing.JButton logoutButton;
+    private javax.swing.JTextField maxPriceField;
+    private javax.swing.JTextField maxSizeField;
+    private javax.swing.JTextField minPriceField;
+    private javax.swing.JTextField minSizeField;
     private javax.swing.JButton ownedPropertiesPanelButton;
     private javax.swing.JTable ownedPropertiesTable;
     private javax.swing.JButton propertiesPanelButton;
