@@ -65,7 +65,7 @@ public abstract class Property {
         return blockNum; 
     }
     
-    public int getPropertyNum() { 
+    public int getPropertyNumber() { 
         return propertyNum; 
     }
     
