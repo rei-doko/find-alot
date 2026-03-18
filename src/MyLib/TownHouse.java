@@ -1,6 +1,5 @@
 package MyLib;
 
-//Not final
 
 public class TownHouse extends Property {
     private int sharedWalls;
