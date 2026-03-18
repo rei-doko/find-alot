@@ -99,6 +99,6 @@ public class PropertyManager {
                 result.add(property);
             }
         }
-        return result;
+    return result;
     }
 }
