@@ -1,34 +1,83 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package MyLib;
 
 /**
- *
- * @author rei doko
+ * 
  */
 public abstract class Property {
-    private Block block;
-    private static int idCounter = 0;
+    private int blockNum; 
+    private int propertyNum;
+    
+    private static int idCounter = 0; 
     private int propertyId;
-    private String propertyType;
+    
     private int floors = 2;
     private String status = "For Sale";
     private double propertySize;
+    private double contactPrice;
+    private Customer owner;
 
-    Property(Block block, String propertyType, double propertySize) {
-        this.block = block;
-        this.propertyId = generateId();
-        this.propertyType = propertyType;
+    // Fixed the broken constructor and added parameters
+    public Property(int blockNum, int propertyNum, int floors, double propertySize, double contactPrice) {
+        this.blockNum = blockNum;
+        this.propertyNum = propertyNum;
+        this.floors = floors;
         this.propertySize = propertySize;
+        this.contactPrice = contactPrice;
+        this.propertyId = generateId();
     }
 
+    // Automatically generates ID when instantiated
     private int generateId() {
         return ++idCounter;
     }
     
-    public Block getBlock() {
-        return block;
+    public void updateStatus(String action) {
+        if(action.equalsIgnoreCase("Book")) {
+            this.status = "Booked"; 
+        }
+        else if(action.equalsIgnoreCase("Buy")) {
+            this.status = "Sold";
+        }
+        else {
+            this.status = "For Sale";
+        }
+    }
+    
+    public void setOwner(Customer buyer) {
+        owner = buyer;
+    }
+
+    public abstract void showDetails(); // Not needed
+    
+    public double getContactPrice() { 
+        return contactPrice; 
+    }
+    
+    public String getStatus() { 
+        return status; 
+    }
+    
+    public int getPropertyId() { 
+        return propertyId; 
+    }
+    
+    public int getBlockNumber() { 
+        return blockNum; 
+    }
+    
+    public int getPropertyNumber() { 
+        return propertyNum; 
+    }
+    
+    public Customer getOwner() {
+        return owner;
+    }
+    
+    public double getPropertySize() {
+        return propertySize;
+    }
+    
+    public int getFloors() {
+        return floors;
     }
 }

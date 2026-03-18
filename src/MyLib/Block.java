@@ -4,17 +4,39 @@
  */
 package MyLib;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
  * @author rei doko
  */
 public class Block {
-    private static int blockCounter = 0;
     private int blockNumber;
-    private List<Property> properties;
+    private ArrayList<Property> properties;
     
-    public Block getBlock {
+    public Block(int blockNumber) {
+        this.blockNumber = blockNumber;
+        this.properties = new ArrayList<>();
+    }
+    
+    public int getBlockNumber() {
+        return blockNumber;
+    }
+    
+    public ArrayList<Property> getProperties() {
+        return properties;
+    }
+    
+    public void addProperty(Property property) {
+        properties.add(property);
+    }
+    
+    public Property getProperty(int propertyId) {
+        for(Property property : properties) {
+            if(property.getPropertyId() == propertyId) {
+                return property;
+            }
+        }
+        return null;
     }
 }
