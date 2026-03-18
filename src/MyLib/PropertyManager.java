@@ -75,9 +75,7 @@ public class PropertyManager {
             }
         }
     }
-
-    //filter
-
+    
     public ArrayList<Property> filterProperties(Integer blockNum, Double minPrice, Double maxPrice){
         ArrayList<Property> result = new ArrayList<>();
         for(Block block : blocks){
@@ -87,15 +85,20 @@ public class PropertyManager {
             for (Property property : block.getProperties()) {
                 Double price = property.getContactPrice();
                 
-                if (price == null)
+                if (price == null) {
                     continue;
-                if (minPrice != null && price < minPrice)
+                }
+                    
+                if (minPrice != null && price < minPrice) {
                     continue;
-                if (maxPrice != null && price > maxPrice)
+                }
+                    
+                if (maxPrice != null && price > maxPrice) {
                     continue;
-
+                }
                 result.add(property);
+            }
         }
-    }
     return result;
+    }
 }
