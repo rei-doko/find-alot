@@ -85,11 +85,13 @@ public class PropertyManager {
                 continue;
             }
             for (Property property : block.getProperties()) {
+                Double price = property.getContactPrice();
+                
                 if (price == null)
                     continue;
-                if (minPrice != null && property.getContactPrice() < minPrice)
+                if (minPrice != null && price < minPrice)
                     continue;
-                if (maxPrice != null && property.getContactPrice() > maxPrice)
+                if (maxPrice != null && price > maxPrice)
                     continue;
 
                 result.add(property);
