@@ -612,23 +612,27 @@ public class CustomerDashboard extends javax.swing.JFrame {
         for(Block block : propertyManager.getAllBlocks()) { 
             for(Property property : block.getProperties()) { 
                 
-                if(property.getOwner() != null && property.getOwner().equals(this.customer)) { 
+                // Check if the customer is either the official Owner or the one who Reserved it
+                boolean isOwner = property.getOwner() != null && property.getOwner().equals(this.customer);
+                
+                if(isOwner) { 
                     String type = property.getClass().getSimpleName();
-                    String status;
+                    String statusText;
                     
-                    if (owner != null && owner.equals(this.customer)) {
-                        status = "Owned";
-                    } else if (reserved != null && reserved.equals(this.customer)) {
-                        status = "Reserved";
+                    // Logic to show detailed status to the customer
+                    if ("Sold".equalsIgnoreCase(property.getStatus()) || "Buy".equalsIgnoreCase(property.getStatus())) {
+                        statusText = "Owned";
+                    } else if ("Booked".equalsIgnoreCase(property.getStatus()) || "Book".equalsIgnoreCase(property.getStatus())) {
+                        statusText = "Pending Approval";
                     } else {
-                        status = property.getStatus();
+                        statusText = property.getStatus();
                     }
 
                     ownedModel.addRow(new Object[] {
                         property.getPropertyId(),
                         property.getBlockNumber(), 
                         property.getPropertyNumber(), 
-                        status,
+                        statusText,
                         property.getContactPrice(),
                         property.getPropertySize(),
                         property.getFloors(),
@@ -748,6 +752,15 @@ public class CustomerDashboard extends javax.swing.JFrame {
         } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
+    }
+    
+    private double computeMonthlyAmortization(double loanAmount, double annualRate, int years) {
+        if (loanAmount <= 0 || annualRate <= 0 || years <= 0) return 0;
+        double monthlyRate = annualRate / 12;
+        int numberOfPayments = years * 12;
+        
+        return (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) 
+               / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

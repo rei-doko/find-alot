@@ -2,15 +2,20 @@ package MyApp;
 
 import MyLib.Agent;
 import MyLib.Block;
+import MyLib.Booking;
+import MyLib.Detached;
 import MyLib.Property;
 import MyLib.PropertyManager;
+import MyLib.SemiDetached;
 import MyLib.Session;
+import MyLib.TownHouse;
 import MyLib.UserManager;
 import java.awt.CardLayout;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
 public class AgentDashboard extends javax.swing.JFrame {
@@ -665,4 +670,16 @@ public class AgentDashboard extends javax.swing.JFrame {
     private javax.swing.JTable requestTable;
     private javax.swing.JButton requestsButton;
     // End of variables declaration//GEN-END:variables
+
+    private void removeReservationButtonActionPerformed(ActionEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private void confirmBookingButtonActionPerformed(ActionEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private void removeBookingButtonActionPerformed(ActionEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

@@ -38,7 +38,6 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JTextField minSizeField;
     private javax.swing.JTextField maxSizeField;
     private javax.swing.JButton filterButton;
-    private javax.swing.JTable propertyTable;
     private javax.swing.JScrollPane propertyScrollPane;
     
     public AdminDashboard(UserManager userManager, PropertyManager propertyManager, Admin admin) {
@@ -144,29 +143,34 @@ public class AdminDashboard extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1024, 768));
 
-        NavigatorPanel.setBackground(new java.awt.Color(30, 42, 54));
-        NavigatorPanel.setLayout(new javax.swing.BoxLayout(NavigatorPanel, javax.swing.BoxLayout.Y_AXIS));
-        NavigatorPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        NavigatorPanel.setPreferredSize(new java.awt.Dimension(220, 0));
+        NavigatorPanel.setLayout(null);
 
         propertiesPanelButton.setText("Properties");
         propertiesPanelButton.addActionListener(this::propertiesPanelButtonActionPerformed);
         NavigatorPanel.add(propertiesPanelButton);
-
-        accountsPanelButton.setText("Accounts");
-        accountsPanelButton.addActionListener(this::accountsPanelButtonActionPerformed);
-        NavigatorPanel.add(accountsPanelButton);
+        propertiesPanelButton.setBounds(30, 110, 170, 60);
 
         logoutButton.setText("Logout");
         logoutButton.addActionListener(this::logoutButtonActionPerformed);
         NavigatorPanel.add(logoutButton);
+        logoutButton.setBounds(30, 680, 170, 60);
+
+        accountsPanelButton.setText("Accounts");
+        accountsPanelButton.addActionListener(this::accountsPanelButtonActionPerformed);
+        NavigatorPanel.add(accountsPanelButton);
+        accountsPanelButton.setBounds(30, 30, 170, 60);
 
         Parent.setLayout(new java.awt.CardLayout());
 
         jLabel1.setText("Accounts");
 
         accountsTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {},
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
             new String [] {
                 "Username", "Role"
             }
@@ -194,14 +198,17 @@ public class AdminDashboard extends javax.swing.JFrame {
             .addGroup(AccountsPanelLayout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addGroup(AccountsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(AccountsPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(AccountsPanelLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 609, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(31, 31, 31)
                         .addGroup(AccountsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(addAccountButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(removeAccountButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addGap(21, 21, 21))
+                            .addComponent(removeAccountButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(21, 21, 21))))
         );
         AccountsPanelLayout.setVerticalGroup(
             AccountsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -210,7 +217,8 @@ public class AdminDashboard extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(AccountsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(AccountsPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 651, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(AccountsPanelLayout.createSequentialGroup()
                         .addGap(60, 60, 60)
                         .addComponent(addAccountButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -223,7 +231,47 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         jLabel2.setText("Properties");
 
-        PropertiesPanel.setLayout(new java.awt.BorderLayout());
+        propertyTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Property ID", "Block Number", "Property Number", "Status", "Owner", "Property Price", "Property Size", "Property Floors", "Property Type"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(propertyTable);
+
+        javax.swing.GroupLayout PropertiesPanelLayout = new javax.swing.GroupLayout(PropertiesPanel);
+        PropertiesPanel.setLayout(PropertiesPanelLayout);
+        PropertiesPanelLayout.setHorizontalGroup(
+            PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PropertiesPanelLayout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addGroup(PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 645, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addContainerGap(142, Short.MAX_VALUE))
+        );
+        PropertiesPanelLayout.setVerticalGroup(
+            PropertiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PropertiesPanelLayout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 95, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 592, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30))
+        );
 
         Parent.add(PropertiesPanel, "PropertiesPanel");
 
