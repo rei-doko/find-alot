@@ -203,7 +203,7 @@ public class AgentDashboard extends javax.swing.JFrame {
 
         jLabel3.setText("Requests");
 
-        requestTable1.setModel(new javax.swing.table.DefaultTableModel(
+        requestTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {},
             new String [] {
                 "Property ID", "Block Number", "Property Number", "Status", "Booked By", "Property Price", "Property Size", "Property Floors", "Property Type"
