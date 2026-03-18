@@ -432,32 +432,26 @@ public class CustomerDashboard extends javax.swing.JFrame {
         loadPropertiesToTable();
     }
         
-    private void loadOwnedPropertiesToTable() { // not loaded/used yet
+private void loadOwnedPropertiesToTable() { 
         DefaultTableModel ownedModel = (DefaultTableModel) ownedPropertiesTable.getModel();
+        ownedModel.setRowCount(0);
         
-        ownedModel.setRowCount(0); // Clear existing rows
-        
-        for(Block block : customer.getAllBlocks()) { // Gets all block(s) in ArrayList<Block> blocks
-            for(Property property : block.getProperties()) { // Gets all properties in ArrayList<Property> properties for each block
-                String type = "";
-            
-                if(property instanceof TownHouse) {
-                    type = "Town House";
-                }
-                else if(property instanceof SemiDetached) {
-                    type = "Semi-Detached";
-                }
-                else if(property instanceof Detached) {
-                    type = "Detached";
-                }
+        // Ito sinasabi ko it must ask the PropertyManager for the blocks, not the Customer
+        for(Block block : propertyManager.getAllBlocks()) { 
+            for(Property property : block.getProperties()) { 
                 
-                if(property.getOwner().equals(customer)) { // ?If owner attribute in property is customer, then add to row
+                // This will check if the owner is NOT null before checking .equals()
+                if(property.getOwner() != null && property.getOwner().equals(this.customer)) { 
+                    
+                    // Get the type (TownHouse, Detached, etc.) in one clean line
+                    //No need for If-Else
+                    String type = property.getClass().getSimpleName();
+                    
                     ownedModel.addRow(new Object[] {
                         property.getPropertyId(),
                         block.getBlockNumber(),
-                        property.getPropertyNum(),
+                        property.getPropertyNum(), 
                         property.getStatus(),
-                        property.getOwner(),
                         property.getContactPrice(),
                         property.getPropertySize(),
                         property.getFloors(),

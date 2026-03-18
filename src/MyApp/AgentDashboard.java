@@ -18,8 +18,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * 
- */
+ * */
 public class AgentDashboard extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AgentDashboard.class.getName());
@@ -27,15 +26,25 @@ public class AgentDashboard extends javax.swing.JFrame {
     private PropertyManager propertyManager;
     private Agent agent;
     private Property selectedProperty = null;
+
+//This is the missing textfield
+    private javax.swing.JTextField minPriceField = new javax.swing.JTextField(7);
+    private javax.swing.JTextField maxPriceField = new javax.swing.JTextField(7);
+    private javax.swing.JTextField minSizeField = new javax.swing.JTextField(7);
+    private javax.swing.JTextField maxSizeField = new javax.swing.JTextField(7);
     
     /**
-     * Creates new form AdminDashboard
+     *
      */
     public AgentDashboard(UserManager userManager, PropertyManager propertyManager, Agent agent) {
         this.userManager = userManager;
         this.propertyManager = propertyManager;
         this.agent = agent;
         initComponents();
+        
+        // This is the bypass
+        injectFilters();
+        
         setLocationRelativeTo(null);
         setupTable();
         loadPropertiesToTable();
@@ -218,31 +227,82 @@ public class AgentDashboard extends javax.swing.JFrame {
        cl.show(Parent, "PropertiesPanel");
     }//GEN-LAST:event_propertiesButtonActionPerformed
 
+    //Ito yung manual injection ng filter bar natin, since it was missing from the GUI designer. This is a workaround to add it back in.
+    // This is a workaround for the fact that the filter bar was not added in the GUI designer
+    private void injectFilters() {
+        PropertiesPanel.removeAll();
+        PropertiesPanel.setLayout(new java.awt.BorderLayout(10, 10));
+        PropertiesPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        javax.swing.JPanel topArea = new javax.swing.JPanel(new java.awt.BorderLayout());
+        
+        javax.swing.JLabel title = new javax.swing.JLabel("Properties");
+        title.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 24));
+        topArea.add(title, java.awt.BorderLayout.NORTH);
+
+        javax.swing.JPanel filterBar = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 10));
+        filterBar.add(new javax.swing.JLabel("Min Price:"));
+        filterBar.add(minPriceField);
+        filterBar.add(new javax.swing.JLabel("Max Price:"));
+        filterBar.add(maxPriceField);
+        filterBar.add(new javax.swing.JLabel("Min Size:"));
+        filterBar.add(minSizeField);
+        filterBar.add(new javax.swing.JLabel("Max Size:"));
+        filterBar.add(maxSizeField);
+
+        javax.swing.JButton filterBtn = new javax.swing.JButton("Filter");
+        filterBtn.addActionListener(e -> loadPropertiesToTable());
+        filterBar.add(filterBtn);
+
+        topArea.add(filterBar, java.awt.BorderLayout.SOUTH);
+
+        PropertiesPanel.add(topArea, java.awt.BorderLayout.NORTH);
+        PropertiesPanel.add(jScrollPane1, java.awt.BorderLayout.CENTER); 
+        
+        PropertiesPanel.revalidate();
+        PropertiesPanel.repaint();
+    }
+
+    // ==========================================
+    // ADDED: Input Parser 
+    // ==========================================
+    private Double parseDoubleOrNull(String text){
+        if (text == null || text.isEmpty()) return null;
+        if (!text.matches("\\d+(\\.\\d+)?")) return null;
+        return Double.parseDouble(text);
+    }
+
+    //fixed filter and loop logic as well
     private void loadPropertiesToTable() {
         DefaultTableModel model = (DefaultTableModel) propertyTable.getModel();
-        
         model.setRowCount(0); // Clear existing rows
         
-        for(Block block : agent.getAllBlocks()) { // Gets all block(s) in ArrayList<Block> blocks
-            for(Property property : block.getProperties()) { // Gets all properties in ArrayList<Property> properties for each block
-                String type = "";
-            
-                if(property instanceof TownHouse) {
-                    type = "Town House";
-                }
-                else if(property instanceof SemiDetached) {
-                    type = "Semi-Detached";
-                }
-                else if(property instanceof Detached) {
-                    type = "Detached";
-                }
+        // 1. Grab values from our newly injected text fields
+        Double minPrice = parseDoubleOrNull(minPriceField.getText());
+        Double maxPrice = parseDoubleOrNull(maxPriceField.getText());
+        Double minSize = parseDoubleOrNull(minSizeField.getText());
+        Double maxSize = parseDoubleOrNull(maxSizeField.getText());
+
+        // 2. Call the leader's Manager method (Passing null for the block number right now)
+        java.util.ArrayList<Property> filteredProperties = propertyManager.filterProperties(null, minPrice, maxPrice);
+        
+        if (filteredProperties != null) {
+            for(Property property : filteredProperties) { 
+                
+                // 3. Local check for sizes
+                if (minSize != null && property.getPropertySize() < minSize) continue;
+                if (maxSize != null && property.getPropertySize() > maxSize) continue;
+
+                // 4. Safely pull types and owners
+                String type = property.getClass().getSimpleName();
+                String ownerName = (property.getOwner() != null) ? property.getOwner().getUsername() : "None";
                 
                 model.addRow(new Object[] {
                     property.getPropertyId(),
-                    block.getBlockNumber(),
-                    property.getPropertyNum(),
+                    property.getBlockNum(), 
+                    property.getLotNum(),   
                     property.getStatus(),
-                    property.getOwner(),
+                    ownerName,
                     property.getContactPrice(),
                     property.getPropertySize(),
                     property.getFloors(),
@@ -260,7 +320,7 @@ public class AgentDashboard extends javax.swing.JFrame {
             if (!e.getValueIsAdjusting()) {
                 int row = propertyTable.getSelectedRow();
 
-                if (row >= 0) { // a row is selected
+                if (row >= 0) { 
                     int propertyId = (int) propertyTable.getValueAt(row, 0); // first column = propertyId
                     selectedProperty = agent.getProperty(propertyId);
                 } else {
