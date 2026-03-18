@@ -75,4 +75,25 @@ public class PropertyManager {
             }
         }
     }
+
+    //filter
+
+    public ArrayList<Property> filterProperties(Integer blockNum, Double minPrice, Double maxPrice){
+        ArrayList<Property> result = new ArrayList<>();
+        for(Block block : blocks){
+            if (blockNum != null && block.getBlockNumber() != blockNum){
+                continue;
+            }
+            for (Property property : block.getProperties()) {
+                if (price == null)
+                    continue;
+                if (minPrice != null && property.getContactPrice() < minPrice)
+                    continue;
+                if (maxPrice != null && property.getContactPrice() > maxPrice)
+                    continue;
+
+                result.add(property);
+        }
+    }
+    return result;
 }
