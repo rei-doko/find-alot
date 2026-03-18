@@ -9,100 +9,80 @@ package MyLib;
  * @author Admin
  */
 public class PropertyFactory {
-    private static int type = 0;
+    public static int variant = 0;
     
-    protected static Property createProperty(int blockNum, int lotNum) {
-        type++;
-        int select = type % 10;
-
-        int floors = 2;
-        double price = 100.0;
-        double size = 100.0;
+    public static Property createProperty(int blockNum, int lotNum) {
+        variant = lotNum % 10;
         
         switch(blockNum){
             case 1:
             case 2:
-                switch(select){
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                        floors = 2;
-                        price = 3400000.0;
-                        size = 60.0;
-                        return new TownHouse(blockNum, lotNum, floors, size, price, 3);
-                    case 5:
-                    case 6:
-                    case 7:
-                        floors = 2;
-                        price = 3800000.0;
-                        size = 75.0;
-                        return new TownHouse(blockNum, lotNum, floors, size, price, 3);
-                    case 8:
-                    case 9:
-                    case 0:
-                        floors = 3;
-                        price = 4000000.0;
-                        size = 80.0;
-                        return new TownHouse(blockNum, lotNum, floors, size, price, 3);
-                    default:
-                        return null;
-                }
+                return createTownHouse(blockNum, lotNum);
             case 3:
             case 4:
-                switch(select){
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                        floors = 2;
-                        price = 4000000.0;
-                        size = 60.0;
-                        return new SemiDetached(blockNum, lotNum, floors, size, price, "Left", 50.0);
-                    case 5:
-                    case 6:
-                    case 7:
-                        floors = 2;
-                        price = 4200000.0;
-                        size = 75.0;
-                        return new SemiDetached(blockNum, lotNum, floors, size, price, "Left", 50.0);
-                    case 8:
-                    case 9:
-                    case 0:
-                        floors = 3;
-                        price = 4500000.0;
-                        size = 80.0;
-                        return new SemiDetached(blockNum, lotNum, floors, size, price, "Left", 50.0);
-                    default:
-                        return null;
-                }
+                return createSemiDetached(blockNum, lotNum);
             case 5:
-                switch(select){
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                        floors = 2;
-                        price = 4300000.0;
-                        size = 60.0;
-                        return new Detached(blockNum, lotNum, floors, size, price, 2, 50.0);
-                    case 5:
-                    case 6:
-                    case 7:
-                        floors = 2;
-                        price = 4500000.0;
-                        size = 75.0;
-                        return new Detached(blockNum, lotNum, floors, size, price, 2, 50.0);
-                    case 8:
-                    case 9:
-                    case 0:
-                        floors = 3;
-                        price = 4800000.0;
-                        size = 80.0;
-                        return new Detached(blockNum, lotNum, floors, size, price, 2, 50.0);
-                    default:
-                        return null;
-                }
+                return createDetached(blockNum, lotNum);
+            default:
+                return null;
+        }
+    }
+    
+    public static Property createTownHouse (int blockNum, int lotNum){
+        switch(variant){
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                    return new TownHouse(blockNum, lotNum, 2, 60.0, 3400000.0, 3);
+                case 5:
+                case 6:
+                case 7:
+                    return new TownHouse(blockNum, lotNum, 2, 75.0, 3800000.0, 3);
+                case 8:
+                case 9:
+                case 0:
+                    return new TownHouse(blockNum, lotNum, 3, 80.0, 4000000.0, 3);
+                default:
+                    return null;
+            }
+    }
+    
+    public static Property createSemiDetached (int blockNum, int lotNum){
+        switch(variant){
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                    return new SemiDetached(blockNum, lotNum, 2, 60.0, 4000000.0, "Left", 25.0);
+                case 5:
+                case 6:
+                case 7:
+                    return new SemiDetached(blockNum, lotNum, 2, 75.0, 4200000.0, "Left", 30.0);
+                case 8:
+                case 9:
+                case 0:
+                    return new SemiDetached(blockNum, lotNum, 3, 80.0, 4500000.0, "Left", 35.0);
+                default:
+                    return null;
+            }
+    }
+    
+    public static Property createDetached (int blockNum, int lotNum){
+        switch(variant){
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+                return new Detached(blockNum, lotNum, 2, 60.0, 4300000.0, 1, 10.0);
+            case 5:
+            case 6:
+            case 7:
+                return new Detached(blockNum, lotNum, 2, 75.0, 4500000.0, 1, 15.0);
+            case 8:
+            case 9:
+            case 0:
+                return new Detached(blockNum, lotNum, 3, 80.0, 4800000.0, 1, 15.0);
             default:
                 return null;
         }
