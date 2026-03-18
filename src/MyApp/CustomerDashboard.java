@@ -391,7 +391,7 @@ public class CustomerDashboard extends javax.swing.JFrame {
                 model.addRow(new Object[]{
                     property.getPropertyId(),
                     block.getBlockNumber(),
-                    property.getPropertyNum(),
+                    property.getPropertyNumber(),
                     property.getStatus(),
                     property.getOwner(),
                     property.getContactPrice(),
@@ -452,7 +452,7 @@ private void loadOwnedPropertiesToTable() {
                     ownedModel.addRow(new Object[] {
                         property.getPropertyId(),
                         block.getBlockNumber(),
-                        property.getPropertyNum(), 
+                        property.getPropertyNumber(), 
                         property.getStatus(),
                         property.getContactPrice(),
                         property.getPropertySize(),

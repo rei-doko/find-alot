@@ -299,8 +299,8 @@ public class AgentDashboard extends javax.swing.JFrame {
                 
                 model.addRow(new Object[] {
                     property.getPropertyId(),
-                    property.getBlockNum(), 
-                    property.getLotNum(),   
+                    property.getBlockNumber(), 
+                    property.getPropertyNumber(),   
                     property.getStatus(),
                     ownerName,
                     property.getContactPrice(),
