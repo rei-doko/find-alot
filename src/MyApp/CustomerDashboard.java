@@ -376,8 +376,8 @@ public class CustomerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_blockSelectorActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-<<<<<<< Updated upstream
-        // TODO add your handling code here:                                      
+
+    // TODO add your handling code here:                                      
     int row = ownedPropertiesTable.getSelectedRow();
 
     if(row < 0){
@@ -499,158 +499,10 @@ public class CustomerDashboard extends javax.swing.JFrame {
     panel.add(new JLabel("Years:"));
     panel.add(yearsBox);
     panel.add(receiptLabel);
+    
+    JButton confirmBtn = new JButton("Confirm Purchase");
+    panel.add(confirmBtn);
 
-=======
-        // TODO add your handling code here:                                
-
-    int selectedRow = ownedPropertiesTable.getSelectedRow();
-
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "Select a property first.");
-        return;
-    }
-
-    int propertyId = (int) ownedPropertiesTable.getValueAt(selectedRow, 0);
-    Property property = findPropertyById(propertyId); // ✅ already exists in your code
-
-    if (property == null || !property.getStatus().equalsIgnoreCase("Booked")) {
-        JOptionPane.showMessageDialog(this, "Only booked properties can be purchased.");
-        return;
-    }
-
-    double price = property.getContactPrice();
-
-    // ================= UI PANEL =================
-    JPanel panel = new JPanel(new BorderLayout(10,10));
-
-    JPanel top = new JPanel(new GridLayout(6,2,5,5));
-
-    top.add(new JLabel("Block:"));
-    top.add(new JLabel(String.valueOf(property.getBlockNumber())));
-
-    top.add(new JLabel("Lot:"));
-    top.add(new JLabel(String.valueOf(property.getPropertyNumber())));
-
-    top.add(new JLabel("Type:"));
-    top.add(new JLabel(property.getClass().getSimpleName()));
-
-    top.add(new JLabel("Contact Price:"));
-    top.add(new JLabel("₱ " + price));
-
-    JComboBox<String> paymentType = new JComboBox<>(new String[]{"Cash", "Installment"});
-    top.add(new JLabel("Payment Type:"));
-    top.add(paymentType);
-
-    panel.add(top, BorderLayout.NORTH);
-
-    JLabel receiptLabel = new JLabel();
-    receiptLabel.setVerticalAlignment(JLabel.TOP);
-    panel.add(new JScrollPane(receiptLabel), BorderLayout.CENTER);
-
-    JPanel bottom = new JPanel(new GridLayout(3,2,5,5));
-
-    JComboBox<String> bankCombo = new JComboBox<>(new String[]{
-        "Pag-IBIG", "RCBC", "SBC", "BDO", "CTS"
-    });
-
-    JComboBox<Integer> yearsCombo = new JComboBox<>();
-
-    bottom.add(new JLabel("Bank:"));
-    bottom.add(bankCombo);
-
-    bottom.add(new JLabel("Years:"));
-    bottom.add(yearsCombo);
-
-    panel.add(bottom, BorderLayout.SOUTH);
-
-    // ================= LOGIC =================
-    double reservation = 20000;
-
-    Runnable updateYears = () -> {
-        yearsCombo.removeAllItems();
-
-        String bank = (String) bankCombo.getSelectedItem();
-        int maxYears = 20;
-
-        switch(bank){
-            case "Pag-IBIG":
-            case "RCBC": maxYears = 30; break;
-            case "SBC":
-            case "BDO": maxYears = 20; break;
-            case "CTS": maxYears = 25; break;
-        }
-
-        for(int i=1;i<=maxYears;i++){
-            yearsCombo.addItem(i);
-        }
-    };
-
-    Runnable updateReceipt = () -> {
-
-        double dp = price * 0.05;
-        double loan = price - dp;
-
-        double capitalTax = price * 0.06;
-        double dst = price * 0.015;
-        double transfer = price * 0.005;
-        double notarial = price * 0.02;
-
-        double otherFees = capitalTax + dst + transfer + notarial;
-        double totalCashOut = dp + reservation + otherFees;
-
-        String text = "<html>";
-        text += "Downpayment: ₱" + String.format("%.2f", dp) + "<br>";
-        text += "Reservation Fee: ₱" + reservation + "<br>";
-        text += "Loan Amount: ₱" + String.format("%.2f", loan) + "<br>";
-        text += "Other Fees: ₱" + String.format("%.2f", otherFees) + "<br>";
-        text += "<b>Total Cash Out: ₱" + String.format("%.2f", totalCashOut) + "</b><br><br>";
-
-        if(paymentType.getSelectedItem().equals("Installment") && yearsCombo.getItemCount() > 0){
-
-            String bank = (String) bankCombo.getSelectedItem();
-            int years = (int) yearsCombo.getSelectedItem();
-
-            double rate = 0;
-
-            switch(bank){
-                case "Pag-IBIG": rate = 0.0625; break;
-                case "RCBC": rate = 0.066; break;
-                case "SBC": rate = 0.068; break;
-                case "BDO": rate = 0.0688; break;
-                case "CTS": rate = 0.105; break;
-            }
-
-            int months = years * 12;
-            double monthlyRate = rate / 12;
-
-            double amort = (loan * monthlyRate) /
-                    (1 - Math.pow(1 + monthlyRate, -months));
-
-            double gmi = amort / 0.35;
-
-            text += "Monthly Amortization: ₱" + String.format("%.2f", amort) + "<br>";
-            text += "Minimum GMI: ₱" + String.format("%.2f", gmi) + "<br>";
-        }
-
-        text += "</html>";
-        receiptLabel.setText(text);
-    };
-
-    // ================= EVENTS =================
-    paymentType.addActionListener(e -> updateReceipt.run());
-
-    bankCombo.addActionListener(e -> {
-        updateYears.run();
-        updateReceipt.run();
-    });
-
-    yearsCombo.addActionListener(e -> updateReceipt.run());
-
-    updateYears.run();
-    updateReceipt.run();
-
-    // ================= CONFIRM =================
->>>>>>> Stashed changes
     int result = JOptionPane.showConfirmDialog(
         this,
         panel,
@@ -660,22 +512,11 @@ public class CustomerDashboard extends javax.swing.JFrame {
     );
 
     if(result == JOptionPane.OK_OPTION){
-<<<<<<< Updated upstream
         property.setOwner(customer);
         JOptionPane.showMessageDialog(this, "Purchase Confirmed!");
 
         loadOwnedPropertiesToTable();
-        } 
-=======
-        property.updateStatus("Buy");
-
-        JOptionPane.showMessageDialog(this, "Purchase Confirmed!");
-
-        loadOwnedPropertiesToTable();
-        loadPropertiesToTable();
-    }
-}
->>>>>>> Stashed changes
+         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void loadPropertiesToTable() {
