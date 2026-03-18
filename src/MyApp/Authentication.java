@@ -314,7 +314,31 @@ public class Authentication extends javax.swing.JFrame {
             role = 2;
         }
         
-        if(username.isEmpty() || password.isEmpty() || role == -1) {
+        if(username.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Username cannot be empty.",
+                    "Registration Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if(password.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Password cannot be empty.",
+                    "Registration Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if(password.length() < 6) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Password must be at least 6 characters long.",
+                    "Registration Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if(role == -1) {
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Please fill all fields and select a role.",
                     "Registration Error",
