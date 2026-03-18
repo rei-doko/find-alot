@@ -340,6 +340,7 @@ public class AgentDashboard extends javax.swing.JFrame {
         
         if(selectedBooking != null) {
             propertyManager.removeBooking(selectedBooking);
+            selectedBooking.getProperty().updateStatus("For Sale");
             JOptionPane.showMessageDialog(this, "Booking removed.");
 
             loadBookingsToTable();
