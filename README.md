@@ -43,13 +43,17 @@ Agent
 - Direct agent commission fee
 
 # Documentation
-Known Issue: A bug causes the status of the property to be set as "Sold" and the owner to be the booker when the agent confirms the reservation
+**Known Issue**  
+A bug causes the status of a property to be set as "Sold" and the owner to be the booker when the agent confirms the reservation.
 
-Cause: A merge issue during GUI implementation disrupted core logic code in the confirm reservation button
+**Cause**  
+A merge conflict during GUI implementation disrupted core logic in the confirm reservation button.
 
-Status: Unresolved
+**Status**  
+Unresolved
 
-Attempts: Locate the former confirmReserveButton found in the AgentDashboard.java on the AgentDashboard.form
+**Attempts**  
+Attempted to locate the former `confirmReservationButton` in `AgentDashboard.java` on the `AgentDashboard.form` and began troubleshooting.
 
 ## License
 
